@@ -879,6 +879,62 @@ services:
     depends_on:
       - postgres
 
+  redis-nextcloud:
+    image: "redis:8.4.0"
+    container_name: "redis-nextcloud"
+    restart: unless-stopped
+    networks:
+      nextcloud:
+    command: bash -c 'redis-server --port 6379 --save 20 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"'
+    volumes:
+      - redis-nextcloud-cache:/data
+
+  nextcloud:
+    image: "nextcloud:32.0.2"
+    container_name: nextcloud
+    restart: unless-stopped
+    networks:
+      - proxy
+      - postgres
+      - nextcloud
+    depends_on:
+      - postgres
+      - redis-nextcloud
+    environment:
+      TZ: ${TIME_ZONE}
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      REDIS_HOST: redis-nextcloud
+      REDIS_HOST_PASSWORD: ${REDIS_PASSWORD}
+      NEXTCLOUD_TRUSTED_DOMAINS: nextcloud.${BASE_DOMAIN}
+      TRUSTED_PROXIES: 172.16.0.0/12
+      OVERWRITEPROTOCOL: https
+      OVERWRITEHOST: nextcloud.${BASE_DOMAIN}
+      OVERWRITECLIURL: https://nextcloud.${BASE_DOMAIN}
+      NEXTCLOUD_ADMIN_USER: admin
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+    volumes:
+      - /var/lib/docker-data/nextcloud:/var/www/html
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.nextcloud.rule: "Host(`nextcloud.${BASE_DOMAIN}`)"
+      traefik.http.services.nextcloud.loadbalancer.server.port: "80"
+      traefik.http.routers.nextcloud.tls: "true"
+      traefik.http.routers.nextcloud.tls.certresolver: "cloudflare"
+      traefik.http.routers.nextcloud.middlewares: "nextcloud-redirectregex,nextcloud-headers"
+      traefik.http.middlewares.nextcloud-redirectregex.redirectregex.permanent: "true"
+      traefik.http.middlewares.nextcloud-redirectregex.redirectregex.regex: "https://(.*)/.well-known/(card|cal)dav"
+      traefik.http.middlewares.nextcloud-redirectregex.redirectregex.replacement: "https://$$1/remote.php/dav/"
+      traefik.http.middlewares.nextcloud-headers.headers.customFrameOptionsValue: "SAMEORIGIN"
+      traefik.http.middlewares.nextcloud-headers.headers.stsSeconds: "15552000"
+      traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
+
 volumes:
   crowdsec-db:
     name: crowdsec-db
@@ -887,6 +943,7 @@ volumes:
   redis-authelia-cache:
   redis-docmost-cache:
   redis-paperless-cache:
+  redis-nextcloud-cache:
   prom_data:
   loki_data:
   whatsapp_volume:
@@ -903,3 +960,4 @@ networks:
     name: "paperless"
   postgres:
   docmost:
+  nextcloud:
