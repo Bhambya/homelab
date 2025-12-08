@@ -218,6 +218,7 @@ services:
       - /var/log/vaultwarden/:/var/log/vaultwarden/:ro
       - /var/log/auth.log:/var/log/auth.log:ro
       - ./crowdsec/immich-whitelist.yaml:/etc/crowdsec/parsers/s02-enrich/immich-whitelist.yaml:ro # immich whitelist rules
+      - ./crowdsec/nextcloud-whitelist.yaml:/etc/crowdsec/parsers/s02-enrich/nextcloud-whitelist.yaml:ro # nextcloud whitelist rules
       - ./crowdsec/grafana-whitelist.yaml:/etc/crowdsec/parsers/s02-enrich/grafana-whitelist.yaml:ro # grafana whitelist rules
       - ./crowdsec/qbittorrent-whitelist.yaml:/etc/crowdsec/parsers/s02-enrich/qbittorrent-whitelist.yaml:ro # qbittorrent whitelist rules
     networks:
