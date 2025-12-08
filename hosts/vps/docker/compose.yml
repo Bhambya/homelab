@@ -32,6 +32,7 @@ services:
       traefik.http.services.lldap.loadbalancer.server.port: "17170"
       traefik.http.routers.lldap.tls: "true"
       traefik.http.routers.lldap.tls.certresolver: "cloudflare"
+      traefik.http.routers.lldap.middlewares: bypass-authelia@file
 
   authelia:
     image: "ghcr.io/authelia/authelia:4.39.15"
@@ -82,6 +83,7 @@ services:
       - "traefik.docker.network=authelia"
       - "traefik.http.routers.authelia.rule=Host(`auth.${BASE_DOMAIN}`)"
       - "traefik.http.routers.authelia.entrypoints=https"
+      - "traefik.http.routers.authelia.middlewares=bypass-authelia@file"
       - "traefik.http.routers.authelia.tls.certresolver=cloudflare"
       - "traefik.http.middlewares.authelia.forwardAuth.address=http://authelia:9091/api/authz/forward-auth"
       - "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader=true"
@@ -158,7 +160,7 @@ services:
       - --entrypoints.https.transport.respondingtimeouts.readtimeout=200s
       - --entrypoints.https.transport.respondingtimeouts.idletimeout=200s
       - --entrypoints.https.transport.respondingtimeouts.writetimeout=200s
-      - --entrypoints.https.http.middlewares=crowdsec-bouncer@file,authelia@docker,my-robots-txt@file
+      - --entrypoints.https.http.middlewares=crowdsec-bouncer@file
       - --serverstransport.insecureskipverify=true
       - --certificatesresolvers.cloudflare.acme.storage=/data/acme.json
       - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
@@ -175,12 +177,6 @@ services:
       - "./traefik/config/dynamic.yml:/dynamic.yml:ro"
       - "/var/lib/docker-data/traefik/data:/data"
       - "/var/log/traefik:/logs"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.traefik-secure.rule: "Host(`traefik-dashboard.${BASE_DOMAIN}`)"
-      traefik.http.routers.traefik-secure.service: "api@internal"
-      traefik.http.routers.traefik-secure.tls: "true"
-      traefik.http.routers.traefik-secure.tls.certResolver: "cloudflare"
 
   whoami:
     image: "traefik/whoami:v1.11"
@@ -191,7 +187,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.whoami-secure.rule: "Host(`whoami.${BASE_DOMAIN}`)"
       traefik.http.routers.whoami-secure.tls: "true"
-        #traefik.http.routers.whoami-secure.tls.certresolver: "cloudflare"
+      traefik.http.routers.whoami-secure.middlewares: secured@file
     networks:
       proxy:
 
@@ -250,6 +246,7 @@ services:
       traefik.http.services.it-tools.loadbalancer.server.port: "80"
       traefik.http.routers.it-tools.tls: "true"
       traefik.http.routers.it-tools.tls.certresolver: "cloudflare"
+      traefik.http.routers.it-tools.middlewares: secured@file
     networks:
       proxy:
 
@@ -309,6 +306,7 @@ services:
       traefik.http.services.stirling-pdf.loadbalancer.server.port: "8080"
       traefik.http.routers.stirling-pdf.tls: "true"
       traefik.http.routers.stirling-pdf.tls.certresolver: "cloudflare"
+      traefik.http.routers.stirling-pdf.middlewares: secured@file
     networks:
       proxy:
 
@@ -420,6 +418,7 @@ services:
       traefik.http.services.grafana.loadbalancer.server.port: "3000"
       traefik.http.routers.grafana.tls: "true"
       traefik.http.routers.grafana.tls.certresolver: "cloudflare"
+      traefik.http.routers.grafana.middlewares: bypass-authelia@file
 
   vaultwarden:
     image: "ghcr.io/dani-garcia/vaultwarden:1.34.3"
@@ -449,6 +448,7 @@ services:
       traefik.http.services.vaultwarden.loadbalancer.server.port: "80"
       traefik.http.routers.vaultwarden.tls: "true"
       traefik.http.routers.vaultwarden.tls.certresolver: "cloudflare"
+      traefik.http.routers.vaultwarden.middlewares: bypass-authelia@file
 
   backrest:
     image: "garethgeorge/backrest:v1.10.1"
@@ -483,6 +483,7 @@ services:
       traefik.http.services.backrest.loadbalancer.server.port: "9898"
       traefik.http.routers.backrest.tls: "true"
       traefik.http.routers.backrest.tls.certresolver: "cloudflare"
+      traefik.http.routers.backrest.middlewares: secured@file
 
   apprise:
     image: "caronc/apprise:1.2"
@@ -504,6 +505,7 @@ services:
       traefik.http.services.apprise.loadbalancer.server.port: "8000"
       traefik.http.routers.apprise.tls: "true"
       traefik.http.routers.apprise.tls.certresolver: "cloudflare"
+      traefik.http.routers.apprise.middlewares: secured@file
 
   gotenberg:
     image: "docker.io/gotenberg/gotenberg:8.25.1"
@@ -607,6 +609,7 @@ services:
       traefik.http.services.paperless.loadbalancer.server.port: "8000"
       traefik.http.routers.paperless.tls: "true"
       traefik.http.routers.paperless.tls.certresolver: "cloudflare"
+      traefik.http.routers.paperless.middlewares: bypass-authelia@file
 
   cadvisor:
     image: "ghcr.io/google/cadvisor:0.54.1"
@@ -646,6 +649,7 @@ services:
       traefik.http.services.gatus.loadbalancer.server.port: "8080"
       traefik.http.routers.gatus.tls: "true"
       traefik.http.routers.gatus.tls.certresolver: "cloudflare"
+      traefik.http.routers.gatus.middlewares: secured@file
 
   postgres:
     container_name: postgres
@@ -689,6 +693,7 @@ services:
       traefik.http.services.linkwarden.loadbalancer.server.port: "3000"
       traefik.http.routers.linkwarden.tls: "true"
       traefik.http.routers.linkwarden.tls.certresolver: "cloudflare"
+      traefik.http.routers.linkwarden.middlewares: bypass-authelia@file
 
   whatsapp:
     container_name: whatsapp
@@ -715,6 +720,7 @@ services:
       traefik.http.services.chromium.loadbalancer.server.port: "3000"
       traefik.http.routers.chromium.tls: "true"
       traefik.http.routers.chromium.tls.certresolver: "cloudflare"
+      traefik.http.routers.chromium.middlewares: secured@file
 
   readeck:
     image: "codeberg.org/readeck/readeck:0.21.3"
@@ -730,6 +736,7 @@ services:
       traefik.http.services.readeck.loadbalancer.server.port: "8000"
       traefik.http.routers.readeck.tls: "true"
       traefik.http.routers.readeck.tls.certresolver: "cloudflare"
+      traefik.http.routers.readeck.middlewares: bypass-authelia@file
 
   filebrowser:
     container_name: "filebrowser"
@@ -750,6 +757,7 @@ services:
       traefik.http.services.filebrowser.loadbalancer.server.port: "80"
       traefik.http.routers.filebrowser.tls: "true"
       traefik.http.routers.filebrowser.tls.certresolver: "cloudflare"
+      traefik.http.routers.filebrowser.middlewares: bypass-authelia@file
 
   github-release-monitor:
     container_name: "github-release-monitor"
@@ -762,6 +770,7 @@ services:
       traefik.http.services.github-release-monitor.loadbalancer.server.port: "3000"
       traefik.http.routers.github-release-monitor.tls: "true"
       traefik.http.routers.github-release-monitor.tls.certresolver: "cloudflare"
+      traefik.http.routers.github-release-monitor.middlewares: secured@file
     networks:
       proxy:
     environment:
@@ -790,6 +799,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.glance.rule: "Host(`glance.${BASE_DOMAIN}`)"
       traefik.http.services.glance.loadbalancer.server.port: "8080"
+      traefik.http.routers.glance.middlewares: secured@file
 
   redis-docmost:
     image: "redis:8.4.0"
@@ -824,6 +834,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.docmost.rule: "Host(`wiki.${BASE_DOMAIN}`)"
       traefik.http.services.docmost.loadbalancer.server.port: "3000"
+      traefik.http.routers.docmost.middlewares: secured@file
 
   trilium:
     image: ghcr.io/triliumnext/trilium:v0.100.0
@@ -841,6 +852,7 @@ services:
       traefik.enable: "true"
       traefik.http.routers.trilium.rule: "Host(`notes.${BASE_DOMAIN}`)"
       traefik.http.services.trilium.loadbalancer.server.port: "8080"
+      traefik.http.routers.trilium.middlewares: secured@file
 
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:2.31.0
@@ -860,6 +872,7 @@ services:
       traefik.http.services.audiobookshelf.loadbalancer.server.port: "80"
       traefik.http.routers.audiobookshelf.tls: "true"
       traefik.http.routers.audiobookshelf.tls.certresolver: "cloudflare"
+      traefik.http.routers.audiobookshelf.middlewares: bypass-authelia@file
 
   atuin:
     container_name: atuin
@@ -882,6 +895,7 @@ services:
       traefik.http.services.atuin.loadbalancer.server.port: "8888"
       traefik.http.routers.atuin.tls: "true"
       traefik.http.routers.atuin.tls.certresolver: "cloudflare"
+      traefik.http.routers.atuin.middlewares: bypass-authelia@file
     depends_on:
       - postgres
 
@@ -933,7 +947,7 @@ services:
       traefik.http.services.nextcloud.loadbalancer.server.port: "80"
       traefik.http.routers.nextcloud.tls: "true"
       traefik.http.routers.nextcloud.tls.certresolver: "cloudflare"
-      traefik.http.routers.nextcloud.middlewares: "nextcloud-redirectregex,nextcloud-headers"
+      traefik.http.routers.nextcloud.middlewares: "bypass-authelia@file,nextcloud-redirectregex,nextcloud-headers"
       traefik.http.middlewares.nextcloud-redirectregex.redirectregex.permanent: "true"
       traefik.http.middlewares.nextcloud-redirectregex.redirectregex.regex: "https://(.*)/.well-known/(card|cal)dav"
       traefik.http.middlewares.nextcloud-redirectregex.redirectregex.replacement: "https://$$1/remote.php/dav/"
@@ -959,6 +973,7 @@ services:
       traefik.http.services.collabora.loadbalancer.server.port: "9980"
       traefik.http.routers.collabora.tls: "true"
       traefik.http.routers.collabora.tls.certresolver: "cloudflare"
+      traefik.http.routers.collabora.middlewares: bypass-authelia@file
 
 volumes:
   crowdsec-db:

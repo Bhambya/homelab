@@ -41,21 +41,7 @@ access_control:
       policy: 'two_factor'
       subject: 'group:admin'
     - domain:
-        - 'auth.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'vw.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'immich.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'grafana.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'jellyfin.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'linkwarden.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'audiobookshelf.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'readeck.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'filebrowser-vps.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'ldap.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'paperless.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'atuin.{{ mustEnv "BASE_DOMAIN" }}'
         - 'proxmox-home.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'collabora.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'drive.{{ mustEnv "BASE_DOMAIN" }}'
       policy: 'bypass' # these have their own auth or use OIDC
     - domain: 
         - 'traefik-dashboard.{{ mustEnv "BASE_DOMAIN" }}'

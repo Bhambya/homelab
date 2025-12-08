@@ -5,3 +5,5 @@ whitelist:
   reason: "Whitelist false positive from Nextcloud-api"
   expression:
    - evt.Parsed.traefik_router_name contains 'nextcloud' && evt.Meta.http_verb == 'GET' && evt.Meta.http_status == '404' && evt.Parsed.request matches '/index.php/core/preview'
+   - evt.Parsed.traefik_router_name contains 'nextcloud' && evt.Meta.http_verb == 'GET' && evt.Meta.http_status == '204' && evt.Parsed.request matches '/index.php/'
+   - evt.Parsed.traefik_router_name contains 'nextcloud' && evt.Meta.http_verb == 'GET' && evt.Meta.http_status == '304' && evt.Parsed.request matches '/ocs/v2.php/cloud/capabilities'

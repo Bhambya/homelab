@@ -36,6 +36,17 @@ http:
       forwardauth:
         address: http://bouncer-traefik:8080/api/v1/forwardAuth
         trustForwardHeader: true
+    secured:
+      chain:
+        middlewares:
+          - "authelia@docker"
+          - "limit@file"
+          - "my-robots-txt"
+    bypass-authelia:
+      chain:
+        middlewares:
+          - "limit@file"
+          - "my-robots-txt"
     immich-host-rewrite:
       headers:
         customrequestheaders:
@@ -92,8 +103,18 @@ http:
           - url: "https://home-server-containers:443" # home server Wireguard peer IP
 
   routers:
+    traefik-dashboard:
+      middlewares:
+        - "crowdsec-bouncer@file"
+        - "authelia@docker"
+        - "my-robots-txt"
+      rule: 'Host(`traefik-dashboard.{{ env "BASE_DOMAIN" }}`)'
+      service: "api@internal"
+      tls:
+        certResolver: cloudflare
     immich-home:
       middlewares:
+        - bypass-authelia
         - "immich-host-rewrite@file"
       rule: 'Host(`immich.{{ env "BASE_DOMAIN" }}`)'
       service: home
@@ -101,18 +122,22 @@ http:
         certResolver: cloudflare
     qbittorrent-home:
       middlewares:
+        - secured
         - "qbittorrent-host-rewrite@file"
       service: home
       rule: 'Host(`qbittorrent.{{ env "BASE_DOMAIN" }}`)'
       tls:
         certResolver: cloudflare
     jellyfin-home:
+      middlewares:
+        - bypass-authelia
       service: home
       rule: 'Host(`jellyfin.{{ env "BASE_DOMAIN" }}`)'
       tls:
         certResolver: cloudflare
     excalidraw:
       middlewares:
+        - secured
         - "excalidraw-host-rewrite@file"
       service: home
       rule: 'Host(`excalidraw.{{ env "BASE_DOMAIN" }}`)'
@@ -120,6 +145,7 @@ http:
         certResolver: cloudflare
     homeServices:
       middlewares:
+        - secured
         - "rewriteHomeHostHeader"
         - "rewriteHomeResponseHeaders"
       service: home
