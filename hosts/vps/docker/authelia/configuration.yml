@@ -54,6 +54,8 @@ access_control:
         - 'paperless.{{ mustEnv "BASE_DOMAIN" }}'
         - 'atuin.{{ mustEnv "BASE_DOMAIN" }}'
         - 'proxmox-home.{{ mustEnv "BASE_DOMAIN" }}'
+        - 'collabora.{{ mustEnv "BASE_DOMAIN" }}'
+        - 'drive.{{ mustEnv "BASE_DOMAIN" }}'
       policy: 'bypass' # these have their own auth or use OIDC
     - domain: 
         - 'traefik-dashboard.{{ mustEnv "BASE_DOMAIN" }}'
@@ -71,7 +73,7 @@ access_control:
         - 'glance.{{ mustEnv "BASE_DOMAIN" }}'
         - 'wiki.{{ mustEnv "BASE_DOMAIN" }}'
         - 'notes.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'nextcloud.{{ mustEnv "BASE_DOMAIN" }}'
+        - 'drive.{{ mustEnv "BASE_DOMAIN" }}'
       policy: 'two_factor'
       subject: 'group:admin'
     - domain_regex:
@@ -333,7 +335,7 @@ identity_providers:
         consent_mode: implicit
         pre_configured_consent_duration: '2 weeks'
         redirect_uris:
-          - 'https://nextcloud.{{ mustEnv "BASE_DOMAIN" }}/apps/user_oidc/code'
+          - 'https://drive.{{ mustEnv "BASE_DOMAIN" }}/apps/user_oidc/code'
         scopes:
           - 'openid'
           - 'profile'
