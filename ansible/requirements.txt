@@ -1,4 +1,4 @@
 # pinning versions here so renovate can update it. Always using the latest version
 # is vulnerable to supply chain attacks
-ansible==13.0.0
+ansible==13.1.0
 bitwarden-sdk==1.0.0
