@@ -724,7 +724,7 @@ services:
       traefik.http.routers.chromium.middlewares: secured@file
 
   readeck:
-    image: "codeberg.org/readeck/readeck:0.21.3"
+    image: "codeberg.org/readeck/readeck:0.21.4"
     container_name: readeck
     restart: unless-stopped
     volumes:
