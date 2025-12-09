@@ -3,6 +3,8 @@
   "extends": [
     "config:recommended"
   ],
+  "minimumReleaseAge": "5 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
   "timezone": "UTC",
   "prConcurrentLimit": 30,
   "prHourlyLimit": 10,
