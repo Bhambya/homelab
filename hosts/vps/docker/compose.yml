@@ -471,7 +471,8 @@ services:
       - /var/lib/docker-data/paperless-ngx:/var/lib/docker-data/paperless-ngx:ro
       - /var/lib/docker-data/readeck:/var/lib/docker-data/readeck:ro
       - /var/lib/docker-data/github-release-monitor:/var/lib/docker-data/github-release-monitor:ro
-      - /var/lib/docker-data/postgres:/var/lib/docker-data/postgres:ro
+      - /var/lib/docker-data/postgres/backups:/var/lib/docker-data/postgres/backups:ro
+      - /var/lib/docker-data/nextcloud:/var/lib/docker-data/nextcloud:ro
     environment:
       TZ: ${TIME_ZONE}
       BACKREST_DATA: /data
@@ -956,7 +957,7 @@ services:
       traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
 
   collabora:
-    image: collabora/code:latest
+    image: collabora/code:25.04.7.3.1
     container_name: collabora
     restart: unless-stopped
     networks:
