@@ -1,0 +1,352 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 12,
+    "links": [],
+    "panels": [
+        {
+            "datasource": {
+                "type": "loki",
+                "uid": "loki"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "cellOptions": {
+                            "type": "auto"
+                        },
+                        "footer": {
+                            "reducers": []
+                        },
+                        "inspect": false
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "labels"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 815
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "RequestMethod"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 183
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "RouterName"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 261
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "DownstreamStatus"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 179
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "OriginStatus"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 117
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "IP Address"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 177
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Time"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 210
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "RequestAddr"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 342
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 26,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 1,
+            "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "labels"
+                    }
+                ]
+            },
+            "pluginVersion": "12.3.0",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "loki",
+                        "uid": "loki"
+                    },
+                    "direction": "backward",
+                    "editorMode": "builder",
+                    "expr": "{service_name=\"traefik_access_logs\"}",
+                    "queryType": "range",
+                    "refId": "A"
+                }
+            ],
+            "title": "New panel",
+            "transformations": [
+                {
+                    "id": "extractFields",
+                    "options": {
+                        "delimiter": ",",
+                        "format": "json",
+                        "jsonPaths": [
+                            {
+                                "alias": "IP Address",
+                                "path": "ClientHost"
+                            },
+                            {
+                                "path": "DownstreamStatus"
+                            },
+                            {
+                                "path": "RequestAddr"
+                            },
+                            {
+                                "path": "RouterName"
+                            },
+                            {
+                                "path": "OriginStatus"
+                            },
+                            {
+                                "path": "RequestMethod"
+                            },
+                            {
+                                "path": "RequestPath"
+                            }
+                        ],
+                        "keepTime": true,
+                        "replace": true,
+                        "source": "Line"
+                    }
+                },
+                {
+                    "id": "filterByValue",
+                    "options": {
+                        "filters": [
+                            {
+                                "config": {
+                                    "id": "regex",
+                                    "options": {
+                                        "value": "${RequestAddr}"
+                                    }
+                                },
+                                "fieldName": "RequestAddr"
+                            },
+                            {
+                                "config": {
+                                    "id": "notEqual",
+                                    "options": {
+                                        "value": "${StatusNotEquals}"
+                                    }
+                                },
+                                "fieldName": "DownstreamStatus"
+                            },
+                            {
+                                "config": {
+                                    "id": "regex",
+                                    "options": {
+                                        "value": "${IPAddress}"
+                                    }
+                                },
+                                "fieldName": "IP Address"
+                            }
+                        ],
+                        "match": "all",
+                        "type": "include"
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "includeByName": {},
+                        "indexByName": {
+                            "DownstreamStatus": 2,
+                            "IP Address": 1,
+                            "OriginStatus": 3,
+                            "RequestAddr": 4,
+                            "RequestMethod": 6,
+                            "RouterName": 5,
+                            "Time": 0
+                        },
+                        "renameByName": {}
+                    }
+                }
+            ],
+            "type": "table"
+        }
+    ],
+    "preload": false,
+    "schemaVersion": 42,
+    "tags": [],
+    "templating": {
+        "list": [
+            {
+                "current": {
+                    "text": "200",
+                    "value": "200"
+                },
+                "description": "",
+                "label": "Status not equals",
+                "name": "StatusNotEquals",
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "200",
+                        "value": "200"
+                    }
+                ],
+                "query": "200",
+                "type": "textbox"
+            },
+            {
+                "current": {
+                    "text": "",
+                    "value": ""
+                },
+                "description": "",
+                "label": "RequestAddr matches",
+                "name": "RequestAddr",
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "",
+                        "value": ""
+                    }
+                ],
+                "query": "",
+                "type": "textbox"
+            },
+            {
+                "current": {
+                    "text": "",
+                    "value": ""
+                },
+                "description": "",
+                "label": "IP Address matches",
+                "name": "IPAddress",
+                "options": [
+                    {
+                        "selected": true,
+                        "text": "",
+                        "value": ""
+                    }
+                ],
+                "query": "",
+                "type": "textbox"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-1h",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Traefik non-200 codes",
+    "uid": "gajxkhj",
+    "version": 14
+}
