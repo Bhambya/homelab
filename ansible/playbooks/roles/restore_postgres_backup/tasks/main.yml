@@ -1,0 +1,39 @@
+---
+- name: Check if postgres backup directory exists
+  ansible.builtin.stat:
+    path: "{{ backup_directory }}"
+  register: postgres_backup_dir
+
+- name: Fail if backup directory does not exist
+  ansible.builtin.fail:
+    msg: "Backup directory {{ backup_directory }} does not exist or is not a directory"
+  when: not postgres_backup_dir.stat.exists or not postgres_backup_dir.stat.isdir
+
+- name: Find postgres backup files
+  ansible.builtin.find:
+    paths: "{{ backup_directory }}"
+    patterns: "{{ backup_pattern }}"
+    use_regex: false
+  register: backup_files
+
+- name: Get latest backup file
+  ansible.builtin.set_fact:
+    latest_backup: "{{ backup_files.files | sort(attribute='mtime') | last }}"
+
+- name: Fail if no backup files found
+  ansible.builtin.fail:
+    msg: "No postgres backups found in {{ backup_directory }}"
+  when: backup_files.matched == 0
+
+- name: Restore latest postgres backup
+  become: true
+  ansible.builtin.shell: |
+    zcat "{{ latest_backup.path }}" | docker exec -i {{ container_name }} psql -U {{ postgres_user }}
+  when: backup_files.matched > 0
+  register: restore_result
+  failed_when: false
+
+- name: Display restore result
+  ansible.builtin.debug:
+    msg: "Backup restored from: {{ latest_backup.path }}"
+  when: backup_files.matched > 0 and restore_result.rc == 0

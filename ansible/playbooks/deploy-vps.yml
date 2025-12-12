@@ -35,6 +35,10 @@
       become: true
       register: docker_data_stat_result
 
+    - name: Set restore_backup fact
+      ansible.builtin.set_fact:
+        restore_backup: "{{ (docker_data_stat_result.stat.isdir is not defined or (not docker_data_stat_result.stat.isdir)) | bool }}"
+
     - name: "Restore latest restic snapshot"
       become: true
       ansible.builtin.command: restic restore latest --no-cache --cleanup-cache --target /
@@ -43,7 +47,7 @@
         AWS_SECRET_ACCESS_KEY: "{{ lookup('bitwarden.secrets.lookup', 'c9e13db6-5c78-4c62-8110-b39000ca3ea3') }}"
         RESTIC_PASSWORD: "{{ lookup('bitwarden.secrets.lookup', 'cf687098-8d02-45de-8490-b39000ca755e') }}"
         RESTIC_REPOSITORY: "{{ lookup('bitwarden.secrets.lookup', '9baa12e1-5481-4b11-abe6-b39000cc99cd') }}"
-      when: docker_data_stat_result.stat.isdir is not defined or (not docker_data_stat_result.stat.isdir)
+      when: restore_backup
 
     - name: Change {{ docker_data_dir }} directory owner
       become: true
@@ -111,6 +115,25 @@
         group: root
         mode: '0644'
       notify: Restart logrotate
+
+    - name: Start postgres container
+      become: true
+      community.docker.docker_compose_v2:
+        project_src: "{{ host_conf_path }}/docker"
+        state: present
+        services:
+          - postgres
+        wait: true
+        wait_timeout: 300
+      when: restore_backup
+
+    - name: Restore latest PostgreSQL backup
+      ansible.builtin.import_role:
+        name: restore_postgres_backup
+      vars:
+        backup_directory: "{{ docker_data_dir }}/postgres/backups"
+        container_name: "postgres"
+      when: restore_backup
 
     - name: Restart services using Docker Compose
       become: true

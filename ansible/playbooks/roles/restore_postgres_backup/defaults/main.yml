@@ -1,0 +1,5 @@
+---
+# defaults file for restore_postgres_backup
+container_name: "postgres"
+postgres_user: "postgres"
+backup_pattern: "pg_dumpall_*.sql.gz"
