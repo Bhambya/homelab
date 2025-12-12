@@ -128,7 +128,7 @@
       when: restore_backup
 
     - name: Restore latest PostgreSQL backup
-      ansible.builtin.import_role:
+      ansible.builtin.include_role:
         name: restore_postgres_backup
       vars:
         backup_directory: "{{ docker_data_dir }}/postgres/backups"
