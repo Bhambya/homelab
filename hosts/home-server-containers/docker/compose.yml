@@ -89,6 +89,7 @@ services:
       - DB_USERNAME=${IMMICH_DB_USERNAME}
       - DB_DATABASE_NAME=${IMMICH_DB_DATABASE_NAME}
       - DB_HOSTNAME=immich_database
+      - REDIS_HOSTNAME=immich_redis
     # extends:
     #   file: hwaccel.transcoding.yml
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
