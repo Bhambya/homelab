@@ -90,7 +90,6 @@ services:
       - DB_DATABASE_NAME=${IMMICH_DB_DATABASE_NAME}
       - DB_HOSTNAME=immich_database
       - REDIS_HOSTNAME=immich_redis
-      - MACHINE_LEARNING_HOST=immich_machine_learning
     # extends:
     #   file: hwaccel.transcoding.yml
     #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
