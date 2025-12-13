@@ -152,7 +152,7 @@ services:
     # Uncomment the DB_STORAGE_TYPE: 'HDD' var if your database isn't stored on SSDs
     # DB_STORAGE_TYPE: 'HDD'
     volumes:
-      - /var/lib/docker-data/immich/db:/var/lib/postgresql/data
+      - /var/lib/docker-data/immich/db:/var/lib/postgresql/18/docker
     networks:
       immich:
     restart: unless-stopped
