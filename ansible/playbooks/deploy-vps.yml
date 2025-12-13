@@ -164,6 +164,14 @@
       ansible.builtin.import_role:
         name: manage_crons
  
+    - name: "Recreate paperless thumbnails, index and models"
+      become: true
+      ansible.builtin.shell: |
+        docker exec -it paperless-ngx document_thumbnails
+        docker exec -it paperless-ngx document_index reindex
+        docker exec -it paperless-ngx document_create_classifier
+      when: restore_backup
+
   handlers:
     - name: Restart crowdsec-firewall-bouncer
       become: true
