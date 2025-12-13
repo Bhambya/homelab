@@ -81,7 +81,7 @@ services:
     networks:
       proxy: {}
 
-  immich-server:
+  immich_server:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:v2.3.1
     environment:
@@ -97,7 +97,7 @@ services:
       - ${IMMICH_UPLOAD_PATH}:/data
       - /etc/localtime:/etc/localtime:ro
     depends_on:
-      - redis
+      - immich_redis
       - immich_database
     restart: unless-stopped
     deploy:
@@ -116,7 +116,7 @@ services:
       traefik.http.services.immich.loadbalancer.server.port: "2283"
       traefik.docker.network: 'immich'
 
-  immich-machine-learning:
+  immich_machine_learning:
     container_name: immich_machine_learning
     # For hardware acceleration, add one of -[armnn, cuda, openvino] to the image tag.
     # Example tag: ${IMMICH_VERSION:-release}-cuda
@@ -126,13 +126,13 @@ services:
     #   service: cpu # set to one of [armnn, cuda, openvino, openvino-wsl] for accelerated inference - use the `-wsl` version for WSL2 where applicable
     volumes:
       - /var/lib/docker-data/immich/model_cache:/cache
-    restart: always
+    restart: unless-stopped
     networks:
       immich:
     healthcheck:
       disable: false
 
-  redis:
+  immich_redis:
     container_name: immich_redis
     image: docker.io/redis:8.4-alpine@sha256:6cbef353e480a8a6e7f10ec545f13d7d3fa85a212cdcc5ffaf5a1c818b9d3798
     healthcheck:
