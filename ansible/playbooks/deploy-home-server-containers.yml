@@ -28,7 +28,27 @@
           {% for vm in groups['home_vpn'] %}
           {{ hostvars[vm].vpn_ip }} {{ hostvars[vm].inventory_hostname }}
           {% endfor %}
-  
+
+    - name: "Check {{ docker_data_dir }} directory"
+      ansible.builtin.stat:
+        path: "{{ docker_data_dir }}"
+      become: true
+      register: docker_data_stat_result
+
+    - name: Set restore_backup fact
+      ansible.builtin.set_fact:
+        restore_backup: "{{ (docker_data_stat_result.stat.isdir is not defined or (not docker_data_stat_result.stat.isdir)) | bool }}"
+
+    - name: "Restore latest restic snapshot"
+      become: true
+      ansible.builtin.command: restic restore latest --no-cache --cleanup-cache --target /
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('bitwarden.secrets.lookup', '95843770-ec28-44c4-9ec6-b396010e19b0') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('bitwarden.secrets.lookup', 'c51018bb-8c4b-45a2-8662-b396010e395a') }}"
+        RESTIC_PASSWORD: "{{ lookup('bitwarden.secrets.lookup', 'cf687098-8d02-45de-8490-b39000ca755e') }}"
+        RESTIC_REPOSITORY: "{{ lookup('bitwarden.secrets.lookup', '2bf4ab81-3dd3-43a9-af0f-b396010d650a') }}"
+      when: restore_backup
+
     - name: Change {{ docker_data_dir }} directory owner
       become: true
       ansible.builtin.file:
@@ -63,6 +83,25 @@
       loop: "{{ secret_mapping['secret_files'] | default([]) }}"
       loop_control:
         loop_var: item
+
+    - name: Start immich database container
+      become: true
+      community.docker.docker_compose_v2:
+        project_src: "{{ host_conf_path }}/docker"
+        state: present
+        services:
+          - immich_database
+        wait: true
+        wait_timeout: 300
+      when: restore_backup
+
+    - name: Restore latest immich database backup
+      ansible.builtin.include_role:
+        name: restore_postgres_backup
+      vars:
+        backup_directory: "{{ docker_data_dir }}/immich/backups"
+        container_name: "immich_database"
+      when: restore_backup
 
     - name: Restart services using Docker Compose
       become: true
