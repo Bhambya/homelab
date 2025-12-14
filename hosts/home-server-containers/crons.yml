@@ -10,7 +10,7 @@ cron_jobs:
 
   # At 01:01, every day
   - name: "Immich DB Backup"
-    job: '{{ repo_path }}/scripts/postgres-backup.sh -c immich_database -u postgres -p postgres -d all -b /mnt/immich/backups || curl -X POST -F "body=Cron Immich DB backup failed!" http://127.0.0.1:8000/notify/apprise'
+    job: '{{ repo_path }}/scripts/postgres-backup.sh -c immich_database -u postgres -p postgres -d all -b /var/lib/docker-data/immich/backups || curl -X POST -F "body=Cron Immich DB backup failed!" http://127.0.0.1:8000/notify/apprise'
     hour: "1"
     minute: "1"
     user: "root"
