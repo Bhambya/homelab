@@ -27,5 +27,9 @@
     ".vscode",
     ".vscode-insiders",
     "docker/compose.yml"
-  ]
+  ],
+  "cSpell.enabledFileTypes": {
+    "*": false,
+    "markdown": true
+  }
 }
