@@ -321,7 +321,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 1.2G
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
