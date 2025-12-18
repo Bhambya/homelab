@@ -478,7 +478,7 @@ services:
       traefik.http.routers.pinchflat.tls.certresolver: "cloudflare"
 
   apprise:
-    image: "caronc/apprise:1.2"
+    image: "caronc/apprise:1.3"
     container_name: apprise
     networks:
       proxy:
