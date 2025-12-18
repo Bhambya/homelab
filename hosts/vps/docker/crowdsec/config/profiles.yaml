@@ -3,7 +3,7 @@ filters:
  - Alert.Remediation == true && Alert.GetScope() == "Ip" && lower(Alert.GetScenario() ?? "") contains "ssh"
 decisions:
  - type: ban
-   duration: 240h
+   duration: 2160h
 on_success: break
 ---
 name: cve-scanners
@@ -11,10 +11,10 @@ filters:
  - Alert.Remediation == true && Alert.GetScope() == "Ip" && lower(Alert.GetScenario() ?? "") contains "cve"
 decisions:
  - type: ban
-   duration: 480h
+   duration: 2160h
 on_success: break
 ---
-name: my_countries
+name: home-countries
 filters:
  - Alert.Remediation == true && Alert.GetScope() == "Ip" && Alert.Source.Cn in ['IN', 'DE']
 decisions:
@@ -22,10 +22,10 @@ decisions:
    duration: 4h
 on_success: break
 ---
-name: default_remediation
+name: default-remediation
 filters:
  - Alert.Remediation == true && Alert.GetScope() in ["Ip", "Range"]
 decisions:
  - type: ban
-   duration: 24h
+   duration: 48h
 on_success: break
