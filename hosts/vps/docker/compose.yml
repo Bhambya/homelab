@@ -613,7 +613,7 @@ services:
       traefik.http.routers.paperless.middlewares: bypass-authelia@file
 
   cadvisor:
-    image: "ghcr.io/google/cadvisor:0.55.0"
+    image: "ghcr.io/google/cadvisor:0.55.1"
     devices:
       - /dev/kmsg
     privileged: true
@@ -724,7 +724,7 @@ services:
       traefik.http.routers.chromium.middlewares: secured@file
 
   readeck:
-    image: "codeberg.org/readeck/readeck:0.21.4"
+    image: "codeberg.org/readeck/readeck:0.21.5"
     container_name: readeck
     restart: unless-stopped
     volumes:
@@ -813,7 +813,7 @@ services:
       - redis-docmost-cache:/data
 
   docmost:
-    image: "docmost/docmost:0.23.2"
+    image: "docmost/docmost:0.24.1"
     container_name: docmost
     restart: unless-stopped
     depends_on:
