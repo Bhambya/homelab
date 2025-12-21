@@ -361,7 +361,7 @@ services:
       traefik.http.routers.grafana.tls.certresolver: "cloudflare"
 
   prometheus:
-    image: "prom/prometheus:v3.8.0"
+    image: "prom/prometheus:v3.8.1"
     container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
