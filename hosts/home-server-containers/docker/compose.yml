@@ -499,7 +499,7 @@ services:
       traefik.http.routers.apprise.tls.certresolver: "cloudflare"
 
   audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:2.31.0
+    image: ghcr.io/advplyr/audiobookshelf:2.32.0
     container_name: audiobookshelf
     networks:
       proxy:
