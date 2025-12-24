@@ -856,7 +856,7 @@ services:
       traefik.http.routers.trilium.middlewares: secured@file
 
   audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:2.32.0
+    image: ghcr.io/advplyr/audiobookshelf:2.32.1
     container_name: audiobookshelf
     restart: unless-stopped
     networks:
