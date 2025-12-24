@@ -1,19 +1,19 @@
 filenames:
-  - /var/log/traefik/access.log*
+  - /hostlogs/traefik/access.log*
 labels:
   type: traefik
 ---
 filenames:
-  - /var/log/auth.log
+  - /hostlogs/auth.log
 labels:
   type: syslog
 ---
 filenames:
-  - /var/log/authelia/*
+  - /hostlogs/authelia/*
 labels:
   type: authelia
 ---
 filenames:
- - /var/log/vaultwarden/*
+ - /hostlogs/vaultwarden/*
 labels:
   type: Vaultwarden

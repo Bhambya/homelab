@@ -209,10 +209,7 @@ services:
       - ./crowdsec/config/profiles.yaml:/etc/crowdsec/profiles.yaml
       - crowdsec-db:/var/lib/crowdsec/data/
       - crowdsec-config:/etc/crowdsec/
-      - /var/log/authelia:/var/log/authelia:ro
-      - /var/log/traefik/:/var/log/traefik/:ro
-      - /var/log/vaultwarden/:/var/log/vaultwarden/:ro
-      - /var/log/auth.log:/var/log/auth.log:ro
+      - /var/log/:/hostlogs/:ro
       - ./crowdsec/immich-whitelist.yaml:/etc/crowdsec/parsers/s02-enrich/immich-whitelist.yaml:ro # immich whitelist rules
       - ./crowdsec/nextcloud-whitelist.yaml:/etc/crowdsec/parsers/s02-enrich/nextcloud-whitelist.yaml:ro # nextcloud whitelist rules
       - ./crowdsec/grafana-whitelist.yaml:/etc/crowdsec/parsers/s02-enrich/grafana-whitelist.yaml:ro # grafana whitelist rules
