@@ -817,7 +817,7 @@ groups:
           notification_settings:
             receiver: Telegram
         - uid: ef8vupv7mnyf4a
-          title: No ssh bans in last 2 hours
+          title: No ssh attacks in last 2 hours
           condition: F
           data:
             - refId: A
@@ -969,7 +969,7 @@ groups:
           annotations:
             __dashboardUid__: main_dashboard
             __panelId__: "1"
-            summary: Alerts if no ssh bans occurred in the last 2 hours
+            summary: Alerts if no ssh attacks were detected in the last 2 hours. This could indicate malformed config.
           labels: {}
           isPaused: false
           notification_settings:
