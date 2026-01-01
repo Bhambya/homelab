@@ -449,7 +449,6 @@ groups:
             __dashboardUid__: main_dashboard
             __panelId__: "4"
             summary: Increase in unauthorized/forbidden responses
-          labels: {}
           isPaused: false
           notification_settings:
             receiver: Telegram
@@ -814,6 +813,164 @@ groups:
           noDataState: Alerting
           execErrState: Error
           for: 5m
+          isPaused: false
+          notification_settings:
+            receiver: Telegram
+        - uid: ef8vupv7mnyf4a
+          title: No ssh bans in last 2 hours
+          condition: F
+          data:
+            - refId: A
+              queryType: alerting
+              relativeTimeRange:
+                from: 7200
+                to: 0
+              datasourceUid: prometheus
+              model:
+                datasource:
+                    type: prometheus
+                    uid: prometheus
+                editorMode: builder
+                expr: max(count_over_time(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-slow-bf"}[$__range]))
+                expression: ""
+                instant: false
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                queryType: alerting
+                range: true
+                refId: A
+            - refId: D
+              queryType: alerting
+              relativeTimeRange:
+                from: 7200
+                to: 0
+              datasourceUid: prometheus
+              model:
+                datasource:
+                    type: prometheus
+                    uid: prometheus
+                editorMode: builder
+                exemplar: false
+                expr: max(count_over_time(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf"}[$__range]))
+                expression: ""
+                instant: false
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                queryType: alerting
+                range: true
+                refId: D
+            - refId: E
+              queryType: alerting
+              relativeTimeRange:
+                from: 7200
+                to: 0
+              datasourceUid: prometheus
+              model:
+                datasource:
+                    type: prometheus
+                    uid: prometheus
+                editorMode: builder
+                expr: max(count_over_time(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf_user-enum"}[$__range]))
+                expression: ""
+                instant: false
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                queryType: alerting
+                range: true
+                refId: E
+            - refId: B
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: $A+$D+$E
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: B
+                type: math
+            - refId: C
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: B
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: max
+                refId: C
+                settings:
+                    mode: dropNN
+                type: reduce
+            - refId: F
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                        type: lte
+                      operator:
+                        type: and
+                      query:
+                        params: []
+                      reducer:
+                        params: []
+                        type: avg
+                      type: query
+                datasource:
+                    name: Expression
+                    type: __expr__
+                    uid: __expr__
+                expression: C
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: F
+                type: threshold
+          dashboardUid: main_dashboard
+          panelId: 1
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          annotations:
+            __dashboardUid__: main_dashboard
+            __panelId__: "1"
+            summary: Alerts if no ssh bans occurred in the last 2 hours
+          labels: {}
           isPaused: false
           notification_settings:
             receiver: Telegram
