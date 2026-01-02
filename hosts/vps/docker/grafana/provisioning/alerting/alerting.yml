@@ -817,7 +817,7 @@ groups:
           notification_settings:
             receiver: Telegram
         - uid: ef8vupv7mnyf4a
-          title: No ssh attacks in last 2 hours
+          title: No ssh bans in last 2 hours
           condition: F
           data:
             - refId: A
@@ -830,15 +830,16 @@ groups:
                 datasource:
                     type: prometheus
                     uid: prometheus
-                editorMode: builder
-                expr: max(count_over_time(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-slow-bf"}[$__range]))
+                editorMode: code
+                exemplar: false
+                expr: increase(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-slow-bf"}[2h])
                 expression: ""
-                instant: false
+                instant: true
                 intervalMs: 1000
                 legendFormat: __auto
                 maxDataPoints: 43200
                 queryType: alerting
-                range: true
+                range: false
                 refId: A
             - refId: D
               queryType: alerting
@@ -850,16 +851,16 @@ groups:
                 datasource:
                     type: prometheus
                     uid: prometheus
-                editorMode: builder
+                editorMode: code
                 exemplar: false
-                expr: max(count_over_time(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf"}[$__range]))
+                expr: increase(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf"}[2h])
                 expression: ""
-                instant: false
+                instant: true
                 intervalMs: 1000
                 legendFormat: __auto
                 maxDataPoints: 43200
                 queryType: alerting
-                range: true
+                range: false
                 refId: D
             - refId: E
               queryType: alerting
@@ -871,15 +872,16 @@ groups:
                 datasource:
                     type: prometheus
                     uid: prometheus
-                editorMode: builder
-                expr: max(count_over_time(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf_user-enum"}[$__range]))
+                editorMode: code
+                exemplar: false
+                expr: increase(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf_user-enum"}[2h])
                 expression: ""
-                instant: false
+                instant: true
                 intervalMs: 1000
                 legendFormat: __auto
                 maxDataPoints: 43200
                 queryType: alerting
-                range: true
+                range: false
                 refId: E
             - refId: B
               datasourceUid: __expr__
@@ -907,35 +909,6 @@ groups:
                 maxDataPoints: 43200
                 refId: B
                 type: math
-            - refId: C
-              datasourceUid: __expr__
-              model:
-                conditions:
-                    - evaluator:
-                        params:
-                            - 0
-                            - 0
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params: []
-                      reducer:
-                        params: []
-                        type: avg
-                      type: query
-                datasource:
-                    name: Expression
-                    type: __expr__
-                    uid: __expr__
-                expression: B
-                intervalMs: 1000
-                maxDataPoints: 43200
-                reducer: max
-                refId: C
-                settings:
-                    mode: dropNN
-                type: reduce
             - refId: F
               datasourceUid: __expr__
               model:
@@ -956,7 +929,7 @@ groups:
                     name: Expression
                     type: __expr__
                     uid: __expr__
-                expression: C
+                expression: B
                 intervalMs: 1000
                 maxDataPoints: 43200
                 refId: F
@@ -969,13 +942,8 @@ groups:
           annotations:
             __dashboardUid__: main_dashboard
             __panelId__: "1"
-            summary: Alerts if no ssh attacks were detected in the last 2 hours. This could indicate malformed config.
+            summary: Alerts if no ssh bans occurred in the last 2 hours
           labels: {}
           isPaused: false
           notification_settings:
             receiver: Telegram
-
-# List of alert rule UIDs that should be deleted
-deleteRules:
-  - orgId: 1
-    uid: aelh17tl2ixhca
