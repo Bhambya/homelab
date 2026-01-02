@@ -964,7 +964,7 @@ services:
       - aliasgroup1=https://drive.${BASE_DOMAIN}
       - username=admin
       - password=${NEXTCLOUD_ADMIN_PASSWORD}
-      - extra_params=--o:ssl.enable=false --o:ssl.termination=true
+      - extra_params=--o:ssl.enable=false --o:ssl.termination=true --o:remote_font_config.url=https://drive.${BASE_DOMAIN}/apps/richdocuments/settings/fonts.json
     labels:
       traefik.enable: "true"
       traefik.http.routers.collabora.rule: "Host(`collabora.${BASE_DOMAIN}`)"
