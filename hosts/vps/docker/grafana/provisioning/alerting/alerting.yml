@@ -832,7 +832,7 @@ groups:
                     uid: prometheus
                 editorMode: code
                 exemplar: false
-                expr: increase(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-slow-bf"}[2h])
+                expr: increase(cs_alerts{instance="crowdsec:6060", reason="crowdsecurity/ssh-slow-bf"}[2h])
                 expression: ""
                 instant: true
                 intervalMs: 1000
@@ -853,7 +853,7 @@ groups:
                     uid: prometheus
                 editorMode: code
                 exemplar: false
-                expr: increase(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf"}[2h])
+                expr: increase(cs_alerts{instance="crowdsec:6060", reason="crowdsecurity/ssh-bf"}[2h])
                 expression: ""
                 instant: true
                 intervalMs: 1000
@@ -874,7 +874,7 @@ groups:
                     uid: prometheus
                 editorMode: code
                 exemplar: false
-                expr: increase(cs_bucket_poured_total{instance="crowdsec:6060", name="crowdsecurity/ssh-bf_user-enum"}[2h])
+                expr: increase(cs_alerts{instance="crowdsec:6060", reason="crowdsecurity/ssh-bf_user-enum"}[2h])
                 expression: ""
                 instant: true
                 intervalMs: 1000
