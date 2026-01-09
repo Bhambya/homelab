@@ -418,7 +418,7 @@ services:
       traefik.http.routers.grafana.middlewares: bypass-authelia@file
 
   vaultwarden:
-    image: "ghcr.io/dani-garcia/vaultwarden:1.35.1"
+    image: "ghcr.io/dani-garcia/vaultwarden:1.35.2"
     container_name: vaultwarden
     networks:
       proxy:
