@@ -394,11 +394,10 @@ services:
       - '--path.rootfs=/rootfs'
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:0.56.0
+    image: ghcr.io/google/cadvisor:0.55.1
     restart: unless-stopped
     devices:
       - /dev/kmsg
-    entrypoint: ["/usr/bin/cadvisor"] # TODO: remove after https://github.com/google/cadvisor/issues/3813 is fixed
     privileged: true
     container_name: cadvisor
     networks:
