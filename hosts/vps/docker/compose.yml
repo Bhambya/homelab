@@ -281,7 +281,7 @@ services:
 
   stirling-pdf:
     container_name: "stirling-pdf"
-    image: "stirlingtools/stirling-pdf:2.1.5"
+    image: "stirlingtools/stirling-pdf:2.2.0"
     volumes:
       - /var/lib/docker-data/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
       - /var/lib/docker-data/stirling-pdf/extraConfigs:/configs
@@ -610,7 +610,7 @@ services:
       traefik.http.routers.paperless.middlewares: bypass-authelia@file
 
   cadvisor:
-    image: "ghcr.io/google/cadvisor:0.55.1"
+    image: "ghcr.io/google/cadvisor:0.56.0"
     devices:
       - /dev/kmsg
     privileged: true
@@ -721,7 +721,7 @@ services:
       traefik.http.routers.chromium.middlewares: secured@file
 
   readeck:
-    image: "codeberg.org/readeck/readeck:0.21.5"
+    image: "codeberg.org/readeck/readeck:0.21.6"
     container_name: readeck
     restart: unless-stopped
     volumes:
