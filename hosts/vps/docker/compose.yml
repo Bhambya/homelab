@@ -613,6 +613,7 @@ services:
     image: "ghcr.io/google/cadvisor:0.56.0"
     devices:
       - /dev/kmsg
+    entrypoint: ["/usr/bin/cadvisor"] # TODO: remove after https://github.com/google/cadvisor/issues/3813 is fixed
     privileged: true
     restart: unless-stopped
     container_name: cadvisor

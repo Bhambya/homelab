@@ -398,6 +398,7 @@ services:
     restart: unless-stopped
     devices:
       - /dev/kmsg
+    entrypoint: ["/usr/bin/cadvisor"] # TODO: remove after https://github.com/google/cadvisor/issues/3813 is fixed
     privileged: true
     container_name: cadvisor
     networks:
