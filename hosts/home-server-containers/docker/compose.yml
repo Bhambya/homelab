@@ -394,7 +394,7 @@ services:
       - '--path.rootfs=/rootfs'
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:0.55.1
+    image: ghcr.io/google/cadvisor:0.56.1
     restart: unless-stopped
     devices:
       - /dev/kmsg
