@@ -410,7 +410,7 @@ services:
       - "/:/rootfs:ro"
 
   backrest:
-    image: "garethgeorge/backrest:v1.10.1"
+    image: "garethgeorge/backrest:v1.11.1"
     container_name: backrest
     networks:
       proxy:
