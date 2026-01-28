@@ -83,7 +83,7 @@ services:
 
   immich_server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v2.4.1
+    image: ghcr.io/immich-app/immich-server:v2.5.0
     environment:
       - DB_PASSWORD=${IMMICH_DB_PASSWORD}
       - DB_USERNAME=${IMMICH_DB_USERNAME}
@@ -121,7 +121,7 @@ services:
     container_name: immich_machine_learning
     # For hardware acceleration, add one of -[armnn, cuda, openvino] to the image tag.
     # Example tag: ${IMMICH_VERSION:-release}-cuda
-    image: ghcr.io/immich-app/immich-machine-learning:v2.4.1
+    image: ghcr.io/immich-app/immich-machine-learning:v2.5.0
     # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/ml-hardware-acceleration
     #   file: hwaccel.ml.yml
     #   service: cpu # set to one of [armnn, cuda, openvino, openvino-wsl] for accelerated inference - use the `-wsl` version for WSL2 where applicable
@@ -135,7 +135,7 @@ services:
 
   immich_redis:
     container_name: immich_redis
-    image: docker.io/redis:8.4-alpine@sha256:6cbef353e480a8a6e7f10ec545f13d7d3fa85a212cdcc5ffaf5a1c818b9d3798
+    image: docker.io/redis:8.4-alpine@sha256:a0ac761553a85c415da10e1a123a5c7c92c6e0ce0d3049935b98c23898732a4e
     healthcheck:
       test: redis-cli ping || exit 1
     networks:
