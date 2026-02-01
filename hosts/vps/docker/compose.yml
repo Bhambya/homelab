@@ -448,7 +448,7 @@ services:
       traefik.http.routers.vaultwarden.middlewares: bypass-authelia@file
 
   backrest:
-    image: "garethgeorge/backrest:v1.11.1"
+    image: "garethgeorge/backrest:v1.11.2"
     container_name: backrest
     networks:
       proxy:
