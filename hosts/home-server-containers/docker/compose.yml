@@ -172,7 +172,7 @@ services:
     restart: "unless-stopped"
 
   mealie:
-    image: "ghcr.io/mealie-recipes/mealie:v3.9.2"
+    image: "ghcr.io/mealie-recipes/mealie:v3.10.0"
     container_name: mealie
     environment:
       - "ALLOW_SIGNUP=false"
