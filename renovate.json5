@@ -41,6 +41,16 @@
   },
   "packageRules": [
     {
+      "matchDatasources": ["terraform-provider", "terraform-module"],
+      "registryUrls": ["https://registry.opentofu.org"]
+      "extends": ["schedule:weekly"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "extends": ["schedule:weekly"],
+      "description": "Limits GitHub Action PRs to once a week"
+    },
+    {
       "matchCategories": [
         "docker"
       ],
