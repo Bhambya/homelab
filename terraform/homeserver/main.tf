@@ -2,10 +2,10 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
   content_type = "import"
   datastore_id = "local"
   node_name    = "proxmox"
-  url          = "https://cloud-images.ubuntu.com/noble/20251026/noble-server-cloudimg-amd64.img"
+  url          = "https://cloud-images.ubuntu.com/noble/20260108/noble-server-cloudimg-amd64.img"
   # need to rename the file to *.qcow2 to indicate the actual file format for import
   file_name          = "noble-server-cloudimg-amd64.qcow2"
-  checksum           = "85743244cc8f2f47384480c81dbb677585d20ed693127667dbfb116f1682f793"
+  checksum           = "00786c0936a7dd91a6b07941ca60bb56652975e0e72f9dacf73c887ada420966"
   checksum_algorithm = "sha256"
 }
 

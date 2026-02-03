@@ -30,9 +30,7 @@ terraform {
 
 provider "bitwarden" {
   access_token = var.bw_access_token
-  experimental {
-    embedded_client = true
-  }
+  client_implementation = "embedded"
 }
 
 # Configure the Proxmox provider
