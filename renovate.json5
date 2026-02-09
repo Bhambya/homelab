@@ -42,7 +42,7 @@
   "packageRules": [
     {
       "matchDatasources": ["terraform-provider", "terraform-module"],
-      "registryUrls": ["https://registry.opentofu.org"]
+      "registryUrls": ["https://registry.opentofu.org"],
       "extends": ["schedule:weekly"]
     },
     {
