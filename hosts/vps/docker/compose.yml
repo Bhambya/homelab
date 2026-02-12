@@ -281,7 +281,7 @@ services:
 
   stirling-pdf:
     container_name: "stirling-pdf"
-    image: "stirlingtools/stirling-pdf:2.4.4"
+    image: "stirlingtools/stirling-pdf:2.4.5"
     volumes:
       - /var/lib/docker-data/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
       - /var/lib/docker-data/stirling-pdf/extraConfigs:/configs
@@ -954,7 +954,7 @@ services:
       traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
 
   collabora:
-    image: collabora/code:25.04.8.2.1
+    image: collabora/code:25.04.8.3.1
     container_name: collabora
     restart: unless-stopped
     networks:
