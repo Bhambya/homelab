@@ -57,6 +57,10 @@ http:
           Host: qbittorrent.home.{{ env "BASE_DOMAIN" }}
           Origin: https://qbittorrent.home.{{ env "BASE_DOMAIN" }}
           Referer: https://qbittorrent.home.{{ env "BASE_DOMAIN" }}
+    jellyfin-host-rewrite:
+      headers:
+        customrequestheaders:
+          Host: jellyfin.home.{{ env "BASE_DOMAIN" }}
     excalidraw-host-rewrite:
       headers:
         customrequestheaders:
@@ -131,6 +135,7 @@ http:
     jellyfin-home:
       middlewares:
         - bypass-authelia
+        - "jellyfin-host-rewrite@file"
       service: home
       rule: 'Host(`jellyfin.{{ env "BASE_DOMAIN" }}`)'
       tls:
