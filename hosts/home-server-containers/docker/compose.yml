@@ -14,6 +14,8 @@ services:
       - '443:443'
     environment:
       - BASE_DOMAIN=${BASE_DOMAIN}
+      - CF_API_EMAIL=${CF_API_EMAIL}
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
     command:
       - --api.dashboard=true
       - --api.debug=false
@@ -272,7 +274,7 @@ services:
 #      - "/dev/dri:/dev/dri" 
     labels:
       traefik.enable: "true"
-      traefik.http.routers.jellyfin.rule: "Host(`jellyfin.home.${BASE_DOMAIN}`) || Host(`jellyfin.${BASE_DOMAIN}`)"
+      traefik.http.routers.jellyfin.rule: "Host(`jellyfin.home.${BASE_DOMAIN}`)`)"
       traefik.http.services.jellyfin.loadbalancer.server.port: "8096"
       traefik.http.services.jellyfin.loadbalancer.server.scheme: "http"
       traefik.http.routers.jellyfin.tls: "true"
