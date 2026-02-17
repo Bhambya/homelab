@@ -97,7 +97,7 @@ services:
       && authelia'
 
   traefik:
-    image: "traefik:v3.6.7"
+    image: "traefik:v3.6.8"
     container_name: "traefik"
     restart: "unless-stopped"
     security_opt:
@@ -281,7 +281,7 @@ services:
 
   stirling-pdf:
     container_name: "stirling-pdf"
-    image: "stirlingtools/stirling-pdf:2.4.5"
+    image: "stirlingtools/stirling-pdf:2.4.6"
     volumes:
       - /var/lib/docker-data/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
       - /var/lib/docker-data/stirling-pdf/extraConfigs:/configs
