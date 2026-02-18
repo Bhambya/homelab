@@ -651,7 +651,7 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:18.1-alpine
+    image: postgres:18.2-alpine
     networks:
       - postgres
     environment:
