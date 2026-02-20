@@ -2,10 +2,10 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
   content_type = "import"
   datastore_id = "local"
   node_name    = "proxmox"
-  url          = "https://cloud-images.ubuntu.com/noble/20260108/noble-server-cloudimg-amd64.img"
+  url          = "https://cloud-images.ubuntu.com/noble/20260217/noble-server-cloudimg-amd64.img"
   # need to rename the file to *.qcow2 to indicate the actual file format for import
   file_name          = "noble-server-cloudimg-amd64.qcow2"
-  checksum           = "00786c0936a7dd91a6b07941ca60bb56652975e0e72f9dacf73c887ada420966"
+  checksum           = "e8d6f52ed2f4da39e9194b6cd6b050ecb4fe50648819045d0aa8ae1f109a8d91"
   checksum_algorithm = "sha256"
 }
 
@@ -34,7 +34,7 @@ module "adguard" {
   up_delay         = 30
   ipv4_address     = "${local.adguard_host_ip}/24"
   ipv4_gateway     = "192.168.1.1"
-  dns_servers      = ["192.168.1.1"]
+  dns_servers      = ["1.1.1.1"]
   ssh_authorized_keys = [
     trimspace(file(var.ssh_public_key_path)),
     trimspace(data.bitwarden_secret.github_ci_ansible_ssh_public_key.value)
