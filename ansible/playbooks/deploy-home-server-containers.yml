@@ -84,6 +84,16 @@
       loop_control:
         loop_var: item
 
+    - name: Copy logrotate files
+      become: true
+      ansible.builtin.copy:
+        src: "{{ github_workdir }}/hosts/home-server-containers/etc/logrotate.d/"  # trailing slash copies the content
+        dest: /etc/logrotate.d
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart logrotate
+
     - name: Start immich database container
       become: true
       community.docker.docker_compose_v2:
@@ -132,3 +142,9 @@
       ansible.builtin.import_role:
         name: manage_crons
 
+  handlers:
+    - name: Restart logrotate
+      become: true
+      ansible.builtin.systemd_service:
+        name: logrotate
+        state: restarted
