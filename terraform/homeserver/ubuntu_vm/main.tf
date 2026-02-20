@@ -12,6 +12,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
 
   memory {
     dedicated = var.dedicated_memory
+    floating = var.floating_memory
   }
 
   disk {

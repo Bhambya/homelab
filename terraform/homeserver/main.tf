@@ -26,7 +26,8 @@ module "adguard" {
   proxmox_node     = "proxmox"
   hostname         = "adguard"
   cpu_cores        = 2
-  dedicated_memory = 768
+  dedicated_memory = 1024
+  floating_memory = 700
   disk_size        = 8
   disk_import_from = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
   start_order      = 1
@@ -60,7 +61,8 @@ module "tailscale" {
   proxmox_node     = "proxmox"
   hostname         = "tailscale"
   cpu_cores        = 2
-  dedicated_memory = 768
+  dedicated_memory = 1024
+  floating_memory  = 700
   disk_size        = 8
   disk_import_from = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
   start_order      = 1
@@ -95,7 +97,8 @@ module "wireguard-router" {
   proxmox_node     = "proxmox"
   hostname         = "wireguard-router"
   cpu_cores        = 2
-  dedicated_memory = 768
+  dedicated_memory = 1024
+  floating_memory  = 700
   disk_size        = 8
   disk_import_from = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
   start_order      = 1
@@ -124,7 +127,8 @@ module "containers" {
   proxmox_node     = "proxmox"
   hostname         = "containers"
   cpu_cores        = 4
-  dedicated_memory = 20480
+  dedicated_memory = 22528
+  floating_memory = 16384
   disk_size        = 100
   disk_import_from = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
   start_order      = 3 # so that it comes up after Truenas

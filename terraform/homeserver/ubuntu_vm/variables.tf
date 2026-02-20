@@ -18,6 +18,11 @@ variable "dedicated_memory" {
   description = "Dedicated memory (RAM) in Megabytes"
 }
 
+variable "floating_memory" {
+  type        = number
+  description = "Floating memory (RAM) in Megabytes"
+}
+
 variable "disk_import_from" {
   type        = string
   description = "Image to import from"
