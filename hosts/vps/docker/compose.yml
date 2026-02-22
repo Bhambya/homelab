@@ -281,7 +281,7 @@ services:
 
   stirling-pdf:
     container_name: "stirling-pdf"
-    image: "stirlingtools/stirling-pdf:2.4.6"
+    image: "stirlingtools/stirling-pdf:2.5.0"
     volumes:
       - /var/lib/docker-data/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
       - /var/lib/docker-data/stirling-pdf/extraConfigs:/configs
