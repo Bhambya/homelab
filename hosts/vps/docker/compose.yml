@@ -167,7 +167,7 @@ services:
       - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
       - "--certificatesResolvers.cloudflare.acme.email=${CF_API_EMAIL}"
       - --experimental.plugins.robots-txt.modulename=github.com/solution-libre/traefik-plugin-robots-txt
-      - --experimental.plugins.robots-txt.version=v0.2.1
+      - --experimental.plugins.robots-txt.version=v0.2.2
       - --experimental.plugins.htransformation.modulename=github.com/tomMoulard/htransformation
       - --experimental.plugins.htransformation.version=v0.4.1
       - --experimental.plugins.rewriteHeaders.modulename=github.com/XciD/traefik-plugin-rewrite-headers
