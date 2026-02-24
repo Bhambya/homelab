@@ -2,7 +2,7 @@ name: Weekly host maintenance
 
 on:
   schedule:
-    - cron: "0 5 * * 2" # At 05:00, only on Tuesday
+    - cron: "0 22 * * 1" # At 03:30 IST, only on Tuesday
   workflow_dispatch:
     inputs:
       batch_size:
