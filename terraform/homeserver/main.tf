@@ -142,7 +142,9 @@ module "containers" {
   additional_packages = [
     "nfs-common",
     "restic",
-    "sqlite3"
+    "sqlite3",
+    "linux-firmware",
+    "linux-generic" # required for intel iGPU module (i915)
   ]
   additional_rumcmds = [
     "apt-get update",
