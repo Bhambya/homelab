@@ -55,6 +55,7 @@ services:
       - --entrypoints.https.transport.respondingtimeouts.idletimeout=600s
       - --entrypoints.https.transport.respondingtimeouts.writetimeout=600s
       - --entrypoints.https.http.tls.certresolver=cloudflare
+      - --entrypoints.https.forwardedHeaders.trustedIPs=10.13.14.1/32
       - --certificatesresolvers.cloudflare.acme.storage=/data/acme.json
       - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
       - --certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
@@ -269,9 +270,9 @@ services:
       - "${MOVIES_PATH}:/data/movies"
       - "${TV_SHOWS_PATH}:/data/tv"
       - "${VIDEOS_PATH}:/data/videos"
-#    devices:
+    devices:
 #      # for iGPU access: https://jellyfin.org/docs/general/post-install/transcoding/hardware-acceleration/intel
-#      - "/dev/dri:/dev/dri" 
+      - "/dev/dri:/dev/dri" 
     labels:
       traefik.enable: "true"
       traefik.http.routers.jellyfin.rule: "Host(`jellyfin.home.${BASE_DOMAIN}`)"
