@@ -266,7 +266,7 @@ services:
       - "8920:8920/tcp"
     restart: unless-stopped
     volumes:
-      - "${JELLYFIN_CONFIG_PATH}:/config"
+      - "/var/lib/docker-data/jellyfin:/config"
       - "${MOVIES_PATH}:/data/movies"
       - "${TV_SHOWS_PATH}:/data/tv"
       - "${VIDEOS_PATH}:/data/videos"
