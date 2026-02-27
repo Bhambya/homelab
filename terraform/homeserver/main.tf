@@ -40,7 +40,7 @@ module "adguard" {
     trimspace(data.bitwarden_secret.github_ci_ansible_ssh_public_key.value)
   ]
   additional_rumcmds = [
-    "curl -fsSL https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -v",
+    "curl -fsSL https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -c beta -v",
     "/opt/AdGuardHome/AdGuardHome -s stop",
     indent(4, "|\ncat > /opt/AdGuardHome/AdGuardHome.yaml <<'EOAC'\n${local.adguard_config}\nEOAC"),
     "/opt/AdGuardHome/AdGuardHome -s start"
