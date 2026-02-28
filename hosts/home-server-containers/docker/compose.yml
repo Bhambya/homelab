@@ -227,7 +227,7 @@ services:
 
   filebrowser:
     container_name: 'filebrowser'
-    image: 'gtstef/filebrowser:1.2.6-beta'
+    image: 'gtstef/filebrowser:1.2.7-beta'
     restart: 'unless-stopped'
     user: $USER
     environment:
