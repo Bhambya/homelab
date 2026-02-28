@@ -327,7 +327,7 @@ services:
       - prom_data:/prometheus
 
   loki:
-    image: "grafana/loki:3.6.6"
+    image: "grafana/loki:3.6.7"
     container_name: loki
     restart: unless-stopped
     networks:
