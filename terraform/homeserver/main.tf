@@ -166,12 +166,12 @@ module "containers" {
     "mount -a"
   ]
   mounts = [
-    "['192.168.1.101:/mnt/nvme/nvme/Audiobooks', '/mnt/Audiobooks', 'nfs', 'defaults,_netdev', '0', '0']",
-    "['192.168.1.101:/mnt/nvme/nvme/EBooks', '/mnt/EBooks', 'nfs', 'defaults,_netdev', '0', '0']",
-    "['192.168.1.101:/mnt/nvme/nvme/Movies', '/mnt/Movies', 'nfs', 'defaults,_netdev', '0', '0']",
-    "['192.168.1.101:/mnt/nvme/nvme/TV', '/mnt/TV', 'nfs', 'defaults,_netdev', '0', '0']",
-    "['192.168.1.101:/mnt/nvme/nvme/Videos', '/mnt/Videos', 'nfs', 'defaults,_netdev', '0', '0']",
-    "['192.168.1.101:/mnt/nvme/nvme/Pictures/immich', '/mnt/immich', 'nfs', 'defaults,_netdev', '0', '0']"
+    "['192.168.1.101:/mnt/nvme/nvme/Audiobooks', '/mnt/Audiobooks', 'nfs', 'defaults,_netdev,noatime,nodiratime', '0', '0']",
+    "['192.168.1.101:/mnt/nvme/nvme/EBooks', '/mnt/EBooks', 'nfs', 'defaults,_netdev,noatime,nodiratime', '0', '0']",
+    "['192.168.1.101:/mnt/nvme/nvme/Movies', '/mnt/Movies', 'nfs', 'defaults,_netdev,noatime,nodiratime', '0', '0']",
+    "['192.168.1.101:/mnt/nvme/nvme/TV', '/mnt/TV', 'nfs', 'defaults,_netdev,noatime,nodiratime', '0', '0']",
+    "['192.168.1.101:/mnt/nvme/nvme/Videos', '/mnt/Videos', 'nfs', 'defaults,_netdev,noatime,nodiratime', '0', '0']",
+    "['192.168.1.101:/mnt/nvme/nvme/Pictures/immich', '/mnt/immich', 'nfs', 'defaults,_netdev,noatime,nodiratime', '0', '0']"
   ]
   ufw_allow_rules = [
     "ssh",
