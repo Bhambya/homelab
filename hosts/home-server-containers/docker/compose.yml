@@ -194,26 +194,44 @@ services:
     volumes:
       - "/var/lib/docker-data/mealie:/app/data"
 
+  gluetun:
+    container_name: gluetun
+    restart: unless-stopped
+    image: qmcgaw/gluetun:v3.41.1
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    networks:
+      proxy:
+    volumes:
+      - gluetun:/gluetun
+    environment:
+      - TZ=${TIME_ZONE}
+      - VPN_SERVICE_PROVIDER=private internet access
+      - OPENVPN_USER=${GLUETUN_OPENVPN_USER}
+      - OPENVPN_PASSWORD=${GLUETUN_OPENVPN_PASSWORD}
+      - SERVER_REGIONS=India
+      - PORT_FORWARD_ONLY=true
+      - VPN_PORT_FORWARDING=on
+
   qbittorrent:
     image: ghcr.io/linuxserver/qbittorrent:5.1.4
     container_name: qbittorrent
-    networks:
-      proxy:
+    network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
       - WEBUI_PORT=8383
-      - TORRENTING_PORT=6881
     volumes:
       - /var/lib/docker-data/qbittorrent/config:/config
       - ${AUDIOBOOKS_PATH}:/Audiobooks
       - ${MOVIES_PATH}:/Movies
       - ${TV_SHOWS_PATH}:/TV
-    ports:
-      - 6881:6881
-      - 6881:6881/udp
     restart: unless-stopped
+    depends_on:
+      - gluetun
     deploy:
       resources:
           limits:
@@ -527,5 +545,6 @@ networks:
   prometheus:
 
 volumes:
+  gluetun:
   prom_data:
   filebrowser_data:
