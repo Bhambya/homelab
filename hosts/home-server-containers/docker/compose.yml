@@ -138,7 +138,7 @@ services:
 
   immich_redis:
     container_name: immich_redis
-    image: docker.io/valkey/valkey:9.0.2
+    image: docker.io/valkey/valkey:9.0.3
     healthcheck:
       test: redis-cli ping || exit 1
     networks:
