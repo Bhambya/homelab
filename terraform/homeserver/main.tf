@@ -27,7 +27,7 @@ module "adguard" {
   hostname         = "adguard"
   cpu_cores        = 2
   dedicated_memory = 1024
-  floating_memory = 700
+  floating_memory  = 700
   disk_size        = 8
   disk_import_from = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
   start_order      = 1
@@ -127,8 +127,8 @@ module "containers" {
   proxmox_node     = "proxmox"
   hostname         = "containers"
   cpu_cores        = 4
-  dedicated_memory = 22528
-  floating_memory = 16384
+  dedicated_memory = 20480
+  floating_memory  = 16384
   disk_size        = 100
   disk_import_from = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
   start_order      = 3 # so that it comes up after Truenas
