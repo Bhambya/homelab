@@ -21,9 +21,6 @@ tls:
 
 http:
   middlewares:
-    limit:
-      buffering:
-        maxRequestBodyBytes: 629145600 # 600 MB
     my-robots-txt:
       plugin:
         robots-txt:
@@ -40,12 +37,10 @@ http:
       chain:
         middlewares:
           - "authelia@docker"
-          - "limit@file"
           - "my-robots-txt"
     bypass-authelia:
       chain:
         middlewares:
-          - "limit@file"
           - "my-robots-txt"
     immich-host-rewrite:
       headers:
@@ -57,10 +52,6 @@ http:
           Host: qbittorrent.home.{{ env "BASE_DOMAIN" }}
           Origin: https://qbittorrent.home.{{ env "BASE_DOMAIN" }}
           Referer: https://qbittorrent.home.{{ env "BASE_DOMAIN" }}
-    jellyfin-host-rewrite:
-      headers:
-        customrequestheaders:
-          Host: jellyfin.home.{{ env "BASE_DOMAIN" }}
     excalidraw-host-rewrite:
       headers:
         customrequestheaders:
@@ -99,6 +90,28 @@ http:
               Value:  '^(.+)-home\.{{ env "BASE_DOMAIN" | replace "." "\\." }}$'
               ValueReplace: '$1.home.{{ env "BASE_DOMAIN" }}'
               Type: 'RewriteValueRule'
+    rewriteJellyfinHostHeader:
+      plugin:
+        htransformation:
+          Rules:
+            - Rule:
+              Header: "Referer"
+              Name: "Referer rewrite"
+              Value: '^https://jellyfin\.{{ env "BASE_DOMAIN" | replace "." "\\." }}(.*)'
+              ValueReplace: 'https://jellyfin.home.{{ env "BASE_DOMAIN" }}$2'
+              Type: 'RewriteValueRule'
+            - Rule:
+              Header: "Origin"
+              Name: "Origin rewrite"
+              Value:  '^https://jellyfin\.{{ env "BASE_DOMAIN" | replace "." "\\." }}$'
+              ValueReplace: 'https://jellyfin.home.{{ env "BASE_DOMAIN" }}'
+              Type: 'RewriteValueRule'
+            - Rule:
+              Header: "Host"
+              Name: "Host rewrite"
+              Value:  '^jellyfin\.{{ env "BASE_DOMAIN" | replace "." "\\." }}$'
+              ValueReplace: 'jellyfin.home.{{ env "BASE_DOMAIN" }}'
+              Type: 'RewriteValueRule'
 
   services:
     home:
@@ -135,7 +148,7 @@ http:
     jellyfin-home:
       middlewares:
         - bypass-authelia
-        - "jellyfin-host-rewrite@file"
+        - "rewriteJellyfinHostHeader"
       service: home
       rule: 'Host(`jellyfin.{{ env "BASE_DOMAIN" }}`)'
       tls:
