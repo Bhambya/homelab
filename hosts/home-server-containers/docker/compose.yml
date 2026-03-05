@@ -229,6 +229,7 @@ services:
       - ${AUDIOBOOKS_PATH}:/Audiobooks
       - ${MOVIES_PATH}:/Movies
       - ${TV_SHOWS_PATH}:/TV
+      - ${IMMICH_UPLOAD_PATH}/library:/ImmichLibrary:ro
     restart: unless-stopped
     depends_on:
       - gluetun
