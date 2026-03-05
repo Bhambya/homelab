@@ -288,7 +288,7 @@ services:
       - "${MOVIES_PATH}:/data/movies"
       - "${TV_SHOWS_PATH}:/data/tv"
       - "${VIDEOS_PATH}:/data/videos"
-      - ${IMMICH_UPLOAD_PATH}/library:/ImmichLibrary:ro
+      - ${IMMICH_UPLOAD_PATH}/library:/data/immich_library:ro
     devices:
 #      # for iGPU access: https://jellyfin.org/docs/general/post-install/transcoding/hardware-acceleration/intel
       - "/dev/dri:/dev/dri" 
