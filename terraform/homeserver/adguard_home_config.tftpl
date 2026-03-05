@@ -140,6 +140,7 @@ filters:
 whitelist_filters: []
 user_rules:
   - '||home.${base_domain}^$dnsrewrite=NOERROR;A;192.168.1.103'
+  - 'immich.${base_domain}^$dnsrewrite=NOERROR;A;192.168.1.103'
   - 'jellyfin.${base_domain}^$dnsrewrite=NOERROR;A;192.168.1.103'
   - containers^$dnsrewrite=NOERROR;A;192.168.1.103
   - containers.local^$dnsrewrite=NOERROR;A;192.168.1.103

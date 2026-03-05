@@ -114,7 +114,7 @@ services:
       immich:
     labels:
       traefik.enable: 'true'
-      traefik.http.routers.immich.rule: 'Host(`immich.home.${BASE_DOMAIN}`)'
+      traefik.http.routers.immich.rule: 'Host(`immich.home.${BASE_DOMAIN}`) || Host(`immich.${BASE_DOMAIN}`)'
       traefik.http.routers.immich.tls: "true"
       traefik.http.routers.immich.tls.certresolver: "cloudflare"
       traefik.http.services.immich.loadbalancer.server.port: "2283"
