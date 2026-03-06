@@ -129,7 +129,7 @@ module "containers" {
   cpu_cores        = 4
   dedicated_memory = 20480
   floating_memory  = 16384
-  disk_size        = 100
+  disk_size        = 120
   disk_import_from = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
   start_order      = 3 # so that it comes up after Truenas
   ipv4_address     = "192.168.1.103/24"
