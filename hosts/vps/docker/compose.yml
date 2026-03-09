@@ -281,7 +281,7 @@ services:
 
   stirling-pdf:
     container_name: "stirling-pdf"
-    image: "stirlingtools/stirling-pdf:2.5.3"
+    image: "stirlingtools/stirling-pdf:2.6.0"
     volumes:
       - /var/lib/docker-data/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
       - /var/lib/docker-data/stirling-pdf/extraConfigs:/configs
@@ -810,7 +810,7 @@ services:
       - redis-docmost-cache:/data
 
   docmost:
-    image: "docmost/docmost:0.25.3"
+    image: "docmost/docmost:0.70.1"
     container_name: docmost
     restart: unless-stopped
     depends_on:
