@@ -46,12 +46,6 @@ http:
       headers:
         customrequestheaders:
           Host: immich.home.{{ env "BASE_DOMAIN" }}
-    qbittorrent-host-rewrite:
-      headers:
-        customrequestheaders:
-          Host: qbittorrent.home.{{ env "BASE_DOMAIN" }}
-          Origin: https://qbittorrent.home.{{ env "BASE_DOMAIN" }}
-          Referer: https://qbittorrent.home.{{ env "BASE_DOMAIN" }}
     excalidraw-host-rewrite:
       headers:
         customrequestheaders:
@@ -135,14 +129,6 @@ http:
         - "immich-host-rewrite@file"
       rule: 'Host(`immich.{{ env "BASE_DOMAIN" }}`)'
       service: home
-      tls:
-        certResolver: cloudflare
-    qbittorrent-home:
-      middlewares:
-        - secured
-        - "qbittorrent-host-rewrite@file"
-      service: home
-      rule: 'Host(`qbittorrent.{{ env "BASE_DOMAIN" }}`)'
       tls:
         certResolver: cloudflare
     jellyfin-home:
