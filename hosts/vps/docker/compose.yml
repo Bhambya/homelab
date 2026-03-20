@@ -422,7 +422,7 @@ services:
     container_name: vaultwarden
     networks:
       proxy:
-    restart: unless-stopped
+    restart: always # unless-stopped is not working for some reason for vaultwarden
     environment:
       TZ: ${TIME_ZONE}
       DOMAIN: "https://vw.${BASE_DOMAIN}"
