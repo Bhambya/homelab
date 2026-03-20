@@ -7,12 +7,13 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   }
 
   cpu {
+    type  = "x86-64-v3"
     cores = var.cpu_cores
   }
 
   memory {
     dedicated = var.dedicated_memory
-    floating = var.floating_memory
+    floating  = var.floating_memory
   }
 
   disk {
