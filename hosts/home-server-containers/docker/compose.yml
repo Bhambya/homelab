@@ -228,7 +228,7 @@ services:
       - WEBUI_PORT=8383
     volumes:
       - /var/lib/docker-data/qbittorrent/config:/config
-      - ${TORRENTS_PATH}:/downloads
+      - ${TORRENTS_PATH}:/data/torrents
       - ${AUDIOBOOKS_PATH}:/Audiobooks
       - ${MOVIES_PATH}:/Movies
       - ${TV_SHOWS_PATH}:/TV
