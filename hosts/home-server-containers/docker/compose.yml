@@ -243,17 +243,27 @@ services:
       traefik.http.routers.qbittorrent.tls.certresolver: "cloudflare"
       traefik.http.services.qbittorrent.loadbalancer.server.port: '8383'
 
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
+    network_mode: "service:gluetun" # Routes all traffic through Gluetun
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+      - LOG_HTML=false
+      - CAPTCHA_SOLVER=none
+      - TZ=${TZ}
+    restart: unless-stopped
+
   prowlarr:
     image: ghcr.io/linuxserver/prowlarr:2.3.0
     container_name: prowlarr
+    network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
     volumes:
       - /var/lib/docker-data/prowlarr/config:/config
-    networks:
-      proxy:
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
@@ -265,6 +275,7 @@ services:
   sonarr:
     image: ghcr.io/linuxserver/sonarr:4.0.17
     container_name: sonarr
+    network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
       - PUID=1000
       - PGID=1000
@@ -272,8 +283,6 @@ services:
     volumes:
       - /var/lib/docker-data/sonarr/config:/config
       - ${MEDIA_PATH}:/data
-    networks:
-      proxy:
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
@@ -285,6 +294,7 @@ services:
   radarr:
     image: ghcr.io/linuxserver/radarr:6.0.4
     container_name: radarr
+    network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
       - PUID=1000
       - PGID=1000
@@ -292,8 +302,6 @@ services:
     volumes:
       - /var/lib/docker-data/radarr/config:/config
       - ${MEDIA_PATH}:/data
-    networks:
-      proxy:
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
