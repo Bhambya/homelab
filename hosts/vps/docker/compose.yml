@@ -810,7 +810,7 @@ services:
       - redis-docmost-cache:/data
 
   docmost:
-    image: "docmost/docmost:0.70.1"
+    image: "docmost/docmost:0.70.3"
     container_name: docmost
     restart: unless-stopped
     depends_on:
@@ -875,7 +875,7 @@ services:
   atuin:
     container_name: atuin
     restart: unless-stopped
-    image: ghcr.io/atuinsh/atuin:v18.12.0
+    image: ghcr.io/atuinsh/atuin:v18.13.3
     command: start
     networks:
       - proxy
