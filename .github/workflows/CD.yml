@@ -59,7 +59,7 @@ jobs:
 
       # Load the SSH private key into the ssh-agent
       - name: 🔑 Load SSH Key
-        uses: webfactory/ssh-agent@v0.9.1
+        uses: webfactory/ssh-agent@v0.10.0
         with:
           log-public-key: false
           ssh-private-key: ${{ env.ANSIBLE_SSH_KEY }}
