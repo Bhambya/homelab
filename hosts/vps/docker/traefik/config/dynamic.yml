@@ -42,6 +42,10 @@ http:
       chain:
         middlewares:
           - "my-robots-txt"
+    audiobookshelf-host-rewrite:
+      headers:
+        customrequestheaders:
+          Host: audiobookshelf.home.{{ env "BASE_DOMAIN" }}
     immich-host-rewrite:
       headers:
         customrequestheaders:
@@ -121,6 +125,14 @@ http:
         - "my-robots-txt"
       rule: 'Host(`traefik-dashboard.{{ env "BASE_DOMAIN" }}`)'
       service: "api@internal"
+      tls:
+        certResolver: cloudflare
+    audiobookshelf-home:
+      middlewares:
+        - bypass-authelia
+        - "audiobookshelf-host-rewrite@file"
+      rule: 'Host(`audiobookshelf.{{ env "BASE_DOMAIN" }}`)'
+      service: home
       tls:
         certResolver: cloudflare
     immich-home:

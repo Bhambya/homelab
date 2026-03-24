@@ -463,7 +463,6 @@ services:
       - /var/lib/docker-data/lldap/:/var/lib/docker-data/lldap:ro
       - /var/lib/docker-data/vaultwarden:/var/lib/docker-data/vaultwarden:ro
       - /var/lib/docker-data/apprise/config:/var/lib/docker-data/apprise/config/:ro
-      - /var/lib/docker-data/audiobookshelf:/var/lib/docker-data/audiobookshelf/:ro
       - /var/lib/docker-data/backrest/config:/var/lib/docker-data/backrest/config/:ro
       - /var/lib/docker-data/paperless-ngx:/var/lib/docker-data/paperless-ngx:ro
       - /var/lib/docker-data/readeck:/var/lib/docker-data/readeck:ro
@@ -851,26 +850,6 @@ services:
       traefik.http.routers.trilium.rule: "Host(`notes.${BASE_DOMAIN}`)"
       traefik.http.services.trilium.loadbalancer.server.port: "8080"
       traefik.http.routers.trilium.middlewares: secured@file
-
-  audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:2.33.1
-    container_name: audiobookshelf
-    restart: unless-stopped
-    networks:
-      proxy:
-    volumes:
-      - /home/ubuntu/audiobooks:/audiobooks
-      - /var/lib/docker-data/audiobookshelf/config:/config
-      - /var/lib/docker-data/audiobookshelf/metadata:/metadata
-    environment:
-      TZ: ${TIME_ZONE}
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.audiobookshelf.rule: "Host(`audiobookshelf.${BASE_DOMAIN}`)"
-      traefik.http.services.audiobookshelf.loadbalancer.server.port: "80"
-      traefik.http.routers.audiobookshelf.tls: "true"
-      traefik.http.routers.audiobookshelf.tls.certresolver: "cloudflare"
-      traefik.http.routers.audiobookshelf.middlewares: bypass-authelia@file
 
   atuin:
     container_name: atuin
