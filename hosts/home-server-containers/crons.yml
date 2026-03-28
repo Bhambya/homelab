@@ -17,6 +17,6 @@ cron_jobs:
 
   # At 15 minutes past the hour, every hour, every day
   - name: "MyAnonymouse Seedbox IP update"
-    job: "docker exec qbittorrent sh -c \"curl -s -b 'mam_id={{ lookup('bitwarden.secrets.lookup', '0840d643-52a5-4cb9-b61d-b414016feb73') }}' https://t.myanonamouse.net/json/dynamicSeedbox.php\" > /dev/null 2>&1"
+    job: "docker exec qbittorrent sh -c \"curl -s -b 'mam_id={{ lookup('bitwarden.secrets.lookup', '0840d643-52a5-4cb9-b61d-b414016feb73') }}' https://t.myanonamouse.net/json/dynamicSeedbox.php\" || curl -X POST -F \"body=MAM Seedbox IP update failed!\" http://127.0.0.1:8000/notify/apprise"
     minute: "15"
     user: "root"
