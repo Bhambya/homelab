@@ -325,10 +325,10 @@ services:
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
-      traefik.http.routers.radarr.rule: 'Host(`bazarr.home.${BASE_DOMAIN}`)'
-      traefik.http.routers.radarr.tls: "true"
-      traefik.http.routers.radarr.tls.certresolver: "cloudflare"
-      traefik.http.services.radarr.loadbalancer.server.port: '6767'
+      traefik.http.routers.bazarr.rule: 'Host(`bazarr.home.${BASE_DOMAIN}`)'
+      traefik.http.routers.bazarr.tls: "true"
+      traefik.http.routers.bazarr.tls.certresolver: "cloudflare"
+      traefik.http.services.bazarr.loadbalancer.server.port: '6767'
 
 
   filebrowser:
