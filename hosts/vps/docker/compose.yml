@@ -1,6 +1,6 @@
 services:
   redis-authelia:
-    image: "redis:8.6.1"
+    image: "redis:8.6.2"
     container_name: "redis-authelia"
     restart: unless-stopped
     networks:
@@ -342,7 +342,7 @@ services:
           memory: 1G
 
   alloy:
-    image: "grafana/alloy:v1.14.1"
+    image: "grafana/alloy:v1.14.2"
     container_name: alloy
     restart: unless-stopped
     networks:
@@ -528,7 +528,7 @@ services:
     restart: unless-stopped
 
   redis-paperless:
-    image: "redis:8.6.1"
+    image: "redis:8.6.2"
     container_name: "redis-paperless"
     restart: unless-stopped
     networks:
@@ -799,7 +799,7 @@ services:
       traefik.http.routers.glance.middlewares: secured@file
 
   redis-docmost:
-    image: "redis:8.6.1"
+    image: "redis:8.6.2"
     container_name: "redis-docmost"
     restart: unless-stopped
     networks:
@@ -877,7 +877,7 @@ services:
       - postgres
 
   redis-nextcloud:
-    image: "redis:8.6.1"
+    image: "redis:8.6.2"
     container_name: "redis-nextcloud"
     restart: unless-stopped
     networks:
