@@ -238,7 +238,7 @@ services:
             memory: 2G
     labels:
       traefik.enable: 'true'
-      traefik.http.routers.qbittorrent.rule: 'Host(`qbittorrent.home.${BASE_DOMAIN}`)'
+      traefik.http.routers.qbittorrent.rule: 'Host(`qb.home.${BASE_DOMAIN}`)'
       traefik.http.routers.qbittorrent.tls: "true"
       traefik.http.routers.qbittorrent.tls.certresolver: "cloudflare"
       traefik.http.services.qbittorrent.loadbalancer.server.port: '8383'

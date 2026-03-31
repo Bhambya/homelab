@@ -61,7 +61,7 @@ endpoints:
         send-on-resolved: true
 
   - name: qbittorrent
-    url: "https://qbittorrent.home.${BASE_DOMAIN}/"
+    url: "https://qb.home.${BASE_DOMAIN}/"
     interval: 60s
     conditions:
       - "[STATUS] == 200"

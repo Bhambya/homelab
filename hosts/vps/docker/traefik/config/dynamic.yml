@@ -145,7 +145,7 @@ http:
         - bypass-authelia
         - "addHomeSubdomainToHostHeader"
       service: home
-      rule: 'Host(`qbittorrent.{{ env "BASE_DOMAIN" }}`)'
+      rule: 'Host(`qb.{{ env "BASE_DOMAIN" }}`)'
       tls:
         certResolver: cloudflare
     excalidraw:

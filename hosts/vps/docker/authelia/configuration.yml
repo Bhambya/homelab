@@ -66,10 +66,6 @@ access_control:
         - '^.+-home\.{{ mustEnv "BASE_DOMAIN" | replace "." "\\." }}$'
       policy: 'two_factor'
       subject: 'group:admin'
-    - domain: 
-        - 'qbittorrent.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'fb-home.{{ mustEnv "BASE_DOMAIN" }}' 
-      policy: 'two_factor'
     - domain:
         - 'stirling-pdf.{{ mustEnv "BASE_DOMAIN" }}'
         - 'speedtest.{{ mustEnv "BASE_DOMAIN" }}'
