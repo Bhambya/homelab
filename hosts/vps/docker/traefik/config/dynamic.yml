@@ -140,6 +140,14 @@ http:
       rule: 'Host(`jellyfin.{{ env "BASE_DOMAIN" }}`)'
       tls:
         certResolver: cloudflare
+    qbittorrent-home:
+      middlewares:
+        - bypass-authelia
+        - "addHomeSubdomainToHostHeader"
+      service: home
+      rule: 'Host(`qbittorrent.{{ env "BASE_DOMAIN" }}`)'
+      tls:
+        certResolver: cloudflare
     excalidraw:
       middlewares:
         - secured
