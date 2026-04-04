@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: 'traefik:v3.6.11'
+    image: 'traefik:v3.6.12'
     container_name: 'traefik'
     restart: 'always'
     security_opt:
@@ -255,7 +255,7 @@ services:
     restart: unless-stopped
 
   prowlarr:
-    image: ghcr.io/linuxserver/prowlarr:2.3.0
+    image: ghcr.io/linuxserver/prowlarr:2.3.5
     container_name: prowlarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
