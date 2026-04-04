@@ -357,7 +357,7 @@ services:
       - loki
 
   node_exporter:
-    image: "quay.io/prometheus/node-exporter:v1.10.2"
+    image: "quay.io/prometheus/node-exporter:v1.11.0"
     container_name: node_exporter
     restart: unless-stopped
     networks:
