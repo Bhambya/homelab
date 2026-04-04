@@ -136,8 +136,12 @@ endpoints:
     alerts:
       - type: telegram
         description: "VPS: healthcheck failed"
+        failure-threshold: 10
+        success-threshold: 1
         send-on-resolved: true
       - type: custom
+        failure-threshold: 10
+        success-threshold: 1
         send-on-resolved: true
 
   - name: "Home reverse-proxy reachability"
