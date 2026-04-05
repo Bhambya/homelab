@@ -834,7 +834,7 @@ services:
       traefik.http.routers.docmost.middlewares: secured@file
 
   trilium:
-    image: ghcr.io/triliumnext/trilium:v0.102.1
+    image: ghcr.io/triliumnext/trilium:v0.102.2
     container_name: trilium
     restart: unless-stopped
     environment:
