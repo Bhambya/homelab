@@ -809,7 +809,7 @@ services:
       - redis-docmost-cache:/data
 
   docmost:
-    image: "docmost/docmost:0.70.3"
+    image: "docmost/docmost:0.71.0"
     container_name: docmost
     restart: unless-stopped
     depends_on:
