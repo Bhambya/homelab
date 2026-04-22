@@ -505,7 +505,7 @@ services:
       traefik.http.routers.apprise.middlewares: secured@file
 
   gotenberg:
-    image: "docker.io/gotenberg/gotenberg:8.30.1"
+    image: "docker.io/gotenberg/gotenberg:8.31.0"
     container_name: gotenberg
     user: $UID
     restart: unless-stopped
