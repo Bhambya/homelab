@@ -372,7 +372,7 @@ services:
       - '--path.rootfs=/rootfs'
 
   grafana:
-    image: "grafana/grafana:12.4"
+    image: "grafana/grafana:13.0"
     container_name: grafana
     user: root
     networks:
