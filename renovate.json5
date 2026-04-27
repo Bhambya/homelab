@@ -43,9 +43,9 @@
     {
       "matchDatasources": ["terraform-provider", "terraform-module"],
       "extends": ["schedule:weekly"],
-      "description": "Limits Terraform provider PRs to once a week"
+      "description": "Limits Terraform provider PRs to once a week",
       // for some reason timestamp cannot be determined for terraform providers
-      "minimumReleaseAgeBehaviour": "timestamp-optional",
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
       "matchManagers": ["github-actions"],
