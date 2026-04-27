@@ -42,8 +42,8 @@
   "packageRules": [
     {
       "matchDatasources": ["terraform-provider", "terraform-module"],
-      "registryUrls": ["https://registry.opentofu.org"],
       "extends": ["schedule:weekly"]
+      "description": "Limits Terraform provider PRs to once a week"
     },
     {
       "matchManagers": ["github-actions"],
