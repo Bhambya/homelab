@@ -42,7 +42,7 @@
   "packageRules": [
     {
       "matchDatasources": ["terraform-provider", "terraform-module"],
-      "extends": ["schedule:weekly"]
+      "extends": ["schedule:weekly"],
       "description": "Limits Terraform provider PRs to once a week"
     },
     {
