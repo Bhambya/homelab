@@ -4,7 +4,7 @@
     "config:recommended"
   ],
   "minimumReleaseAge": "5 days",
-  "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
   "timezone": "UTC",
   "prConcurrentLimit": 30,
   "prHourlyLimit": 10,
@@ -44,6 +44,8 @@
       "matchDatasources": ["terraform-provider", "terraform-module"],
       "extends": ["schedule:weekly"],
       "description": "Limits Terraform provider PRs to once a week"
+      // for some reason timestamp cannot be determined for terraform providers
+      "minimumReleaseAgeBehaviour": "timestamp-optional",
     },
     {
       "matchManagers": ["github-actions"],
