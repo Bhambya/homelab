@@ -158,7 +158,6 @@
         "ghcr.io/kieraneglin/pinchflat",
         "ghcr.io/advplyr/audiobookshelf",
         "ghcr.io/linuxserver/jellyfin",
-        "ghcr.io/linuxserver/qbittorrent",
         "gtstef/filebrowser"
       ],
       "labels": [
@@ -220,6 +219,9 @@
       ],
       // ignore versions like 20.04.1 or 14.3.9
       "allowedVersions": "!/^(20|14)\\./"
+      // Wait for private trackers to allowlist the new version
+      "minimumReleaseAge": "14 days",
+      "groupName": "qBittorrent"
     }
   ],
   "prBodyTemplate": "This PR updates dependencies.\n\n{{{table}}}\n\n{{{notes}}}\n\n---\n\n🤖 This PR was generated automatically by Renovate Bot.\n\n**Before merging:**\n- [ ] Review the changelog/release notes for breaking changes\n- [ ] Test the updated services in a staging environment if possible\n- [ ] Ensure backup procedures are in place\n- [ ] Monitor services after deployment\n\n**Deployment notes:**\n- Run `docker compose -f docker/compose.yml pull` to pull new images\n- Run `docker compose -f docker/compose.yml up -d` to restart services with new images\n- Check service health with `docker compose -f docker/compose.yml ps`",
