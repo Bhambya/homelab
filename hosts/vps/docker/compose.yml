@@ -952,6 +952,19 @@ services:
       traefik.http.routers.collabora.tls.certresolver: "cloudflare"
       traefik.http.routers.collabora.middlewares: bypass-authelia@file
 
+  speedtest:
+    container_name: speedtest
+    image: "ghcr.io/librespeed/speedtest-rust:v1.4.0"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.speedtest.tls: "true"
+      traefik.http.routers.speedtest.tls.certresolver: "cloudflare"
+      traefik.http.routers.speedtest.rule: "Host(`speedtest.${BASE_DOMAIN}`)"
+      traefik.http.services.speedtest.loadbalancer.server.port: "8080"
+    networks:
+      proxy:
+    restart: "unless-stopped"
+
 volumes:
   crowdsec-db:
     name: crowdsec-db
