@@ -961,6 +961,7 @@ services:
       traefik.http.routers.speedtest.tls.certresolver: "cloudflare"
       traefik.http.routers.speedtest.rule: "Host(`speedtest.${BASE_DOMAIN}`)"
       traefik.http.services.speedtest.loadbalancer.server.port: "8080"
+      traefik.http.routers.speedtest.middlewares: secured@file
     networks:
       proxy:
     restart: "unless-stopped"
