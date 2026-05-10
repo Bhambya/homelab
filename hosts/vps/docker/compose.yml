@@ -505,7 +505,7 @@ services:
       traefik.http.routers.apprise.middlewares: secured@file
 
   gotenberg:
-    image: "docker.io/gotenberg/gotenberg:8.31.0"
+    image: "docker.io/gotenberg/gotenberg:8.32.0"
     container_name: gotenberg
     user: $UID
     restart: unless-stopped
@@ -737,7 +737,7 @@ services:
 
   filebrowser:
     container_name: filebrowser
-    image: 'gtstef/filebrowser:1.3.0-stable-slim'
+    image: 'gtstef/filebrowser:1.3.1-stable-slim'
     restart: unless-stopped
     environment:
       FILEBROWSER_CONFIG: "/config/config.yaml"
