@@ -246,6 +246,8 @@ services:
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
+    depends_on:
+      - gluetun
     container_name: flaresolverr
     environment:
       - LOG_LEVEL=info
@@ -265,6 +267,8 @@ services:
     volumes:
       - /var/lib/docker-data/prowlarr/config:/config
     restart: unless-stopped
+    depends_on:
+      - gluetun
     labels:
       traefik.enable: 'true'
       traefik.http.routers.prowlarr.rule: 'Host(`prowlarr.home.${BASE_DOMAIN}`)'
@@ -280,6 +284,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
+    depends_on:
+      - gluetun
     volumes:
       - /var/lib/docker-data/sonarr/config:/config
       - ${MEDIA_PATH}:/data
@@ -299,6 +305,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
+    depends_on:
+      - gluetun
     volumes:
       - /var/lib/docker-data/radarr/config:/config
       - ${MEDIA_PATH}:/data
@@ -322,6 +330,8 @@ services:
       - /var/lib/docker-data/bazarr/config:/config
       - "${MOVIES_PATH}:/movies"
       - "${TV_SHOWS_PATH}:/tv"
+    depends_on:
+      - gluetun
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
@@ -329,7 +339,6 @@ services:
       traefik.http.routers.bazarr.tls: "true"
       traefik.http.routers.bazarr.tls.certresolver: "cloudflare"
       traefik.http.services.bazarr.loadbalancer.server.port: '6767'
-
 
   filebrowser:
     container_name: filebrowser
