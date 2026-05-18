@@ -97,7 +97,7 @@ services:
       && authelia'
 
   traefik:
-    image: "traefik:v3.7.0"
+    image: "traefik:v3.7.1"
     container_name: "traefik"
     restart: "unless-stopped"
     security_opt:
@@ -327,7 +327,7 @@ services:
       - prom_data:/prometheus
 
   loki:
-    image: "grafana/loki:3.7.1"
+    image: "grafana/loki:3.7.2"
     container_name: loki
     restart: unless-stopped
     networks:
@@ -887,7 +887,7 @@ services:
       - redis-nextcloud-cache:/data
 
   nextcloud:
-    image: "nextcloud:33.0.2"
+    image: "nextcloud:33.0.3"
     container_name: nextcloud
     restart: unless-stopped
     networks:
