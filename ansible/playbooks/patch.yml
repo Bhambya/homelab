@@ -61,3 +61,11 @@
       ansible.builtin.apt:
         autoremove: true
         purge: true
+
+- name: Update Adguard Home
+  hosts: home-server-adguard
+  become: true
+  tasks:
+    - name: Update Adguard Home
+      become: true
+      shell: /opt/AdGuardHome/AdGuardHome --update
