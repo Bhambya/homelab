@@ -483,7 +483,7 @@ services:
       traefik.http.routers.backrest.middlewares: secured@file
 
   apprise:
-    image: "caronc/apprise:1.4"
+    image: "caronc/apprise:1.5"
     container_name: apprise
     networks:
       proxy:
