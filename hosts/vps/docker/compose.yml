@@ -781,7 +781,7 @@ services:
 
   glance:
     container_name: glance
-    image: "glanceapp/glance:v0.8.4"
+    image: "glanceapp/glance:v0.8.5"
     restart: unless-stopped
     volumes:
       - ./glance/config:/app/config
@@ -933,7 +933,7 @@ services:
       traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
 
   collabora:
-    image: collabora/code:25.04.9.4.1
+    image: collabora/code:25.04.10.3.1
     container_name: collabora
     restart: unless-stopped
     networks:
