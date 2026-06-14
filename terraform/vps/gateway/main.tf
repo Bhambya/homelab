@@ -22,9 +22,9 @@ resource "oci_core_instance" "gateway" {
 
   shape = "VM.Standard.A1.Flex"
   shape_config {
-    # "Always Free" includes 4 OCPUs and 24GB RAM
-    ocpus         = 4
-    memory_in_gbs = 24
+    # "Always Free" includes 2 OCPUs and 12GB RAM
+    ocpus         = 2
+    memory_in_gbs = 12
   }
 
   # Image Source (from our data source)
