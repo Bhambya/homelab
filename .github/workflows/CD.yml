@@ -27,9 +27,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Fetch history for git diff
-        run: git fetch --depth=2
-
       - name: Detect modified folders
         if: github.event_name != 'workflow_dispatch'
         id: detect-changes
