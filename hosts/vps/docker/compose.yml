@@ -342,7 +342,7 @@ services:
           memory: 1G
 
   alloy:
-    image: "grafana/alloy:v1.16.3"
+    image: "grafana/alloy:v1.17.0"
     container_name: alloy
     restart: unless-stopped
     networks:
