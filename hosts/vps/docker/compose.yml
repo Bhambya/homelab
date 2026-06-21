@@ -887,7 +887,7 @@ services:
       - redis-nextcloud-cache:/data
 
   nextcloud:
-    image: "nextcloud:33.0.4"
+    image: "nextcloud:33.0.5"
     container_name: nextcloud
     restart: unless-stopped
     networks:
