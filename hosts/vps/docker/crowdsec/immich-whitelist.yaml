@@ -6,4 +6,5 @@ whitelist:
   expression:
    - evt.Parsed.traefik_router_name contains 'immich' && evt.Meta.http_verb == 'GET' && (evt.Meta.http_status == '200' || evt.Meta.http_status == '206') && (evt.Parsed.request matches '/api/assets' || evt.Parsed.request matches '/api/albums' || evt.Parsed.request matches '/api/timeline/bucket')
    - evt.Parsed.traefik_router_name contains 'immich' && evt.Parsed.request matches '/api/assets.*thumbnail' && evt.Meta.http_status != '401' # bug in the app where it has assets in the timeline even after they're deleted
+   - evt.Parsed.traefik_router_name contains 'immich' && evt.Parsed.request matches '/api/people.*thumbnail' && evt.Meta.http_status != '401'
    - evt.Parsed.traefik_router_name contains 'immich' && evt.Meta.http_verb == 'GET' && evt.Meta.http_status == '304' && (evt.Parsed.request matches '/api')
