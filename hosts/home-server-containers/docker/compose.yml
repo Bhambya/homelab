@@ -365,7 +365,7 @@ services:
       traefik.http.routers.filebrowser.tls.certresolver: "cloudflare"
 
   jellyfin:
-    image: "ghcr.io/linuxserver/jellyfin:10.11.8"
+    image: "ghcr.io/linuxserver/jellyfin:10.11.11"
     container_name: jellyfin
     environment:
       - "PUID=1000"
@@ -622,7 +622,7 @@ services:
       traefik.http.routers.apprise.tls.certresolver: "cloudflare"
 
   audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:2.33.2
+    image: ghcr.io/advplyr/audiobookshelf:2.35.1
     container_name: audiobookshelf
     restart: unless-stopped
     networks:
