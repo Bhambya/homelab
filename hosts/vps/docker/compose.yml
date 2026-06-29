@@ -610,7 +610,7 @@ services:
       traefik.http.routers.paperless.middlewares: bypass-authelia@file
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:0.56.2
+    image: ghcr.io/google/cadvisor:v0.60.3
     devices:
       - /dev/kmsg
     privileged: true
@@ -835,7 +835,7 @@ services:
       traefik.http.routers.docmost.middlewares: secured@file
 
   trilium:
-    image: ghcr.io/triliumnext/trilium:v0.102.2
+    image: ghcr.io/triliumnext/trilium:v0.103.0
     container_name: trilium
     restart: unless-stopped
     environment:
@@ -855,7 +855,7 @@ services:
   atuin:
     container_name: atuin
     restart: unless-stopped
-    image: ghcr.io/atuinsh/atuin:18.15.2
+    image: ghcr.io/atuinsh/atuin:18.16.1
     command: start
     networks:
       - proxy

@@ -175,7 +175,7 @@ services:
     restart: "unless-stopped"
 
   mealie:
-    image: "ghcr.io/mealie-recipes/mealie:v3.16.0"
+    image: "ghcr.io/mealie-recipes/mealie:v3.20.1"
     container_name: mealie
     environment:
       - "ALLOW_SIGNUP=false"
@@ -244,7 +244,7 @@ services:
       traefik.http.services.qbittorrent.loadbalancer.server.port: '8383'
 
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:v3.4.6
+    image: ghcr.io/flaresolverr/flaresolverr:v3.5.0
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     depends_on:
       - gluetun
@@ -257,7 +257,7 @@ services:
     restart: unless-stopped
 
   prowlarr:
-    image: ghcr.io/linuxserver/prowlarr:2.3.5
+    image: ghcr.io/linuxserver/prowlarr:2.4.0
     container_name: prowlarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -298,7 +298,7 @@ services:
       traefik.http.services.sonarr.loadbalancer.server.port: '8989'
 
   radarr:
-    image: ghcr.io/linuxserver/radarr:6.1.1
+    image: ghcr.io/linuxserver/radarr:6.2.1
     container_name: radarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -512,7 +512,7 @@ services:
       - '--path.rootfs=/rootfs'
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:0.56.2
+    image: ghcr.io/google/cadvisor:v0.60.3
     restart: unless-stopped
     devices:
       - /dev/kmsg
