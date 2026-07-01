@@ -773,7 +773,6 @@ services:
       proxy:
     environment:
       - BETTER_AUTH_SECRET=$GITHUB_RELEASE_MONITOR_AUTH_SECRET
-      - AUTH_SETUP_TOKEN=$GITHUB_RELEASE_MONITOR_AUTH_SETUP_TOKEN
       - HTTPS=false
       - APPRISE_URL=http://apprise:8000/notify/apprise
     volumes:
