@@ -97,7 +97,7 @@ services:
       && authelia'
 
   traefik:
-    image: "traefik:v3.7.5"
+    image: "traefik:v3.7.6"
     container_name: "traefik"
     restart: "unless-stopped"
     security_opt:
@@ -343,7 +343,7 @@ services:
           memory: 1G
 
   alloy:
-    image: "grafana/alloy:v1.17.0"
+    image: "grafana/alloy:v1.17.1"
     container_name: alloy
     restart: unless-stopped
     networks:
@@ -886,7 +886,7 @@ services:
       - redis-nextcloud-cache:/data
 
   nextcloud:
-    image: "nextcloud:34.0.0"
+    image: "nextcloud:34.0.1"
     container_name: nextcloud
     restart: unless-stopped
     networks:
@@ -932,7 +932,7 @@ services:
       traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
 
   collabora:
-    image: collabora/code:26.04.1.4.1
+    image: collabora/code:26.04.2.1.1
     container_name: collabora
     restart: unless-stopped
     networks:
