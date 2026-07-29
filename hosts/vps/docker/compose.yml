@@ -89,8 +89,11 @@ services:
       - "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader=true"
       - "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email"
     depends_on:
-      - "redis-authelia"
-      - lldap
+      redis-authelia:
+        condition: service_healthy
+        restart: true
+      lldap:
+        condition: service_healthy
     command:
       > # this is needed because authelia changes the owner of the config to root
       sh -c 'cp /example_config.yml /config/configuration.yml
@@ -550,9 +553,13 @@ services:
     networks:
       paperless:
     depends_on:
-      - redis-paperless
-      - gotenberg
-      - tika
+      redis-paperless:
+        condition: service_healthy
+        restart: true
+      gotenberg:
+        condition: service_started
+      tika:
+        condition: service_started
     volumes:
       - /var/lib/docker-data/paperless-ngx/data:/usr/src/paperless/data
       - /var/lib/docker-data/paperless-ngx/media:/usr/src/paperless/media
@@ -682,7 +689,9 @@ services:
     volumes:
       - /var/lib/docker-data/linkwarden:/data/data
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+        restart: true
     deploy:
       resources:
         limits:
@@ -817,8 +826,12 @@ services:
     container_name: docmost
     restart: unless-stopped
     depends_on:
-      - postgres
-      - redis-docmost
+      postgres:
+        condition: service_healthy
+        restart: true
+      redis-docmost:
+        condition: service_healthy
+        restart: true
     environment:
       APP_URL: "https://wiki.${BASE_DOMAIN}"
       APP_SECRET: "${DOCMOST_APP_SECRET}"
@@ -878,7 +891,9 @@ services:
       traefik.http.routers.atuin.tls.certresolver: "cloudflare"
       traefik.http.routers.atuin.middlewares: bypass-authelia@file
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+        restart: true
 
   redis-nextcloud:
     image: "redis:8.8.0"
@@ -899,8 +914,12 @@ services:
       - postgres
       - nextcloud
     depends_on:
-      - postgres
-      - redis-nextcloud
+      postgres:
+        condition: service_healthy
+        restart: true
+      redis-nextcloud:
+        condition: service_healthy
+        restart: true
     environment:
       TZ: ${TIME_ZONE}
       POSTGRES_HOST: postgres
