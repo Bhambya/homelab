@@ -36,6 +36,13 @@ cron_jobs:
     minute: "4"
     user: "root"
 
+  # At 01:05, every day
+  - name: "dawarich DB Backup"
+    job: '{{ repo_path }}/scripts/postgres-backup.sh -c dawarich-db -u postgres -p password -d all -b /var/lib/docker-data/dawarich/backups || curl -X POST -F "body=Cron dawarich DB backup failed!" http://127.0.0.1:8000/notify/apprise'
+    hour: "1"
+    minute: "5"
+    user: "root"
+
   # Every hour, every day
   - name: "crowdsec hub upgrade"
     job: '{{ repo_path }}/scripts/crowsec-hub-upgrade.sh || curl -X POST -F "body=Crowdsec hub upgrade failed!" http://127.0.0.1:8000/notify/apprise'

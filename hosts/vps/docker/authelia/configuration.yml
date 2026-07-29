@@ -60,6 +60,7 @@ access_control:
         - 'wiki.{{ mustEnv "BASE_DOMAIN" }}'
         - 'notes.{{ mustEnv "BASE_DOMAIN" }}'
         - 'drive.{{ mustEnv "BASE_DOMAIN" }}'
+        - 'dawarich.{{ mustEnv "BASE_DOMAIN" }}'
       policy: 'two_factor'
       subject: 'group:admin'
     - domain_regex:

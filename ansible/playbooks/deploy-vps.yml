@@ -65,6 +65,10 @@
       loop:
         - github-release-monitor
         - filebrowser
+        - dawarich/public
+        - dawarich/watched
+        - dawarich/storage
+        - dawarich/backups
 
     - name: Read secret mapping
       ansible.builtin.slurp:
@@ -116,13 +120,14 @@
         mode: '0644'
       notify: Restart logrotate
 
-    - name: Start postgres container
+    - name: Start postgres containers
       become: true
       community.docker.docker_compose_v2:
         project_src: "{{ host_conf_path }}/docker"
         state: present
         services:
           - postgres
+          - dawarich-db
         wait: true
         wait_timeout: 300
       when: restore_backup
@@ -134,6 +139,24 @@
         backup_directory: "{{ docker_data_dir }}/postgres/backups"
         container_name: "postgres"
       when: restore_backup
+
+    # Unlike the shared postgres instance, dawarich may have no backup yet (fresh
+    # install), in which case the DB is left to initialise itself from scratch.
+    - name: Look for an existing dawarich PostgreSQL backup
+      become: true
+      ansible.builtin.find:
+        paths: "{{ docker_data_dir }}/dawarich/backups"
+        patterns: "pg_dumpall_*.sql.gz"
+      register: dawarich_backup_files
+      when: restore_backup
+
+    - name: Restore latest dawarich PostgreSQL backup
+      ansible.builtin.include_role:
+        name: restore_postgres_backup
+      vars:
+        backup_directory: "{{ docker_data_dir }}/dawarich/backups"
+        container_name: "dawarich-db"
+      when: restore_backup and (dawarich_backup_files.matched | default(0)) > 0
 
     - name: Restart services using Docker Compose
       become: true

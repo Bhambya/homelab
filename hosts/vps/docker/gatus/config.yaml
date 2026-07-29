@@ -108,6 +108,17 @@ endpoints:
         description: "VPS: healthcheck failed"
         send-on-resolved: true
 
+  - name: dawarich
+    url: "http://dawarich:3000/api/v1/health"
+    interval: 60s
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == ok"
+    alerts:
+      - type: telegram
+        description: "VPS: healthcheck failed"
+        send-on-resolved: true
+
   - name: whoami
     url: "http://whoami/"
     interval: 60s

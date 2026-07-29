@@ -470,6 +470,9 @@ services:
       - /var/lib/docker-data/github-release-monitor:/var/lib/docker-data/github-release-monitor:ro
       - /var/lib/docker-data/postgres/backups:/var/lib/docker-data/postgres/backups:ro
       - /var/lib/docker-data/nextcloud:/var/lib/docker-data/nextcloud:ro
+      # dawarich/db is excluded on purpose: the nightly pg dump in backups/ is what gets restored
+      - /var/lib/docker-data/dawarich/backups:/var/lib/docker-data/dawarich/backups:ro
+      - /var/lib/docker-data/dawarich/storage:/var/lib/docker-data/dawarich/storage:ro
     environment:
       TZ: ${TIME_ZONE}
       BACKREST_DATA: /data
@@ -951,6 +954,161 @@ services:
       traefik.http.routers.collabora.tls.certresolver: "cloudflare"
       traefik.http.routers.collabora.middlewares: bypass-authelia@file
 
+  redis-dawarich:
+    image: "redis:8.8.0"
+    container_name: "redis-dawarich"
+    restart: unless-stopped
+    networks:
+      dawarich:
+    command: bash -c 'redis-server --port 6379 --save 20 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"'
+    volumes:
+      - redis-dawarich-cache:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+  # dawarich needs PostGIS, which the shared `postgres` container does not provide.
+  # imresamu/postgis is used instead of postgis/postgis because the latter has no arm64 image.
+  dawarich-db:
+    image: "imresamu/postgis:17-3.5-alpine3.22"
+    container_name: dawarich-db
+    restart: unless-stopped
+    shm_size: 512M
+    networks:
+      dawarich:
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dawarich
+    volumes:
+      - /var/lib/docker-data/dawarich/db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dawarich"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  dawarich:
+    image: "freikin/dawarich:1.10.3"
+    container_name: dawarich
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    entrypoint: web-entrypoint.sh
+    command: ['bin/rails', 'server', '-p', '3000', '-b', '::']
+    networks:
+      - proxy
+      - dawarich
+    depends_on:
+      dawarich-db:
+        condition: service_healthy
+        restart: true
+      redis-dawarich:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - /var/lib/docker-data/dawarich/public:/var/app/public
+      - /var/lib/docker-data/dawarich/watched:/var/app/tmp/imports/watched
+      - /var/lib/docker-data/dawarich/storage:/var/app/storage
+      # read-write: used by dawarich's built-in DB backup/restore feature
+      - /var/lib/docker-data/dawarich/db:/dawarich_db_data
+    environment:
+      RAILS_ENV: production
+      SELF_HOSTED: true
+      STORE_GEODATA: true
+      RAILS_LOG_TO_STDOUT: true
+      TIME_ZONE: ${TIME_ZONE}
+      SECRET_KEY_BASE: ${DAWARICH_SECRET_KEY_BASE}
+      REDIS_URL: redis://default:${REDIS_PASSWORD}@redis-dawarich:6379
+      DATABASE_HOST: dawarich-db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: dawarich
+      APPLICATION_PROTOCOL: https
+      # 127.0.0.1/::1 are required by the healthcheck below
+      APPLICATION_HOSTS: dawarich.${BASE_DOMAIN},localhost,127.0.0.1,::1
+      PROMETHEUS_EXPORTER_ENABLED: false
+      WEB_CONCURRENCY: 1
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'"]
+      interval: 10s
+      retries: 30
+      start_period: 30s
+      timeout: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "proxy"
+      traefik.http.routers.dawarich.rule: "Host(`dawarich.${BASE_DOMAIN}`)"
+      traefik.http.services.dawarich.loadbalancer.server.port: "3000"
+      traefik.http.routers.dawarich.tls: "true"
+      traefik.http.routers.dawarich.tls.certresolver: "cloudflare"
+      # dawarich has its own login and exposes token-authenticated APIs for the
+      # mobile trackers (OwnTracks/Overland), so forward-auth would break them
+      traefik.http.routers.dawarich.middlewares: secured@file
+
+  dawarich-sidekiq:
+    image: "freikin/dawarich:1.10.3"
+    container_name: dawarich-sidekiq
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    entrypoint: sidekiq-entrypoint.sh
+    command: ['sidekiq']
+    networks:
+      dawarich:
+    depends_on:
+      dawarich-db:
+        condition: service_healthy
+        restart: true
+      redis-dawarich:
+        condition: service_healthy
+        restart: true
+      dawarich:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - /var/lib/docker-data/dawarich/public:/var/app/public
+      - /var/lib/docker-data/dawarich/watched:/var/app/tmp/imports/watched
+      - /var/lib/docker-data/dawarich/storage:/var/app/storage
+    environment:
+      RAILS_ENV: production
+      SELF_HOSTED: true
+      STORE_GEODATA: true
+      RAILS_LOG_TO_STDOUT: true
+      SECRET_KEY_BASE: ${DAWARICH_SECRET_KEY_BASE}
+      REDIS_URL: redis://default:${REDIS_PASSWORD}@redis-dawarich:6379
+      DATABASE_HOST: dawarich-db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: dawarich
+      APPLICATION_PROTOCOL: https
+      APPLICATION_HOSTS: dawarich.${BASE_DOMAIN}
+      PROMETHEUS_EXPORTER_ENABLED: false
+      # raise temporarily for large imports
+      BACKGROUND_PROCESSING_CONCURRENCY: 3
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f sidekiq"]
+      interval: 10s
+      retries: 30
+      start_period: 30s
+      timeout: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
   speedtest:
     container_name: speedtest
     image: "ghcr.io/librespeed/speedtest-rust:v1.4.0"
@@ -974,6 +1132,7 @@ volumes:
   redis-docmost-cache:
   redis-paperless-cache:
   redis-nextcloud-cache:
+  redis-dawarich-cache:
   prom_data:
   loki_data:
   whatsapp_volume:
@@ -991,3 +1150,4 @@ networks:
   postgres:
   docmost:
   nextcloud:
+  dawarich:
