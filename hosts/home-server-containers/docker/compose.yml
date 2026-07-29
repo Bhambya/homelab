@@ -231,7 +231,9 @@ services:
       - ${MEDIA_PATH}:/data
     restart: unless-stopped
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
+        restart: true
     deploy:
       resources:
           limits:
@@ -247,7 +249,9 @@ services:
     image: ghcr.io/flaresolverr/flaresolverr:v3.5.0
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
+        restart: true
     container_name: flaresolverr
     environment:
       - LOG_LEVEL=info
@@ -268,7 +272,9 @@ services:
       - /var/lib/docker-data/prowlarr/config:/config
     restart: unless-stopped
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
+        restart: true
     labels:
       traefik.enable: 'true'
       traefik.http.routers.prowlarr.rule: 'Host(`prowlarr.home.${BASE_DOMAIN}`)'
@@ -285,7 +291,9 @@ services:
       - PGID=1000
       - TZ=${TZ}
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
+        restart: true
     volumes:
       - /var/lib/docker-data/sonarr/config:/config
       - ${MEDIA_PATH}:/data
@@ -306,7 +314,9 @@ services:
       - PGID=1000
       - TZ=${TZ}
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
+        restart: true
     volumes:
       - /var/lib/docker-data/radarr/config:/config
       - ${MEDIA_PATH}:/data
@@ -331,7 +341,9 @@ services:
       - "${MOVIES_PATH}:/movies"
       - "${TV_SHOWS_PATH}:/tv"
     depends_on:
-      - gluetun
+      gluetun:
+        condition: service_healthy
+        restart: true
     restart: unless-stopped
     labels:
       traefik.enable: 'true'
