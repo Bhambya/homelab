@@ -661,7 +661,7 @@ services:
       - /var/lib/docker-data/postgres/data:/var/lib/postgresql/18/docker
 
   linkwarden:
-    image: ghcr.io/linkwarden/linkwarden:v2.14.1
+    image: ghcr.io/linkwarden/linkwarden:v2.16.0
     container_name: linkwarden
     environment:
       DATABASE_URL: postgresql://postgres:password@postgres:5432/linkwarden
@@ -759,7 +759,7 @@ services:
 
   github-release-monitor:
     container_name: "github-release-monitor"
-    image: "ghcr.io/iamspido/github-release-monitor:2.1.0"
+    image: "ghcr.io/iamspido/github-release-monitor:v2.3.0"
     restart: "unless-stopped"
     user: $UID
     labels:
@@ -833,7 +833,7 @@ services:
       traefik.http.routers.docmost.middlewares: secured@file
 
   trilium:
-    image: ghcr.io/triliumnext/trilium:v0.103.0
+    image: ghcr.io/triliumnext/trilium:v0.104.1
     container_name: trilium
     restart: unless-stopped
     environment:
@@ -853,7 +853,7 @@ services:
   atuin:
     container_name: atuin
     restart: unless-stopped
-    image: ghcr.io/atuinsh/atuin:18.16.1
+    image: ghcr.io/atuinsh/atuin:18.18.1
     command: start
     networks:
       - proxy
