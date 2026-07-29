@@ -4,4 +4,10 @@ filter: "evt.Meta.service == 'http' && evt.Meta.log_type == 'http_access-log'"
 whitelist:
   reason: "Whitelist admin paths from dawarich"
   expression:
-   - evt.Overflow.Alert.Scenario == "crowdsecurity/http-admin-interface-probing" && evt.Parsed.traefik_router_name contains 'dawarich' && evt.Meta.http_verb == 'GET' && evt.Parsed.request matches '/assets/maps_maplibre/managers/'
+    - |
+      evt.Overflow.Alert.Scenario == "crowdsecurity/http-admin-interface-probing" and
+      all(evt.Overflow.Alert.Events, {
+        .GetMeta("traefik_router_name") contains "dawarich" and
+        .GetMeta("http_verb") == "GET" and
+        .GetMeta("http_path") startsWith "/assets/maps_maplibre/managers/"
+      })
