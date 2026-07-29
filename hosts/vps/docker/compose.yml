@@ -547,7 +547,7 @@ services:
       - redis-paperless-cache:/data
 
   paperless-ngx:
-    image: "ghcr.io/paperless-ngx/paperless-ngx:2.20"
+    image: "ghcr.io/paperless-ngx/paperless-ngx:3.0"
     container_name: paperless-ngx
     restart: unless-stopped
     networks:
