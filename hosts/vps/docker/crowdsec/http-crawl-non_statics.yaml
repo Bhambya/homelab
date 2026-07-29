@@ -6,7 +6,7 @@ description: "Detect aggressive crawl on non static resources"
 filter: "evt.Meta.log_type in ['http_access-log', 'http_error-log'] && evt.Parsed.static_ressource == 'false' && evt.Parsed.verb in ['GET', 'HEAD']"
 distinct: "evt.Parsed.file_name"
 leakspeed: 0.5s
-capacity: 100
+capacity: 200
 #debug: true
 #this limits the memory cache (and event_sequences in output) to five events
 cache_size: 5

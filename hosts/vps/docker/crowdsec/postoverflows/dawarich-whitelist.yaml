@@ -1,0 +1,7 @@
+name: crowdsecurity/dawarich-whitelists
+description: "Whitelist false positive from dawarich"
+filter: "evt.Meta.service == 'http' && evt.Meta.log_type == 'http_access-log'"
+whitelist:
+  reason: "Whitelist admin paths from dawarich"
+  expression:
+   - evt.Overflow.Alert.Scenario == "crowdsecurity/http-admin-interface-probing" && evt.Parsed.traefik_router_name contains 'dawarich' && evt.Meta.http_verb == 'GET' && evt.Parsed.request matches '/assets/maps_maplibre/managers/'
