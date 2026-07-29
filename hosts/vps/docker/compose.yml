@@ -1031,7 +1031,7 @@ services:
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: password
       DATABASE_NAME: dawarich
-      APPLICATION_PROTOCOL: https
+      APPLICATION_PROTOCOL: http
       # 127.0.0.1/::1 are required by the healthcheck below
       APPLICATION_HOSTS: dawarich.${BASE_DOMAIN},localhost,127.0.0.1,::1
       PROMETHEUS_EXPORTER_ENABLED: false
