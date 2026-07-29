@@ -1057,7 +1057,7 @@ services:
       traefik.http.routers.dawarich.tls.certresolver: "cloudflare"
       # dawarich has its own login and exposes token-authenticated APIs for the
       # mobile trackers (OwnTracks/Overland), so forward-auth would break them
-      traefik.http.routers.dawarich.middlewares: secured@file
+      traefik.http.routers.dawarich.middlewares: bypass-authelia@file
 
   dawarich-sidekiq:
     image: "freikin/dawarich:1.10.3"
