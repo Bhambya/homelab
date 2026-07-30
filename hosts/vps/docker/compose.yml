@@ -585,6 +585,7 @@ services:
     environment:
       PAPERLESS_REDIS: redis://default:${REDIS_PASSWORD}@redis-paperless:6379
       PAPERLESS_URL: https://paperless.${BASE_DOMAIN}
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY}
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
