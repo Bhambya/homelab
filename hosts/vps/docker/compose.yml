@@ -687,6 +687,12 @@ services:
     restart: unless-stopped
     volumes:
       - /var/lib/docker-data/postgres/data:/var/lib/postgresql/18/docker
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d atuin"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
   linkwarden:
     image: ghcr.io/linkwarden/linkwarden:v2.16.0
