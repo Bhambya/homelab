@@ -6,6 +6,12 @@ services:
     networks:
       authelia:
     command: bash -c 'redis-server --port 6379 --save 20 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"'
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - redis-authelia-cache:/data
 
@@ -543,6 +549,12 @@ services:
     networks:
       paperless:
     command: bash -c 'redis-server --port 6379 --save 20 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"'
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - redis-paperless-cache:/data
 
@@ -818,6 +830,12 @@ services:
     networks:
       docmost:
     command: bash -c 'redis-server --port 6379 --save 20 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"'
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - redis-docmost-cache:/data
 
@@ -902,6 +920,12 @@ services:
     networks:
       nextcloud:
     command: bash -c 'redis-server --port 6379 --save 20 1 --loglevel warning --requirepass "${REDIS_PASSWORD}"'
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - redis-nextcloud-cache:/data
 
