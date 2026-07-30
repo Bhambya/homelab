@@ -69,6 +69,8 @@
         - dawarich/watched
         - dawarich/storage
         - dawarich/backups
+        # photon's reverse geocoding index; not backed up, it is rebuilt from upstream
+        - photon/data
 
     - name: Read secret mapping
       ansible.builtin.slurp:

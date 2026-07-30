@@ -1032,6 +1032,46 @@ services:
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
+  # Self-hosted reverse geocoding for dawarich. Keeps location data on our own
+  # infrastructure instead of sending coordinates to a third-party geocoder.
+  #
+  # REGION=india only: the prebuilt index is ~600MB compressed, whereas europe is
+  # ~31GB and planet ~62GB, neither of which fits the gateway's 150GB boot volume.
+  # Coordinates outside India will not resolve to an address.
+  #
+  # Multiple regions would require IMPORT_MODE=jsonl, which upstream flags as
+  # experimental, has no scheduled index updates, and (for regions spanning more
+  # than one continent) downloads the full planet dump anyway.
+  photon:
+    image: "rtuszik/photon-docker:2.3.1"
+    container_name: photon
+    restart: unless-stopped
+    networks:
+      dawarich:
+    environment:
+      REGION: india
+      IMPORT_MODE: db
+      UPDATE_STRATEGY: SEQUENTIAL # PARALLEL would need double the disk for the new index
+      UPDATE_INTERVAL: 30d
+      LOG_LEVEL: INFO
+      PUID: ${UID}
+      PGID: ${GID}
+      JAVA_PARAMS: "-Xmx1g"
+    volumes:
+      - /var/lib/docker-data/photon/data:/photon/data
+    # overrides the image's built-in healthcheck, whose 240s start period is far
+    # too short for the initial index download and import
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:2322/status || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 45m
+      timeout: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
   # dawarich needs PostGIS, which the shared `postgres` container does not provide.
   # imresamu/postgis is used instead of postgis/postgis because the latter has no arm64 image.
   dawarich-db:
@@ -1096,6 +1136,9 @@ services:
       APPLICATION_HOSTS: dawarich.${BASE_DOMAIN},localhost,127.0.0.1,::1
       PROMETHEUS_EXPORTER_ENABLED: false
       WEB_CONCURRENCY: 1
+      # reverse geocoding via the self-hosted photon container above
+      PHOTON_API_HOST: photon:2322
+      PHOTON_API_USE_HTTPS: false
     healthcheck:
       test: ["CMD-SHELL", "wget -qO - http://127.0.0.1:3000/api/v1/health | grep -q '\"status\"\\s*:\\s*\"ok\"'"]
       interval: 10s
@@ -1158,6 +1201,12 @@ services:
       PROMETHEUS_EXPORTER_ENABLED: false
       # raise temporarily for large imports
       BACKGROUND_PROCESSING_CONCURRENCY: 3
+      # reverse geocoding via the self-hosted photon container above.
+      # sidekiq is what actually runs the geocoding jobs, so this must match dawarich.
+      # no depends_on photon on purpose: the first index import takes ~30min and
+      # dawarich works fine without geocoding, so it should not block startup.
+      PHOTON_API_HOST: photon:2322
+      PHOTON_API_USE_HTTPS: false
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f sidekiq"]
       interval: 10s
