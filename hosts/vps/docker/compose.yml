@@ -1,6 +1,6 @@
 services:
   redis-authelia:
-    image: "redis:8.8.0"
+    image: "redis:8.8.1"
     container_name: "redis-authelia"
     restart: unless-stopped
     networks:
@@ -108,7 +108,7 @@ services:
       && authelia'
 
   traefik:
-    image: "traefik:v3.7.8"
+    image: "traefik:v3.7.9"
     container_name: "traefik"
     restart: "unless-stopped"
     security_opt:
@@ -545,7 +545,7 @@ services:
     restart: unless-stopped
 
   redis-paperless:
-    image: "redis:8.8.0"
+    image: "redis:8.8.1"
     container_name: "redis-paperless"
     restart: unless-stopped
     networks:
@@ -835,7 +835,7 @@ services:
       traefik.http.routers.glance.middlewares: secured@file
 
   redis-docmost:
-    image: "redis:8.8.0"
+    image: "redis:8.8.1"
     container_name: "redis-docmost"
     restart: unless-stopped
     networks:
@@ -927,7 +927,7 @@ services:
         restart: true
 
   redis-nextcloud:
-    image: "redis:8.8.0"
+    image: "redis:8.8.1"
     container_name: "redis-nextcloud"
     restart: unless-stopped
     networks:
@@ -995,7 +995,7 @@ services:
       traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
 
   collabora:
-    image: collabora/code:26.04.2.1.1
+    image: collabora/code:26.04.2.4.1
     container_name: collabora
     restart: unless-stopped
     networks:
@@ -1015,7 +1015,7 @@ services:
       traefik.http.routers.collabora.middlewares: bypass-authelia@file
 
   redis-dawarich:
-    image: "redis:8.8.0"
+    image: "redis:8.8.1"
     container_name: "redis-dawarich"
     restart: unless-stopped
     networks:
