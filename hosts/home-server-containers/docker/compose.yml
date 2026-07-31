@@ -197,7 +197,7 @@ services:
   gluetun:
     container_name: gluetun
     restart: unless-stopped
-    image: qmcgaw/gluetun:v3.41.1
+    image: qmcgaw/gluetun:v3.41.3
     cap_add:
       - NET_ADMIN
     devices:
