@@ -1049,7 +1049,7 @@ services:
     networks:
       dawarich:
     environment:
-      REGION: planet
+      REGION: india
       IMPORT_MODE: db
       UPDATE_STRATEGY: SEQUENTIAL # PARALLEL would need double the disk for the new index
       UPDATE_INTERVAL: 30d
