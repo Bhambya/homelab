@@ -556,6 +556,7 @@ services:
       - /var/lib/docker-data/mealie:/var/lib/docker-data/mealie/:ro
       - /var/lib/docker-data/audiobookshelf:/var/lib/docker-data/audiobookshelf/:ro
       - /var/lib/docker-data/qbittorrent:/var/lib/docker-data/qbittorrent/:ro
+      - /var/lib/docker-data/navidrome:/var/lib/docker-data/navidrome/:ro
       - /var/lib/docker-data/immich/backups:/var/lib/docker-data/immich/backups:ro
       - /var/lib/docker-data/radarr/config:/var/lib/docker-data/radarr/config
       - /var/lib/docker-data/sonarr/config:/var/lib/docker-data/sonarr/config
@@ -651,6 +652,26 @@ services:
       traefik.http.services.audiobookshelf.loadbalancer.server.port: "80"
       traefik.http.routers.audiobookshelf.tls: "true"
       traefik.http.routers.audiobookshelf.tls.certresolver: "cloudflare"
+
+  navidrome:
+    image: deluan/navidrome:0.63.2
+    container_name: navidrome
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      - ND_TIMEZONE=${TZ}
+      - ND_BASEURL=https://navidrome.home.${BASE_DOMAIN}
+    networks:
+      proxy:
+    volumes:
+      - /var/lib/docker-data/navidrome:/data
+      - ${MUSIC_PATH}:/music:ro
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.navidrome.rule: "Host(`navidrome.home.${BASE_DOMAIN}`)"
+      traefik.http.services.navidrome.loadbalancer.server.port: "4533"
+      traefik.http.routers.navidrome.tls: "true"
+      traefik.http.routers.navidrome.tls.certresolver: "cloudflare"
 
 networks:
   proxy:
