@@ -140,6 +140,14 @@ http:
       rule: 'Host(`jellyfin.{{ env "BASE_DOMAIN" }}`)'
       tls:
         certResolver: cloudflare
+    navidrome-home:
+      middlewares:
+        - bypass-authelia
+        - "addHomeSubdomainToHostHeader"
+      service: home
+      rule: 'Host(`navidrome.{{ env "BASE_DOMAIN" }}`)'
+      tls:
+        certResolver: cloudflare
     qbittorrent-home:
       middlewares:
         - bypass-authelia
