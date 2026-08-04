@@ -322,7 +322,7 @@ services:
       proxy:
 
   prometheus:
-    image: "prom/prometheus:v3.13.1"
+    image: "prom/prometheus:v3.13.2"
     container_name: prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
