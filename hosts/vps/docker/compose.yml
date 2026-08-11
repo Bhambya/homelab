@@ -1,6 +1,6 @@
 services:
   redis-authelia:
-    image: "redis:8.8.1"
+    image: "redis:8.10.0"
     container_name: "redis-authelia"
     restart: unless-stopped
     networks:
@@ -545,7 +545,7 @@ services:
     restart: unless-stopped
 
   redis-paperless:
-    image: "redis:8.8.1"
+    image: "redis:8.10.0"
     container_name: "redis-paperless"
     restart: unless-stopped
     networks:
@@ -835,7 +835,7 @@ services:
       traefik.http.routers.glance.middlewares: secured@file
 
   redis-docmost:
-    image: "redis:8.8.1"
+    image: "redis:8.10.0"
     container_name: "redis-docmost"
     restart: unless-stopped
     networks:
@@ -927,7 +927,7 @@ services:
         restart: true
 
   redis-nextcloud:
-    image: "redis:8.8.1"
+    image: "redis:8.10.0"
     container_name: "redis-nextcloud"
     restart: unless-stopped
     networks:
@@ -1015,7 +1015,7 @@ services:
       traefik.http.routers.collabora.middlewares: bypass-authelia@file
 
   redis-dawarich:
-    image: "redis:8.8.1"
+    image: "redis:8.10.0"
     container_name: "redis-dawarich"
     restart: unless-stopped
     networks:
