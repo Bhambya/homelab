@@ -295,7 +295,7 @@ services:
 
   stirling-pdf:
     container_name: "stirling-pdf"
-    image: "stirlingtools/stirling-pdf:2.14.2"
+    image: "stirlingtools/stirling-pdf:2.14.3"
     volumes:
       - /var/lib/docker-data/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
       - /var/lib/docker-data/stirling-pdf/extraConfigs:/configs
@@ -341,7 +341,7 @@ services:
       - prom_data:/prometheus
 
   loki:
-    image: "grafana/loki:3.7.5"
+    image: "grafana/loki:3.7.6"
     container_name: loki
     restart: unless-stopped
     networks:
@@ -356,7 +356,7 @@ services:
           memory: 1G
 
   alloy:
-    image: "grafana/alloy:v1.18.0"
+    image: "grafana/alloy:v1.18.1"
     container_name: alloy
     restart: unless-stopped
     networks:
