@@ -945,7 +945,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   nextcloud:
-    image: "nextcloud:34.0.2"
+    image: "nextcloud:34.0.3"
     container_name: nextcloud
     restart: unless-stopped
     networks:
