@@ -108,7 +108,7 @@ services:
       && authelia'
 
   traefik:
-    image: "traefik:v3.7.12"
+    image: "traefik:v3.7.13"
     container_name: "traefik"
     restart: "unless-stopped"
     security_opt:
@@ -817,7 +817,7 @@ services:
 
   glance:
     container_name: glance
-    image: "glanceapp/glance:v0.8.5"
+    image: "glanceapp/glance:v0.8.6"
     restart: unless-stopped
     volumes:
       - ./glance/config:/app/config
@@ -1095,7 +1095,7 @@ services:
       timeout: 10s
 
   dawarich:
-    image: "freikin/dawarich:1.14.1"
+    image: "freikin/dawarich:1.14.2"
     container_name: dawarich
     restart: unless-stopped
     stdin_open: true
@@ -1161,7 +1161,7 @@ services:
       traefik.http.routers.dawarich.middlewares: bypass-authelia@file
 
   dawarich-sidekiq:
-    image: "freikin/dawarich:1.14.1"
+    image: "freikin/dawarich:1.14.2"
     container_name: dawarich-sidekiq
     restart: unless-stopped
     stdin_open: true
