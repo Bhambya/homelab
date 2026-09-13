@@ -698,6 +698,23 @@ services:
       traefik.http.routers.navidrome.tls: "true"
       traefik.http.routers.navidrome.tls.certresolver: "cloudflare"
 
+  github-runner:
+    image: myoung34/github-runner:2.337.0-ubuntu-noble
+    container_name: github-runner
+    restart: unless-stopped
+    networks:
+      proxy:
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+    environment:
+      REPO_URL: ${GITHUB_RUNNER_REPO_URL}
+      RUNNER_SCOPE: repo
+      RUNNER_NAME: home-server-containers
+      LABELS: self-hosted,linux,x64,homelab
+      ACCESS_TOKEN: ${GITHUB_RUNNER_ACCESS_TOKEN}
+
 networks:
   proxy:
     name: 'proxy'
