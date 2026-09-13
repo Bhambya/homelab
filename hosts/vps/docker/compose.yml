@@ -853,7 +853,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   docmost:
-    image: "docmost/docmost:0.95.0"
+    image: "docmost/docmost:0.96.0"
     container_name: docmost
     restart: unless-stopped
     depends_on:
