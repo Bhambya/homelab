@@ -698,10 +698,34 @@ services:
       traefik.http.routers.navidrome.tls: "true"
       traefik.http.routers.navidrome.tls.certresolver: "cloudflare"
 
+  # Self-hosted drop-in for GitHub's hosted actions/cache backend. Stores cache
+  # data on local disk so workflows cache dependencies without touching GitHub.
+  # See https://gha-cache-server.falcondev.io
+  gha-cache-server:
+    image: ghcr.io/falcondev-oss/github-actions-cache-server:9.7.0
+    container_name: gha-cache-server
+    restart: unless-stopped
+    networks:
+      proxy:
+    environment:
+      # Must be the URL the runner uses to reach this server (same docker network).
+      API_BASE_URL: http://gha-cache-server:3000
+      STORAGE_DRIVER: filesystem
+      STORAGE_FILESYSTEM_PATH: /data/cache
+      DB_DRIVER: sqlite
+      DB_SQLITE_PATH: /data/cache-server.db
+      CACHE_CLEANUP_OLDER_THAN_DAYS: "30"
+      CACHE_FILESYSTEM_MAX_USAGE_PERCENT: "90"
+    volumes:
+      - '/var/lib/docker-data/gha-cache-server:/data'
+
   github-runner:
     image: myoung34/github-runner:2.337.0-ubuntu-noble
     container_name: github-runner
     restart: unless-stopped
+    # Overlay falcondev's patched runner binary before myoung34's entrypoint so
+    # the runner honours CUSTOM_ACTIONS_RESULTS_URL (see the script for details).
+    entrypoint: ["/patched-runner-entrypoint.sh"]
     networks:
       proxy:
     deploy:
@@ -714,6 +738,17 @@ services:
       RUNNER_NAME: home-server-containers
       LABELS: self-hosted,linux,x64,homelab
       ACCESS_TOKEN: ${GITHUB_RUNNER_ACCESS_TOKEN}
+      # Point the (patched) runner at the self-hosted cache server. Trailing
+      # slash is required. ACTIONS_CACHE_SERVICE_V2 enables the v2 cache
+      # protocol; DISABLE_AUTO_UPDATE keeps the patched binary from being
+      # replaced by an upstream auto-update.
+      CUSTOM_ACTIONS_RESULTS_URL: http://gha-cache-server:3000/
+      ACTIONS_CACHE_SERVICE_V2: "true"
+      DISABLE_AUTO_UPDATE: "true"
+    volumes:
+      - './github-runner/patched-runner-entrypoint.sh:/patched-runner-entrypoint.sh:ro'
+    depends_on:
+      - gha-cache-server
 
 networks:
   proxy:
