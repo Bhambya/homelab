@@ -726,6 +726,10 @@ services:
     # Overlay falcondev's patched runner binary before myoung34's entrypoint so
     # the runner honours CUSTOM_ACTIONS_RESULTS_URL (see the script for details).
     entrypoint: ["/patched-runner-entrypoint.sh"]
+    # Overriding entrypoint clears the image's CMD, so restore myoung34's default
+    # (the wrapper forwards this to /entrypoint.sh); without it the runner
+    # registers and immediately exits instead of listening for jobs.
+    command: ["./bin/Runner.Listener", "run", "--startuptype", "service"]
     networks:
       proxy:
     deploy:
