@@ -246,7 +246,7 @@ services:
       traefik.http.services.qbittorrent.loadbalancer.server.port: '8383'
 
   flaresolverr:
-    image: ghcr.io/flaresolverr/flaresolverr:v3.5.0
+    image: ghcr.io/flaresolverr/flaresolverr:v3.5.2
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     depends_on:
       gluetun:
@@ -353,7 +353,7 @@ services:
       traefik.http.services.lidarr.loadbalancer.server.port: '8686'
 
   bazarr:
-    image: lscr.io/linuxserver/bazarr:1.6.0
+    image: lscr.io/linuxserver/bazarr:1.6.1
     container_name: bazarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -548,7 +548,7 @@ services:
       - '--path.rootfs=/rootfs'
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.60.3
+    image: ghcr.io/google/cadvisor:v0.60.5
     restart: unless-stopped
     devices:
       - /dev/kmsg

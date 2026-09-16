@@ -43,7 +43,7 @@ services:
       traefik.http.routers.lldap.middlewares: bypass-authelia@file
 
   authelia:
-    image: "ghcr.io/authelia/authelia:4.39.20"
+    image: "ghcr.io/authelia/authelia:4.39.27"
     container_name: "authelia"
     restart: "unless-stopped"
     volumes:
@@ -639,7 +639,7 @@ services:
       traefik.http.routers.paperless.middlewares: bypass-authelia@file
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.60.3
+    image: ghcr.io/google/cadvisor:v0.60.5
     devices:
       - /dev/kmsg
     privileged: true
@@ -696,7 +696,7 @@ services:
       timeout: 10s
 
   linkwarden:
-    image: ghcr.io/linkwarden/linkwarden:v2.16.0
+    image: ghcr.io/linkwarden/linkwarden:v2.16.3
     container_name: linkwarden
     environment:
       DATABASE_URL: postgresql://postgres:password@postgres:5432/linkwarden
@@ -945,7 +945,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   nextcloud:
-    image: "nextcloud:34.0.3"
+    image: "nextcloud:34.0.4"
     container_name: nextcloud
     restart: unless-stopped
     networks:
@@ -1095,7 +1095,7 @@ services:
       timeout: 10s
 
   dawarich:
-    image: "freikin/dawarich:1.14.4"
+    image: "freikin/dawarich:1.14.5"
     container_name: dawarich
     restart: unless-stopped
     stdin_open: true
@@ -1161,7 +1161,7 @@ services:
       traefik.http.routers.dawarich.middlewares: bypass-authelia@file
 
   dawarich-sidekiq:
-    image: "freikin/dawarich:1.14.4"
+    image: "freikin/dawarich:1.14.5"
     container_name: dawarich-sidekiq
     restart: unless-stopped
     stdin_open: true
