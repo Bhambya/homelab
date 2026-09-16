@@ -736,7 +736,7 @@ services:
       resources:
         limits:
           cpus: "3"
-          memory: 10G
+          memory: 12G
     environment:
       REPO_URL: ${GITHUB_RUNNER_REPO_URL}
       RUNNER_SCOPE: repo
