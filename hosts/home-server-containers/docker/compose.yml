@@ -175,7 +175,7 @@ services:
     restart: "unless-stopped"
 
   mealie:
-    image: "ghcr.io/mealie-recipes/mealie:v3.22.0"
+    image: "ghcr.io/mealie-recipes/mealie:v3.26.0"
     container_name: mealie
     environment:
       - "ALLOW_SIGNUP=false"
@@ -679,7 +679,7 @@ services:
       traefik.http.routers.audiobookshelf.tls.certresolver: "cloudflare"
 
   navidrome:
-    image: deluan/navidrome:0.63.2
+    image: deluan/navidrome:0.64.0
     container_name: navidrome
     restart: unless-stopped
     user: 1000:1000
@@ -702,7 +702,7 @@ services:
   # data on local disk so workflows cache dependencies without touching GitHub.
   # See https://gha-cache-server.falcondev.io
   gha-cache-server:
-    image: ghcr.io/falcondev-oss/github-actions-cache-server:9.7.0
+    image: ghcr.io/falcondev-oss/github-actions-cache-server:9.8.0
     container_name: gha-cache-server
     restart: unless-stopped
     networks:
