@@ -43,7 +43,7 @@ services:
       traefik.http.routers.lldap.middlewares: bypass-authelia@file
 
   authelia:
-    image: "ghcr.io/authelia/authelia:4.39.27"
+    image: "ghcr.io/authelia/authelia:4.39.28"
     container_name: "authelia"
     restart: "unless-stopped"
     volumes:
@@ -341,7 +341,7 @@ services:
       - prom_data:/prometheus
 
   loki:
-    image: "grafana/loki:3.7.7"
+    image: "grafana/loki:3.7.8"
     container_name: loki
     restart: unless-stopped
     networks:
@@ -639,7 +639,7 @@ services:
       traefik.http.routers.paperless.middlewares: bypass-authelia@file
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.60.5
+    image: ghcr.io/google/cadvisor:v0.60.6
     devices:
       - /dev/kmsg
     privileged: true
@@ -995,7 +995,7 @@ services:
       traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
 
   collabora:
-    image: collabora/code:26.04.3.2.1
+    image: collabora/code:26.04.4.1.1
     container_name: collabora
     restart: unless-stopped
     networks:
