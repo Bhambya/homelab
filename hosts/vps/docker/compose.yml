@@ -563,7 +563,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   paperless-ngx:
-    image: "ghcr.io/paperless-ngx/paperless-ngx:3.1"
+    image: "ghcr.io/paperless-ngx/paperless-ngx:3.2"
     container_name: paperless-ngx
     restart: unless-stopped
     networks:
