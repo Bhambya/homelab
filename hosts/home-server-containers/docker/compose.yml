@@ -175,7 +175,7 @@ services:
     restart: "unless-stopped"
 
   mealie:
-    image: "ghcr.io/mealie-recipes/mealie:v3.26.0"
+    image: "ghcr.io/mealie-recipes/mealie:v3.27.0"
     container_name: mealie
     environment:
       - "ALLOW_SIGNUP=false"
@@ -261,7 +261,7 @@ services:
     restart: unless-stopped
 
   prowlarr:
-    image: ghcr.io/linuxserver/prowlarr:2.5.2
+    image: ghcr.io/linuxserver/prowlarr:2.6.5
     container_name: prowlarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -306,7 +306,7 @@ services:
       traefik.http.services.sonarr.loadbalancer.server.port: '8989'
 
   radarr:
-    image: ghcr.io/linuxserver/radarr:6.3.0
+    image: ghcr.io/linuxserver/radarr:6.4.4
     container_name: radarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
