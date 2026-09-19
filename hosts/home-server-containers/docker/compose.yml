@@ -283,7 +283,7 @@ services:
       traefik.http.services.prowlarr.loadbalancer.server.port: '9696'
 
   sonarr:
-    image: ghcr.io/linuxserver/sonarr:4.0.19
+    image: ghcr.io/linuxserver/sonarr:4.0.20
     container_name: sonarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -548,7 +548,7 @@ services:
       - '--path.rootfs=/rootfs'
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.60.5
+    image: ghcr.io/google/cadvisor:v0.60.6
     restart: unless-stopped
     devices:
       - /dev/kmsg
