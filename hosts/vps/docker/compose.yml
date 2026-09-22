@@ -1,6 +1,6 @@
 services:
   redis-authelia:
-    image: "redis:8.10.1"
+    image: "redis:8.10.2"
     container_name: "redis-authelia"
     restart: unless-stopped
     networks:
@@ -545,7 +545,7 @@ services:
     restart: unless-stopped
 
   redis-paperless:
-    image: "redis:8.10.1"
+    image: "redis:8.10.2"
     container_name: "redis-paperless"
     restart: unless-stopped
     networks:
@@ -835,7 +835,7 @@ services:
       traefik.http.routers.glance.middlewares: secured@file
 
   redis-docmost:
-    image: "redis:8.10.1"
+    image: "redis:8.10.2"
     container_name: "redis-docmost"
     restart: unless-stopped
     networks:
@@ -927,7 +927,7 @@ services:
         restart: true
 
   redis-nextcloud:
-    image: "redis:8.10.1"
+    image: "redis:8.10.2"
     container_name: "redis-nextcloud"
     restart: unless-stopped
     networks:
@@ -1015,7 +1015,7 @@ services:
       traefik.http.routers.collabora.middlewares: bypass-authelia@file
 
   redis-dawarich:
-    image: "redis:8.10.1"
+    image: "redis:8.10.2"
     container_name: "redis-dawarich"
     restart: unless-stopped
     networks:
@@ -1095,7 +1095,7 @@ services:
       timeout: 10s
 
   dawarich:
-    image: "freikin/dawarich:1.15.0"
+    image: "freikin/dawarich:1.15.1"
     container_name: dawarich
     restart: unless-stopped
     stdin_open: true
@@ -1161,7 +1161,7 @@ services:
       traefik.http.routers.dawarich.middlewares: bypass-authelia@file
 
   dawarich-sidekiq:
-    image: "freikin/dawarich:1.15.0"
+    image: "freikin/dawarich:1.15.1"
     container_name: dawarich-sidekiq
     restart: unless-stopped
     stdin_open: true
