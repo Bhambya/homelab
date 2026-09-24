@@ -47,6 +47,9 @@ http:
       plugin:
         rewriteHeaders:
           rewrites:
+            - header: "location"
+              regex: '^https://(\w+?)\.home\.{{ env "BASE_DOMAIN" | replace "." "\\." }}(.*)$'
+              replacement: 'https://${1}-home.{{ env "BASE_DOMAIN" }}${2}'
             - header: "Location"
               regex: '^https://(\w+?)\.home\.{{ env "BASE_DOMAIN" | replace "." "\\." }}(.*)$'
               replacement: 'https://${1}-home.{{ env "BASE_DOMAIN" }}${2}'
