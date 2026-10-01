@@ -679,7 +679,7 @@ services:
       traefik.http.routers.audiobookshelf.tls.certresolver: "cloudflare"
 
   navidrome:
-    image: deluan/navidrome:0.64.1
+    image: deluan/navidrome:0.64.2
     container_name: navidrome
     restart: unless-stopped
     user: 1000:1000
