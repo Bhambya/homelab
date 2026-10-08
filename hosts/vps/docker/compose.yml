@@ -882,7 +882,7 @@ services:
       traefik.http.routers.docmost.middlewares: secured@file
 
   trilium:
-    image: ghcr.io/triliumnext/trilium:v0.105.0
+    image: ghcr.io/triliumnext/trilium:v0.106.0
     container_name: trilium
     restart: unless-stopped
     environment:
@@ -902,7 +902,7 @@ services:
   atuin:
     container_name: atuin
     restart: unless-stopped
-    image: ghcr.io/atuinsh/atuin:18.22.0
+    image: ghcr.io/atuinsh/atuin:18.23.0
     command: start
     networks:
       - proxy
