@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: 'traefik:v3.7.13'
+    image: 'traefik:v3.7.14'
     container_name: 'traefik'
     restart: 'always'
     security_opt:
@@ -353,7 +353,7 @@ services:
       traefik.http.services.lidarr.loadbalancer.server.port: '8686'
 
   bazarr:
-    image: lscr.io/linuxserver/bazarr:1.6.1
+    image: lscr.io/linuxserver/bazarr:1.6.2
     container_name: bazarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
