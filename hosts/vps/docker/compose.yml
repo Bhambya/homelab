@@ -1075,7 +1075,7 @@ services:
   # dawarich needs PostGIS, which the shared `postgres` container does not provide.
   # imresamu/postgis is used instead of postgis/postgis because the latter has no arm64 image.
   dawarich-db:
-    image: "imresamu/postgis:17-3.5-alpine3.22"
+    image: "imresamu/postgis:18-3.5-alpine3.22"
     container_name: dawarich-db
     restart: unless-stopped
     shm_size: 512M
