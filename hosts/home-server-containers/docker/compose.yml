@@ -86,7 +86,7 @@ services:
 
   immich_server:
     container_name: immich_server
-    image: ghcr.io/immich-app/immich-server:v3.3.0
+    image: ghcr.io/immich-app/immich-server:v3.3.1
     environment:
       - DB_PASSWORD=${IMMICH_DB_PASSWORD}
       - DB_USERNAME=${IMMICH_DB_USERNAME}
