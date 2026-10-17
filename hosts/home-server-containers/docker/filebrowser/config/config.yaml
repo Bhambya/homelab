@@ -1,22 +1,29 @@
 server:
-  port: 80
-  baseURL:  "/"
   logging:
     - levels: "info|warning|error"
   sources:
     - path: "/srv"
+      config:
+        defaultPermissions:
+          view: true
+          modify: false
+          create: false
+          delete: false
+          download: false
+  database:
+    path: "filebrowser.sqlite"
+    migrateFrom: "database.db.old"
+http:
+  port: 80
+  baseURL: "/"
 userDefaults:
-  preview:
-    image: true
-    popup: true
-    video: false
-    office: false
-    highQuality: false
-  darkMode: true
-  disableSettings: false
-  singleClick: false
-  permissions:
-    admin: false
-    modify: false
-    share: false
-    api: false
+  listing:
+    singleClick: false
+  ui:
+    darkMode: true
+  account:
+    disableSettings: false
+    permissions:
+      admin: false
+      api: false
+      share: false
