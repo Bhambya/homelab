@@ -12,7 +12,6 @@ server:
           download: false
   database:
     path: "data/filebrowser.sqlite"
-    migrateFrom: "data/database.db.old"
 http:
   port: 80
   baseURL: "/"
