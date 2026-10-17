@@ -18,7 +18,7 @@
 # stops matching, and the script aborts fail-closed: recompute and update it.
 set -euo pipefail
 
-PATCHED_RUNNER_SHA256="15eb334a4e876dea32eb8f133761cba8f29041adb6a95464649a1ab6509bc1c7"
+PATCHED_RUNNER_SHA256="6e7b24b3fffd1ce377f7d2f83a36db4d13fb465ce8da2af88c914d8368312822"
 
 # Version the base image's runner reports (read before overlaying).
 RUNNER_VERSION="$(/actions-runner/bin/Runner.Listener --version)"
