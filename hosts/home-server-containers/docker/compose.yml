@@ -329,7 +329,7 @@ services:
       traefik.http.services.radarr.loadbalancer.server.port: '7878'
 
   lidarr:
-    image: ghcr.io/linuxserver/lidarr:3.1.0
+    image: ghcr.io/linuxserver/lidarr:8.1.2135
     container_name: lidarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
