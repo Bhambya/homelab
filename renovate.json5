@@ -228,6 +228,14 @@
       // Wait for private trackers to allowlist the new version
       "minimumReleaseAge": "14 days",
       "groupName": "qBittorrent"
+    },
+    {
+      "description": "Ignore stray old lidarr tag which is higher in value!!",
+      "matchPackageNames": [
+        "ghcr.io/linuxserver/lidarr"
+      ],
+      // 8.1.2135 is actually 0.8.1.2135 tagged without the leading 0
+      "allowedVersions": "!/^8\\.1\\.2135$/"
     }
   ],
   "prBodyTemplate": "This PR updates dependencies.\n\n{{{table}}}\n\n{{{notes}}}\n\n---\n\n🤖 This PR was generated automatically by Renovate Bot.\n\n**Before merging:**\n- [ ] Review the changelog/release notes for breaking changes\n- [ ] Test the updated services in a staging environment if possible\n- [ ] Ensure backup procedures are in place\n- [ ] Monitor services after deployment\n\n**Deployment notes:**\n- Run `docker compose -f docker/compose.yml pull` to pull new images\n- Run `docker compose -f docker/compose.yml up -d` to restart services with new images\n- Check service health with `docker compose -f docker/compose.yml ps`",
