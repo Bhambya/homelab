@@ -6,3 +6,4 @@ whitelist:
   expression:
    # qbittorrent throws 404 when typing paths which don't exist
    - evt.Parsed.request_addr contains 'qbittorrent' && evt.Meta.traefik_router_name == 'homeServices@file' && evt.Meta.http_verb == 'GET' && evt.Meta.http_status == '404' && evt.Parsed.request matches '/api/v2/app/getDirectoryContent'
+   - evt.Parsed.request_addr contains 'qbittorrent' && evt.Meta.traefik_router_name == 'qbittorrent-home@file' && evt.Meta.http_verb == 'GET' && evt.Meta.http_status == '404' && evt.Parsed.request matches '/api/v2/app/getDirectoryContent'
