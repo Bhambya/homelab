@@ -986,7 +986,7 @@ services:
       traefik.http.services.nextcloud.loadbalancer.server.port: "80"
       traefik.http.routers.nextcloud.tls: "true"
       traefik.http.routers.nextcloud.tls.certresolver: "cloudflare"
-      traefik.http.routers.nextcloud.middlewares: "secured@file,nextcloud-redirectregex,nextcloud-headers"
+      traefik.http.routers.nextcloud.middlewares: "bypass-authelia@file,nextcloud-redirectregex,nextcloud-headers"
       traefik.http.middlewares.nextcloud-redirectregex.redirectregex.permanent: "true"
       traefik.http.middlewares.nextcloud-redirectregex.redirectregex.regex: "https://(.*)/.well-known/(card|cal)dav"
       traefik.http.middlewares.nextcloud-redirectregex.redirectregex.replacement: "https://$$1/remote.php/dav/"
@@ -1012,7 +1012,7 @@ services:
       traefik.http.services.collabora.loadbalancer.server.port: "9980"
       traefik.http.routers.collabora.tls: "true"
       traefik.http.routers.collabora.tls.certresolver: "cloudflare"
-      traefik.http.routers.collabora.middlewares: secured@file
+      traefik.http.routers.collabora.middlewares: bypass-authelia@file
 
   redis-dawarich:
     image: "redis:8.10.2"
