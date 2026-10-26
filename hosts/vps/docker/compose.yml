@@ -108,7 +108,7 @@ services:
       && authelia'
 
   traefik:
-    image: "traefik:v3.7.15"
+    image: "traefik:v3.7.16"
     container_name: "traefik"
     restart: "unless-stopped"
     security_opt:
@@ -295,7 +295,7 @@ services:
 
   stirling-pdf:
     container_name: "stirling-pdf"
-    image: "stirlingtools/stirling-pdf:3.2.0"
+    image: "stirlingtools/stirling-pdf:3.2.2"
     volumes:
       - /var/lib/docker-data/stirling-pdf/trainingData:/usr/share/tessdata # Required for extra OCR languages
       - /var/lib/docker-data/stirling-pdf/extraConfigs:/configs
@@ -945,7 +945,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   nextcloud:
-    image: "nextcloud:35.0.1"
+    image: "nextcloud:35.0.2"
     container_name: nextcloud
     restart: unless-stopped
     networks:
@@ -995,7 +995,7 @@ services:
       traefik.http.middlewares.nextcloud-headers.headers.stsIncludeSubdomains: "true"
 
   collabora:
-    image: collabora/code:26.04.5.1.1
+    image: collabora/code:26.04.5.2.1
     container_name: collabora
     restart: unless-stopped
     networks:

@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: 'traefik:v3.7.15'
+    image: 'traefik:v3.7.16'
     container_name: 'traefik'
     restart: 'always'
     security_opt:
@@ -720,7 +720,7 @@ services:
       - '/var/lib/docker-data/gha-cache-server:/data'
 
   github-runner:
-    image: myoung34/github-runner:2.338.0-ubuntu-noble
+    image: myoung34/github-runner:2.338.1-ubuntu-noble
     container_name: github-runner
     restart: unless-stopped
     # Overlay falcondev's patched runner binary before myoung34's entrypoint so
