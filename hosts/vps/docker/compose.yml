@@ -537,7 +537,7 @@ services:
       - "--chromium-allow-list=file:///tmp/.*"
 
   tika:
-    image: "docker.io/apache/tika:3.3.1.0"
+    image: "docker.io/apache/tika:3.3.3.0"
     container_name: tika
     user: $UID
     networks:
