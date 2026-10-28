@@ -775,7 +775,7 @@ services:
 
   filebrowser:
     container_name: filebrowser
-    image: 'gtstef/filebrowser:2.0.1-stable-slim'
+    image: 'gtstef/filebrowser:2.0.2-stable-slim'
     restart: unless-stopped
     environment:
       FILEBROWSER_CONFIG: "/config/config.yaml"
