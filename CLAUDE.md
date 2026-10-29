@@ -17,12 +17,13 @@ cd terraform/homeserver && tofu init && tofu plan && tofu apply
 ### Ansible
 ```bash
 pip install -r ansible/requirements.txt
-ansible-galaxy collection install -r ansible/requirements.yml
 ansible-galaxy role install -r ansible/requirements.yml
+git clone git@github.com:Bhambya/homelab-secrets.git .secrets   # private, gitignored
 
-ansible-playbook -i ansible/inventory.yml ansible/playbooks/deploy-vps.yml
-ansible-playbook -i ansible/inventory.yml ansible/playbooks/deploy-home-server-containers.yml
-ansible-playbook -i ansible/inventory.yml ansible/playbooks/patch.yml
+export ANSIBLE_CONFIG=ansible/ansible.cfg
+ansible-playbook -i ansible/inventory.yml -i .secrets/inventory ansible/playbooks/deploy-vps.yml
+ansible-playbook -i ansible/inventory.yml -i .secrets/inventory ansible/playbooks/deploy-home-server-containers.yml
+ansible-playbook -i ansible/inventory.yml -i .secrets/inventory ansible/playbooks/patch.yml
 ```
 
 ## Architecture
@@ -39,7 +40,7 @@ ansible-playbook -i ansible/inventory.yml ansible/playbooks/patch.yml
 
 **Deployment flow**:
 1. Push to `main` → GitHub Actions detects changes in `hosts/` subdirectories
-2. Secrets fetched from Bitwarden Secrets Manager (`bws` CLI)
+2. The private `homelab-secrets` repo is checked out to `.secrets/` and passed as a second inventory source; its Ansible Vault encrypted `group_vars`/`host_vars` are decrypted with `ANSIBLE_VAULT_PASSWORD`
 3. Ansible writes `.env` files from secrets, then runs `docker compose up -d`
 4. On first deploy (no `/var/lib/docker-data`), Restic backups are restored automatically
 
@@ -49,7 +50,7 @@ ansible-playbook -i ansible/inventory.yml ansible/playbooks/patch.yml
 hosts/
   vps/docker/compose.yml          # All VPS services (Traefik, Authelia, Grafana, etc.)
   home-server-containers/docker/compose.yml  # Home services (Immich, Jellyfin, etc.)
-  {host}/secret-mappings.yml      # Maps Bitwarden secret IDs → env var names
+  {host}/secret-mappings.yml      # Maps env var names / secret files → vault_* variable names
   {host}/crons.yml                # Cron jobs deployed to each host
 ansible/
   playbooks/                      # deploy-vps.yml, deploy-home-server-containers.yml, patch.yml
@@ -69,8 +70,10 @@ scripts/
 
 ## Secrets & Configuration
 
-- All secrets live in **Bitwarden Secrets Manager**; never hardcoded
-- `secret-mappings.yml` defines which Bitwarden secret IDs map to which env vars for each host
+- Ansible secrets live in the private `Bhambya/homelab-secrets` repo as Ansible Vault encrypted inventory vars (`vault_*`). This repo is public: never commit secrets here, not even encrypted
+- `secret-mappings.yml` defines which `vault_*` variables map to which env vars / secret files for each host
+- `ansible/vault-pass.sh` supplies the vault password (`ANSIBLE_VAULT_PASSWORD` in CI, macOS keychain locally)
+- Terraform still reads its secrets from Bitwarden Secrets Manager (`maxlaverse/bitwarden` provider)
 - Ansible `write_secret_file` and `write_env_file` roles materialize secrets on the target host at deploy time
 - `local.auto.tfvars` files (gitignored) hold Terraform variable values locally
 
@@ -85,5 +88,5 @@ scripts/
 ## CI/CD
 
 - `CD.yml` uses path filters — only redeploys hosts whose `hosts/` subdirectory changed
-- Secrets are passed to Ansible via environment variables (`BWS_ACCESS_TOKEN`)
+- GitHub Actions secrets: `ANSIBLE_VAULT_PASSWORD`, `SECRETS_REPO_DEPLOY_KEY` (read-only deploy key for the secrets repo), `ANSIBLE_SSH_KEY`, `VPS_HOST`, `VPS_HOST_SSH_PUBLIC_KEYS`
 - The GitHub Actions runner must have SSH access to target hosts (key stored in repo secrets)

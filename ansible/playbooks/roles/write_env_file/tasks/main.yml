@@ -1,13 +1,6 @@
-- name: Lookup secrets on the control node in one go
-  ansible.builtin.set_fact:
-    env_secrets: |
-      {% for item in (env_file['secrets'] | default({})) | dict2items %}
-      {{ item.key }}='{{ lookup('bitwarden.secrets.lookup', item.value) }}'
-      {% endfor %}
-  delegate_to: localhost
-
 - name: Write .env file to target host
   become: true
+  no_log: true
   ansible.builtin.copy:
     dest: "{{ host_conf_path }}/{{ env_file['relative_path'] }}"
     content: |
@@ -17,5 +10,7 @@
       {% for item in (env_file['vars'] | default({})) | dict2items %}
       {{ item.key }}='{{ lookup("vars", item.value) }}'
       {% endfor %}
-      {{ env_secrets }}
+      {% for item in (env_file['secrets'] | default({})) | dict2items %}
+      {{ item.key }}='{{ lookup("vars", item.value) }}'
+      {% endfor %}
     mode: "{{ env_file['mode'] }}"

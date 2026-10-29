@@ -1,5 +1,5 @@
 ---
-ansible_host: "{{ lookup('bitwarden.secrets.lookup', 'ae8d79f6-fb4a-434c-94f2-b3860149c5ec') }}"
+ansible_host: "{{ vault_base_domain }}"
 wireguard_endpoint: "{{ ansible_host }}"
 wireguard_persistent_keepalive: "25"
 wireguard_addresses:

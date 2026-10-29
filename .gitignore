@@ -40,3 +40,5 @@ terraform.rc
 # planout
 
 .bitwarden
+# Private secrets repo (Ansible Vault), checked out alongside this one
+.secrets/
