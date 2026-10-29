@@ -51,7 +51,7 @@ jobs:
         run: |
           touch ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
-          echo $VPS_HOST_SSH_PUBLIC_KEYS | sed "s/localhost/$VPS_HOST/g" >> ~/.ssh/known_hosts 
+          printf '%s\n' "$VPS_HOST_SSH_PUBLIC_KEYS" | sed "s/localhost/$VPS_HOST/g" >> ~/.ssh/known_hosts
 
       - name: Disable strict host key checking for VPN hosts
         run: |
