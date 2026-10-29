@@ -146,7 +146,7 @@ The home server runs multiple VMs on Proxmox hypervisor, all defined through Ter
 
 ## Automated Deployment
 
-The homelab infrastructure is automatically deployed using GitHub Actions and Ansible, with secrets securely managed through Bitwarden Secrets Manager.
+The homelab infrastructure is automatically deployed using GitHub Actions and Ansible, with secrets kept in a private repository encrypted with Ansible Vault.
 
 ### Deployment Process
 
@@ -161,14 +161,14 @@ The homelab infrastructure is automatically deployed using GitHub Actions and An
 Each deployment follows this sequence:
 
 1. **Environment Setup**:
-   - Install Ansible and Bitwarden SDK on the GitHub Actions runner
-   - Retrieve SSH keys and host information from Bitwarden Secrets Manager
-   - Configure SSH agent for secure host access
+   - Install Ansible on the GitHub Actions runner
+   - Check out the private secrets repository into `.secrets/` using a read-only deploy key
+   - Configure SSH agent for secure host access using the SSH key from GitHub Actions secrets
 
 2. **Configuration Management**:
    - Clone the latest repository code to target hosts
    - Process `secret-mappings.yml` files to identify required secrets
-   - Fetch secrets from Bitwarden using the `bws` CLI tool
+   - Decrypt the vault variables on the runner with the vault password from GitHub Actions secrets
    - Generate `.env` files and configuration files with interpolated secrets
 
 3. **Service Deployment**:
@@ -178,7 +178,92 @@ Each deployment follows this sequence:
 
 ### Secrets Management
 
-All secrets are managed through **Bitwarden Secrets Manager**:
+This repository is public, so no secrets live here, not even encrypted ones. They are kept in the private `Bhambya/homelab-secrets` repository as Ansible Vault encrypted inventory variables:
+
+```
+inventory/
+  hosts.yml                                   # stub, hosts are defined in ansible/inventory.yml
+  group_vars/all/vault.yml                    # secrets shared by all hosts
+  host_vars/gateway/vault.yml                 # VPS secrets
+  host_vars/home-server-containers/vault.yml  # home server secrets
+```
+
+`secret-mappings.yml` maps each env var or secret file to a `vault_*` variable name. The repository is passed to Ansible as a second inventory source (`-i .secrets/inventory`) so its variables are loaded like any other `group_vars`/`host_vars`.
+
+GitHub Actions secrets on this repository:
+
+- `ANSIBLE_VAULT_PASSWORD`: vault password
+- `SECRETS_REPO_DEPLOY_KEY`: read-only deploy key for the secrets repository
+- `ANSIBLE_SSH_KEY`, `VPS_HOST`, `VPS_HOST_SSH_PUBLIC_KEYS`: needed before Ansible runs
+
+#### Adding or changing secrets
+
+Run these from the root of this repository, with the secrets repository cloned to `.secrets/` (see [Manual Deployment](#manual-deployment)). Setting `ANSIBLE_CONFIG` lets `ansible-vault` find the vault password:
+
+```bash
+export ANSIBLE_CONFIG=ansible/ansible.cfg
+```
+
+Pick the vault file by which hosts need the secret:
+
+| Used by | File |
+|---|---|
+| Both hosts (same value) | `.secrets/inventory/group_vars/all/vault.yml` |
+| VPS only | `.secrets/inventory/host_vars/gateway/vault.yml` |
+| Home server only | `.secrets/inventory/host_vars/home-server-containers/vault.yml` |
+
+**Changing an existing secret**
+
+1. Open the vault file. It is decrypted into your `$EDITOR` and re-encrypted on save:
+   ```bash
+   ansible-vault edit .secrets/inventory/host_vars/gateway/vault.yml
+   ```
+2. Commit and push the secrets repository.
+3. Pushing to the secrets repository does not deploy anything, so trigger the deployment manually:
+   ```bash
+   gh workflow run CD.yml -f target_host=vps   # or home-server-containers
+   ```
+   Containers whose environment changed are recreated automatically. Secret *files* (e.g. the Authelia JWKS keys) are mounted, so restart the container that uses them.
+
+**Adding a new secret**
+
+1. Add it to the right vault file with `ansible-vault edit`, named `vault_<name>`:
+   ```yaml
+   vault_my_service_api_key: s3cr3t
+   # Multi-line values (keys, certificates, JSON) go in a block scalar
+   vault_my_service_tls_key: |
+     -----BEGIN PRIVATE KEY-----
+     ...
+     -----END PRIVATE KEY-----
+   # Values containing {{ or {% must be marked !unsafe so Ansible doesn't template them
+   vault_my_service_password: !unsafe 'p@ss{{word'
+   ```
+2. Commit and push the secrets repository **first**. Every CD run checks out its latest `main`, so if this repository references a variable the secrets repository doesn't have yet, the deploy fails with `No variable named 'vault_...' was found`.
+3. Reference it from this repository:
+   - As an env var, in `hosts/<host>/secret-mappings.yml`. Then use `${MY_SERVICE_API_KEY}` in `compose.yml` and add it to `.env.example`:
+     ```yaml
+     secrets:
+       MY_SERVICE_API_KEY: vault_my_service_api_key
+     ```
+   - As a file on the host, in the same file:
+     ```yaml
+     secret_files:
+       - path: /var/lib/docker-data/my-service/tls.key
+         secret: vault_my_service_tls_key
+         mode: "600"   # optional, defaults to 600
+     ```
+   - Anywhere else Ansible templates (playbooks, `crons.yml`, `*.j2` templates), as `{{ vault_my_service_api_key }}`.
+4. Push to `main`. The `hosts/` change triggers the deployment.
+
+**Removing a secret**: remove its references from this repository first and deploy. Then delete it from the vault file.
+
+**Viewing secrets**: `ansible-vault view <file>` prints the decrypted file without opening an editor.
+
+**Readable diffs in the secrets repository (optional, one-time setup)**: make `git diff` and `git log -p` show decrypted content. The `.gitattributes` line is committed to the secrets repository; the `git config` is local to your clone:
+```bash
+echo '*.yml diff=ansible-vault' >> .secrets/.gitattributes
+git -C .secrets config diff.ansible-vault.textconv "ansible-vault view --vault-password-file $PWD/ansible/vault-pass.sh"
+```
 
 ### Manual Deployment
 
@@ -186,18 +271,21 @@ For manual deployments or troubleshooting:
 
 ```bash
 # Install dependencies
-pip install ansible bitwarden-sdk
-ansible-galaxy collection install bitwarden.secrets
+pip install -r ansible/requirements.txt
+ansible-galaxy role install -r ansible/requirements.yml
 
-# Set Bitwarden access token
-export BWS_ACCESS_TOKEN="bitwarden-access-token"
+# Check out the secrets and store the vault password in the macOS keychain (once)
+git clone git@github.com:Bhambya/homelab-secrets.git .secrets
+security add-generic-password -a homelab -s ansible-vault -w
 
 # Deploy to VPS
-ansible-playbook -i ansible/inventory.yml ansible/playbooks/deploy_vps.yml
+ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook -i ansible/inventory.yml -i .secrets/inventory ansible/playbooks/deploy-vps.yml
 
 # Deploy to home server
-ansible-playbook -i ansible/inventory.yml ansible/playbooks/deploy-home-server-docker.yml
+ANSIBLE_CONFIG=ansible/ansible.cfg ansible-playbook -i ansible/inventory.yml -i .secrets/inventory ansible/playbooks/deploy-home-server-containers.yml
 ```
+
+Outside macOS, export `ANSIBLE_VAULT_PASSWORD` instead of using the keychain.
 
 ### Crowdsec setup
 

@@ -7,12 +7,13 @@
 
 - name: Write secret file to target host
   become: true
+  no_log: true
   ansible.builtin.copy:
     dest: "{{ item.path }}"
     content: |
       {% if (item.base64 | default(False)) %}
-      {{ lookup('bitwarden.secrets.lookup', item['secret']) | b64decode }}
+      {{ lookup('vars', item['secret']) | b64decode }}
       {% else %}
-      {{ lookup('bitwarden.secrets.lookup', item['secret']) }}
+      {{ lookup('vars', item['secret']) }}
       {% endif %}
     mode: "{{ item.mode | default('600') }}"

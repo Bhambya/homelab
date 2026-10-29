@@ -4,8 +4,8 @@
   vars:
     repo_path: "/home/{{ ansible_user }}/homelab"
     host_conf_path: "{{ repo_path }}/hosts/home-server-containers"
-    secrets_mapping_file: "{{ host_conf_path }}/secret-mappings.yml"
-    github_workdir: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}"
+    # Local checkout on the control node (the GitHub workspace in CI)
+    github_workdir: "{{ playbook_dir | dirname | dirname }}"
     docker_data_dir: "/var/lib/docker-data"
   environment:
     PATH: "~/.local/bin:{{ lookup('env', 'PATH') }}"
@@ -43,10 +43,10 @@
       become: true
       ansible.builtin.command: restic restore latest --no-cache --cleanup-cache --target /
       environment:
-        AWS_ACCESS_KEY_ID: "{{ lookup('bitwarden.secrets.lookup', '95843770-ec28-44c4-9ec6-b396010e19b0') }}"
-        AWS_SECRET_ACCESS_KEY: "{{ lookup('bitwarden.secrets.lookup', 'c51018bb-8c4b-45a2-8662-b396010e395a') }}"
-        RESTIC_PASSWORD: "{{ lookup('bitwarden.secrets.lookup', 'cf687098-8d02-45de-8490-b39000ca755e') }}"
-        RESTIC_REPOSITORY: "{{ lookup('bitwarden.secrets.lookup', '2bf4ab81-3dd3-43a9-af0f-b396010d650a') }}"
+        AWS_ACCESS_KEY_ID: "{{ vault_restic_aws_access_key_id }}"
+        AWS_SECRET_ACCESS_KEY: "{{ vault_restic_aws_secret_access_key }}"
+        RESTIC_PASSWORD: "{{ vault_restic_password }}"
+        RESTIC_REPOSITORY: "{{ vault_restic_repository }}"
       when: restore_backup
 
     - name: Change {{ docker_data_dir }} directory owner
@@ -57,14 +57,10 @@
         state: directory
         mode: "750"
 
+    # Read from the control node so the mapping always matches the vault variables
     - name: Read secret mapping
-      ansible.builtin.slurp:
-        src: "{{ secrets_mapping_file }}"
-      register: secret_mapping_content
-
-    - name: Parse secret mapping
       ansible.builtin.set_fact:
-        secret_mapping: "{{ secret_mapping_content['content'] | b64decode | from_yaml }}"
+        secret_mapping: "{{ lookup('ansible.builtin.file', github_workdir ~ '/hosts/home-server-containers/secret-mappings.yml') | from_yaml }}"
 
     - name: Set env_files
       ansible.builtin.set_fact:

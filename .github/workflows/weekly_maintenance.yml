@@ -29,23 +29,25 @@ jobs:
           ansible-galaxy collection install -r ./ansible/requirements.yml
           ansible-galaxy role install -r ./ansible/requirements.yml
 
-      - name: ⬇️ Get Secrets from Bitwarden
-        uses: bitwarden/sm-action@v3.0.1
+      - name: ⬇️ Check out secrets repository
+        uses: actions/checkout@v7
         with:
-          access_token: ${{ secrets.BWS_ACCESS_TOKEN }}
-          secrets: |
-            38c9a270-f749-436d-bdff-b39000d8fd77 > ANSIBLE_SSH_KEY
-            ae8d79f6-fb4a-434c-94f2-b3860149c5ec > VPS_HOST
-            683478bf-6fb8-4985-905f-b39d01641765 > VPS_HOST_SSH_PUBLIC_KEYS
+          repository: Bhambya/homelab-secrets
+          path: .secrets
+          ssh-key: ${{ secrets.SECRETS_REPO_DEPLOY_KEY }}
+          persist-credentials: false
 
       # Load the SSH private key into the ssh-agent
       - name: 🔑 Load SSH Key
         uses: webfactory/ssh-agent@v0.10.0
         with:
           log-public-key: false
-          ssh-private-key: ${{ env.ANSIBLE_SSH_KEY }}
+          ssh-private-key: ${{ secrets.ANSIBLE_SSH_KEY }}
 
       - name: Add the VPS host public keys to known_hosts
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_HOST_SSH_PUBLIC_KEYS: ${{ secrets.VPS_HOST_SSH_PUBLIC_KEYS }}
         run: |
           touch ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
@@ -61,19 +63,19 @@ jobs:
 
       - name: 🐳 Prune unused docker images
         env:
-          BWS_ACCESS_TOKEN: ${{ secrets.BWS_ACCESS_TOKEN }}
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
           ANSIBLE_CONFIG: ansible/ansible.cfg
         run: |
-          ansible-playbook -i ansible/inventory.yml \
+          ansible-playbook -i ansible/inventory.yml -i .secrets/inventory \
            -e "batch_size=${{ github.event.inputs.batch_size || '2' }}" \
            ansible/playbooks/docker-prune.yml
 
       - name: 🔨 Patch all hosts
         env:
-          BWS_ACCESS_TOKEN: ${{ secrets.BWS_ACCESS_TOKEN }}
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
           ANSIBLE_CONFIG: ansible/ansible.cfg
         run: |
-          ansible-playbook -i ansible/inventory.yml \
+          ansible-playbook -i ansible/inventory.yml -i .secrets/inventory \
            -l 'all:!home-server-wireguard-router-wg1' \
            -e "batch_size=${{ github.event.inputs.batch_size || '2' }}" \
            ansible/playbooks/patch.yml

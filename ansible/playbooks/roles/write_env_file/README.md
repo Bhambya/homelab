@@ -1,12 +1,11 @@
 # write_env_file
 
-Ansible role that creates environment files by combining fixed values, Ansible variables, and secrets from Bitwarden Secrets Manager.
+Ansible role that creates environment files by combining fixed values, Ansible variables, and secrets from Ansible Vault.
 
 ## Requirements
 
-- `bws` (Bitwarden Secrets CLI) installed on the control node
-- `jq` installed on the control node
-- Bitwarden Secrets Manager access configured
+- The private `homelab-secrets` inventory (Ansible Vault encrypted `group_vars`/`host_vars`) passed with `-i`
+- The vault password available through `ansible/vault-pass.sh`
 
 ## Role Variables
 
@@ -22,10 +21,12 @@ env_file:
   vars:                         # Values from Ansible variables
     DOMAIN: "domain_name"       # Uses {{ domain_name }} variable
     USER_ID: "user_id"          # Uses {{ user_id }} variable
-  secrets:                      # Values from Bitwarden Secrets Manager
-    DB_PASSWORD: "db-secret-id" # Fetches secret with ID "db-secret-id"
-    API_KEY: "api-secret-id"    # Fetches secret with ID "api-secret-id"
+  secrets:                      # Values from vault variables
+    DB_PASSWORD: "vault_db_password" # Uses {{ vault_db_password }} from the secrets repo
+    API_KEY: "vault_api_key"
 ```
+
+`vars` and `secrets` resolve the same way; `secrets` exists to keep vault variables apart and is never logged.
 
 ## Dependencies
 
@@ -48,8 +49,8 @@ env_file:
         DOMAIN: "app_domain"
         PORT: "app_port"
       secrets:
-        DATABASE_PASSWORD: "{{ db_secret_id }}"
-        JWT_SECRET: "{{ jwt_secret_id }}"
+        DATABASE_PASSWORD: "vault_database_password"
+        JWT_SECRET: "vault_jwt_secret"
 ```
 
 ## Generated File Format
@@ -65,13 +66,12 @@ LOG_LEVEL='info'
 DOMAIN='example.com'
 PORT='8080'
 
-# Secret values (fetched from Bitwarden)
+# Secret values (from Ansible Vault)
 DATABASE_PASSWORD='secret_password_value'
 JWT_SECRET='jwt_token_value'
 ```
 
 ## Error Handling
 
-- Fails if any Bitwarden secret lookup fails
-- Validates secret retrieval before proceeding with file creation
-- Uses `break_when` to stop on first secret lookup failure
+- Fails if a referenced vault variable is not defined for the host
+- The task runs with `no_log`, so secret values never show up in output

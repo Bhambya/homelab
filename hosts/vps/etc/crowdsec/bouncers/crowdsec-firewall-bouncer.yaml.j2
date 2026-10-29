@@ -8,7 +8,7 @@ log_max_size: 100
 log_max_backups: 3
 log_max_age: 30
 api_url: http://127.0.0.1:9310/
-api_key: {{ lookup('bitwarden.secrets.lookup', '5cea7227-3d83-4204-8637-b38b0166a4b8') }}
+api_key: {{ vault_crowdsec_firewall_bouncer_api_key }}
 insecure_skip_verify: false
 disable_ipv6: false
 deny_action: DROP
