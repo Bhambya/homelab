@@ -1043,7 +1043,7 @@ services:
   # experimental, has no scheduled index updates, and (for regions spanning more
   # than one continent) downloads the full planet dump anyway.
   photon:
-    image: "rtuszik/photon-docker:2.4.0"
+    image: "rtuszik/photon-docker:2.5.0"
     container_name: photon
     restart: unless-stopped
     networks:
@@ -1095,7 +1095,7 @@ services:
       timeout: 10s
 
   dawarich:
-    image: "freikin/dawarich:1.16.0"
+    image: "freikin/dawarich:1.17.0"
     container_name: dawarich
     restart: unless-stopped
     stdin_open: true
@@ -1161,7 +1161,7 @@ services:
       traefik.http.routers.dawarich.middlewares: bypass-authelia@file
 
   dawarich-sidekiq:
-    image: "freikin/dawarich:1.16.0"
+    image: "freikin/dawarich:1.17.0"
     container_name: dawarich-sidekiq
     restart: unless-stopped
     stdin_open: true
