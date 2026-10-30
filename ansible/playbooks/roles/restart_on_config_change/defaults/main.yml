@@ -1,0 +1,4 @@
+---
+# defaults file for restart_on_config_change
+restart_on_change: []
+compose_wait_timeout: 300

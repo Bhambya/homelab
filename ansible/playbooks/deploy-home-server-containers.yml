@@ -27,26 +27,6 @@
         force: false
       register: repo_update
 
-    # Fresh clones have no previous commit; compose up creates those containers anyway.
-    - name: List files changed by the pull
-      ansible.builtin.command: "git diff --name-only {{ repo_update.before }} {{ repo_update.after }}"
-      args:
-        chdir: "{{ repo_path }}"
-      register: changed_files
-      changed_when: false
-      when: repo_update.before is not none and repo_update.before != repo_update.after
-
-    - name: Set services_to_restart
-      ansible.builtin.set_fact:
-        services_to_restart: >-
-          {%- set services = [] -%}
-          {%- for entry in restart_on_change -%}
-          {%- for file in changed_files.stdout_lines | default([]) if file.startswith(entry.path) -%}
-          {%- set _ = services.append(entry.service) -%}
-          {%- endfor -%}
-          {%- endfor -%}
-          {{ services | unique | list }}
-
     - name: Write VPN hosts to /etc/hosts
       become: true
       ansible.builtin.blockinfile:
@@ -148,18 +128,10 @@
         wait_timeout: 600
 
     - name: Restart services whose config changed
-      become: true
-      community.docker.docker_compose_v2:
-        project_src: "{{ host_conf_path }}/docker"
-        services: "{{ services_to_restart }}"
-        state: restarted
-        wait: true
-        wait_timeout: 300
-      when: services_to_restart | length > 0
-
-    - name: Log services restarted due to config change
-      ansible.builtin.debug:
-        msg: "{{ ('Restarted due to config change: ' ~ services_to_restart | join(', ')) if services_to_restart else 'No config changes requiring a restart' }}"
+      ansible.builtin.include_role:
+        name: restart_on_config_change
+      vars:
+        compose_project_src: "{{ host_conf_path }}/docker"
 
     - name: Run Docker Command
       become: true
