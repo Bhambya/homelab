@@ -7,6 +7,14 @@
     # Local checkout on the control node (the GitHub workspace in CI)
     github_workdir: "{{ playbook_dir | dirname | dirname }}"
     docker_data_dir: "/var/lib/docker-data"
+    # Paths (relative to the repo root, files or directory prefixes) whose changes
+    # only take effect after a container restart. Single-file bind mounts keep
+    # pointing at the old inode after git replaces the file.
+    restart_on_change:
+      - path: "hosts/home-server-containers/docker/traefik/config/dynamic.yml"
+        service: traefik
+      - path: "hosts/home-server-containers/docker/gatus/"
+        service: gatus
   environment:
     PATH: "~/.local/bin:{{ lookup('env', 'PATH') }}"
   tasks:
@@ -17,6 +25,27 @@
         version: 'main'
         update: true
         force: false
+      register: repo_update
+
+    # Fresh clones have no previous commit; compose up creates those containers anyway.
+    - name: List files changed by the pull
+      ansible.builtin.command: "git diff --name-only {{ repo_update.before }} {{ repo_update.after }}"
+      args:
+        chdir: "{{ repo_path }}"
+      register: changed_files
+      changed_when: false
+      when: repo_update.before is not none and repo_update.before != repo_update.after
+
+    - name: Set services_to_restart
+      ansible.builtin.set_fact:
+        services_to_restart: >-
+          {%- set services = [] -%}
+          {%- for entry in restart_on_change -%}
+          {%- for file in changed_files.stdout_lines | default([]) if file.startswith(entry.path) -%}
+          {%- set _ = services.append(entry.service) -%}
+          {%- endfor -%}
+          {%- endfor -%}
+          {{ services | unique | list }}
 
     - name: Write VPN hosts to /etc/hosts
       become: true
@@ -117,6 +146,16 @@
         remove_orphans: true
         wait: true
         wait_timeout: 600
+
+    - name: Restart services whose config changed
+      become: true
+      community.docker.docker_compose_v2:
+        project_src: "{{ host_conf_path }}/docker"
+        services: "{{ services_to_restart }}"
+        state: restarted
+        wait: true
+        wait_timeout: 300
+      when: services_to_restart | length > 0
 
     - name: Run Docker Command
       become: true
