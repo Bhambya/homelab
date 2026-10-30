@@ -40,9 +40,6 @@ access_control:
         - '^/admin([/?].*)?$'
       policy: 'two_factor'
       subject: 'group:admin'
-    - domain:
-        - 'proxmox-home.{{ mustEnv "BASE_DOMAIN" }}'
-      policy: 'bypass' # these have their own auth or use OIDC
     - domain: 
         - 'traefik-dashboard.{{ mustEnv "BASE_DOMAIN" }}'
         - 'px-home.{{ mustEnv "BASE_DOMAIN" }}'
