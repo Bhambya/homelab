@@ -209,6 +209,10 @@
         wait_timeout: 300
       when: services_to_restart | length > 0
 
+    - name: Log services restarted due to config change
+      ansible.builtin.debug:
+        msg: "{{ ('Restarted due to config change: ' ~ services_to_restart | join(', ')) if services_to_restart else 'No config changes requiring a restart' }}"
+
     - name: Run Docker Command
       become: true
       ansible.builtin.command: "docker compose ps --format 'table {% raw %}{{.Names}}\t{{.RunningFor}}\t{{.Status}}'{% endraw %}"
