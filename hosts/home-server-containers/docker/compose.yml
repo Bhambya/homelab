@@ -258,7 +258,6 @@ services:
       - TZ=${TZ}
       - QBT_WEB_SERVER=true
       - QBT_PORT=8181
-      - QBT_SCHEDULE=30
       - QBT_CONFIG_DIR=/config
     volumes:
       - /var/lib/docker-data/qbit_manage:/config
