@@ -54,7 +54,6 @@ access_control:
         - 'px-home.{{ mustEnv "BASE_DOMAIN" }}'
         - 'apprise.{{ mustEnv "BASE_DOMAIN" }}'
         - 'backrest.{{ mustEnv "BASE_DOMAIN" }}' 
-        - 'grafana.{{ mustEnv "BASE_DOMAIN" }}'
         - 'whoami.{{ mustEnv "BASE_DOMAIN" }}'
         - 'whoami-home.{{ mustEnv "BASE_DOMAIN" }}'
         - 'excalidraw.{{ mustEnv "BASE_DOMAIN" }}'
@@ -65,7 +64,6 @@ access_control:
         - 'glance.{{ mustEnv "BASE_DOMAIN" }}'
         - 'wiki.{{ mustEnv "BASE_DOMAIN" }}'
         - 'notes.{{ mustEnv "BASE_DOMAIN" }}'
-        - 'drive.{{ mustEnv "BASE_DOMAIN" }}'
       policy: 'two_factor'
       subject: 'group:admin'
     - domain_regex:
