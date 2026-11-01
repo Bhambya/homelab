@@ -118,6 +118,9 @@ services:
       authelia:
       prometheus:
       paperless:
+      # Static IP so ufw can allow only Traefik to reach OliveTin on the host
+      olivetin:
+        ipv4_address: 172.31.255.2
     ports:
       - "80:80"
       - "443:443"
@@ -1275,3 +1278,13 @@ networks:
   docmost:
   nextcloud:
   dawarich:
+  # Traefik's link to OliveTin, which runs on the host. Fixed at the end of the docker
+  # address pool (172.16.0.0/12) so it never collides with auto-assigned networks.
+  # The gateway (.1) is the host; the IPs are referenced in traefik/config/dynamic.yml
+  # and the OliveTin ufw rules in deploy-vps.yml.
+  olivetin:
+    name: "olivetin"
+    ipam:
+      config:
+        - subnet: 172.31.255.0/28
+          gateway: 172.31.255.1

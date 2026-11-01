@@ -1,0 +1,39 @@
+# Deployed to /etc/OliveTin/config.yaml by deploy-vps.yml. OliveTin runs as root on the
+# host and is served at commands.<domain> through Traefik and Authelia (two-factor, admin
+# group). It listens on all interfaces so Traefik can reach it via the olivetin docker
+# network; ufw rules in deploy-vps.yml allow port 1337 only from Traefik, and ufw's default
+# deny plus the OCI security list keep it off the internet.
+listenAddressSingleHTTPFrontend: 0.0.0.0:1337
+
+# Trust the user and groups Authelia's forward-auth sets (authResponseHeaders on the
+# authelia middleware in compose.yml). Traefik overwrites these headers with Authelia's
+# values, and ufw ensures only Traefik can reach OliveTin, so they cannot be forged.
+authHttpHeaderUsername: Remote-User
+authHttpHeaderUserGroup: Remote-Groups
+authHttpHeaderUserGroupSep: ","
+
+# Deny anything that arrives without a user, and only allow the LLDAP admin group
+# (matching the Authelia rule), so OliveTin stays locked down even if that rule changes.
+authRequireGuestsToLogin: true
+
+defaultPolicy:
+  showDiagnostics: false
+  showLogList: false
+
+accessControlLists:
+  - name: admins
+    matchUsergroups:
+      - admin
+    permissions:
+      view: true
+      exec: true
+      logs: true
+      kill: true
+    policy:
+      showDiagnostics: true
+      showLogList: true
+    addToEveryAction: true
+
+actions:
+  - title: "Hello world!"
+    shell: echo 'Hello World!'
