@@ -40,6 +40,15 @@ access_control:
         - '^/admin([/?].*)?$'
       policy: 'two_factor'
       subject: 'group:admin'
+    # Must cover every path the collabora-admin Traefik router sends here, or default_policy denies it
+    - domain:
+        - 'collabora.{{ mustEnv "BASE_DOMAIN" }}'
+      resources:
+        - '^/browser/dist/admin.*$'
+        - '^/cool/adminws.*$'
+        - '^/cool/getMetrics.*$'
+      policy: 'two_factor'
+      subject: 'group:admin'
     - domain: 
         - 'traefik-dashboard.{{ mustEnv "BASE_DOMAIN" }}'
         - 'px-home.{{ mustEnv "BASE_DOMAIN" }}'

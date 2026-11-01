@@ -637,6 +637,13 @@ services:
       traefik.http.routers.paperless.tls: "true"
       traefik.http.routers.paperless.tls.certresolver: "cloudflare"
       traefik.http.routers.paperless.middlewares: bypass-authelia@file
+      # The Django admin still accepts local passwords even with PAPERLESS_DISABLE_REGULAR_LOGIN,
+      # so route it through Authelia. Its longer rule gives it priority over the router above.
+      traefik.http.routers.paperless-admin.rule: "Host(`paperless.${BASE_DOMAIN}`) && PathPrefix(`/admin`)"
+      traefik.http.routers.paperless-admin.service: paperless
+      traefik.http.routers.paperless-admin.tls: "true"
+      traefik.http.routers.paperless-admin.tls.certresolver: "cloudflare"
+      traefik.http.routers.paperless-admin.middlewares: secured@file
 
   cadvisor:
     image: ghcr.io/google/cadvisor:v0.60.6
@@ -1013,6 +1020,14 @@ services:
       traefik.http.routers.collabora.tls: "true"
       traefik.http.routers.collabora.tls.certresolver: "cloudflare"
       traefik.http.routers.collabora.middlewares: bypass-authelia@file
+      # The admin console (UI, its websocket and metrics) is otherwise guarded only by the
+      # username/password above, so route it through Authelia. Its longer rule gives it
+      # priority over the router above.
+      traefik.http.routers.collabora-admin.rule: "Host(`collabora.${BASE_DOMAIN}`) && (PathPrefix(`/browser/dist/admin`) || PathPrefix(`/cool/adminws`) || PathPrefix(`/cool/getMetrics`))"
+      traefik.http.routers.collabora-admin.service: collabora
+      traefik.http.routers.collabora-admin.tls: "true"
+      traefik.http.routers.collabora-admin.tls.certresolver: "cloudflare"
+      traefik.http.routers.collabora-admin.middlewares: secured@file
 
   redis-dawarich:
     image: "redis:8.10.2"
