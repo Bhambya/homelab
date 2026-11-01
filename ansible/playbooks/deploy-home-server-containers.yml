@@ -15,6 +15,8 @@
         service: traefik
       - path: "hosts/home-server-containers/docker/gatus/"
         service: gatus
+      - path: "hosts/home-server-containers/docker/github-runner/"
+        service: github-runner
   environment:
     PATH: "~/.local/bin:{{ lookup('env', 'PATH') }}"
   tasks:
