@@ -37,3 +37,49 @@ accessControlLists:
 actions:
   - title: "Hello world!"
     shell: echo 'Hello World!'
+
+  # OliveTin only accepts one of the listed choices, so nothing else reaches the shell
+  - title: Recent CrowdSec decisions
+    id: crowdsec_recent_decisions
+    icon: logs
+    shell: docker exec crowdsec cscli decisions list --since {{ since }}
+    onclick: execution-dialog
+    timeout: 30
+    arguments:
+      - name: since
+        title: Since
+        description: Show IPs CrowdSec blocked within this time
+        default: 15m
+        choices:
+          - title: Last 15 minutes
+            value: 15m
+          - title: Last hour
+            value: 1h
+          - title: Last 6 hours
+            value: 6h
+          - title: Last 12 hours
+            value: 12h
+
+  # exec (no shell) is required for regex arguments; the regex only accepts an IPv4 or
+  # IPv6 address, and the value is passed to cscli as a single argument
+  - title: Delete CrowdSec decision
+    id: crowdsec_delete_decision
+    icon: logs
+    exec:
+      - docker
+      - exec
+      - crowdsec
+      - cscli
+      - decisions
+      - delete
+      - --ip
+      - "{{ ip }}"
+    onclick: execution-dialog
+    timeout: 30
+    arguments:
+      - name: ip
+        title: IP address
+        description: Remove all CrowdSec decisions (unban) for this IP
+        type: 'regex:^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(?:\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}|[0-9a-fA-F]{0,4}(?::[0-9a-fA-F]{0,4}){2,7})$'
+      - type: confirmation
+        title: Unban this IP?
