@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Detect modified folders
         if: github.event_name != 'workflow_dispatch'
@@ -46,7 +46,7 @@ jobs:
           ansible-galaxy role install -r ./ansible/requirements.yml
 
       - name: ⬇️ Check out secrets repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Bhambya/homelab-secrets
           path: .secrets
@@ -55,7 +55,7 @@ jobs:
 
       # Load the SSH private key into the ssh-agent
       - name: 🔑 Load SSH Key
-        uses: webfactory/ssh-agent@v0.10.0
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           log-public-key: false
           ssh-private-key: ${{ secrets.ANSIBLE_SSH_KEY }}

@@ -17,10 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: host_management
+    env:
+      # Passed through env rather than ${{ }} in run scripts so it cannot inject shell code
+      BATCH_SIZE: ${{ github.event.inputs.batch_size || '2' }}
 
     steps:
+      # Even via env, a value with spaces would be split by ansible-playbook -e into extra
+      # key=value vars, so reject anything but a positive integer before secrets are loaded
+      - name: Validate inputs
+        run: |
+          if ! [[ "$BATCH_SIZE" =~ ^[1-9][0-9]*$ ]]; then
+            echo "::error::batch_size must be a positive integer"
+            exit 1
+          fi
+
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Ansible
         run: |
@@ -30,7 +42,7 @@ jobs:
           ansible-galaxy role install -r ./ansible/requirements.yml
 
       - name: ⬇️ Check out secrets repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Bhambya/homelab-secrets
           path: .secrets
@@ -39,7 +51,7 @@ jobs:
 
       # Load the SSH private key into the ssh-agent
       - name: 🔑 Load SSH Key
-        uses: webfactory/ssh-agent@v0.10.0
+        uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           log-public-key: false
           ssh-private-key: ${{ secrets.ANSIBLE_SSH_KEY }}
@@ -67,7 +79,7 @@ jobs:
           ANSIBLE_CONFIG: ansible/ansible.cfg
         run: |
           ansible-playbook -i ansible/inventory.yml -i .secrets/inventory \
-           -e "batch_size=${{ github.event.inputs.batch_size || '2' }}" \
+           -e "batch_size=$BATCH_SIZE" \
            ansible/playbooks/docker-prune.yml
 
       - name: 🔨 Patch all hosts
@@ -77,5 +89,5 @@ jobs:
         run: |
           ansible-playbook -i ansible/inventory.yml -i .secrets/inventory \
            -l 'all:!home-server-wireguard-router-wg1' \
-           -e "batch_size=${{ github.event.inputs.batch_size || '2' }}" \
+           -e "batch_size=$BATCH_SIZE" \
            ansible/playbooks/patch.yml
