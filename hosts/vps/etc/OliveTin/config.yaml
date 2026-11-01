@@ -34,6 +34,16 @@ accessControlLists:
       showLogList: true
     addToEveryAction: true
 
+  # execOnCron and execOnStartup run as the built-in users "cron" and "startup" (group
+  # "system"), which authRequireGuestsToLogin otherwise blocks. Only attached to actions
+  # that list it, and only lets them run.
+  - name: scheduled
+    matchUsernames:
+      - cron
+      - startup
+    permissions:
+      exec: true
+
 actions:
   # OliveTin only accepts one of the listed choices, so nothing else reaches the shell
   - title: Recent CrowdSec decisions
@@ -109,6 +119,8 @@ actions:
     hidden: true
     execOnStartup: true
     execOnCron: '*/1 * * * *'
+    acls:
+      - scheduled
 
 entities:
   - file: entities/containers.json
