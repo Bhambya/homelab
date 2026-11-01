@@ -705,11 +705,17 @@ services:
     image: ghcr.io/falcondev-oss/github-actions-cache-server:10.0.0
     container_name: gha-cache-server
     restart: unless-stopped
-    networks:
-      proxy:
+    # Shares gluetun's network namespace with github-runner so the runner reaches
+    # it over localhost: inside gluetun, docker DNS names don't resolve and the
+    # firewall blocks the docker subnet.
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
     environment:
-      # Must be the URL the runner uses to reach this server (same docker network).
-      API_BASE_URL: http://gha-cache-server:3000
+      # Must be the URL the runner uses to reach this server (shared localhost).
+      API_BASE_URL: http://127.0.0.1:3000
       STORAGE_DRIVER: filesystem
       STORAGE_FILESYSTEM_PATH: /data/cache
       DB_DRIVER: sqlite
@@ -730,8 +736,9 @@ services:
     # (the wrapper forwards this to /entrypoint.sh); without it the runner
     # registers and immediately exits instead of listening for jobs.
     command: ["./bin/Runner.Listener", "run", "--startuptype", "service"]
-    networks:
-      proxy:
+    # Routes all traffic through Gluetun
+    # Observing slow connectivity to Github. This might help.
+    network_mode: "service:gluetun" 
     deploy:
       resources:
         limits:
@@ -747,13 +754,17 @@ services:
       # slash is required. ACTIONS_CACHE_SERVICE_V2 enables the v2 cache
       # protocol; DISABLE_AUTO_UPDATE keeps the patched binary from being
       # replaced by an upstream auto-update.
-      CUSTOM_ACTIONS_RESULTS_URL: http://gha-cache-server:3000/
+      CUSTOM_ACTIONS_RESULTS_URL: http://127.0.0.1:3000/
       ACTIONS_CACHE_SERVICE_V2: "true"
       DISABLE_AUTO_UPDATE: "true"
     volumes:
       - './github-runner/patched-runner-entrypoint.sh:/patched-runner-entrypoint.sh:ro'
     depends_on:
-      - gha-cache-server
+      gluetun:
+        condition: service_healthy
+        restart: true
+      gha-cache-server:
+        condition: service_started
 
 networks:
   proxy:
