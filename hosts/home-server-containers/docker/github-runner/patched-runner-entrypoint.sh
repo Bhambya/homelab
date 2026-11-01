@@ -26,8 +26,11 @@ MARKER="/actions-runner/.patched-runner-${RUNNER_VERSION}"
 
 if [[ ! -f "$MARKER" ]]; then
   echo "Overlaying falcondev patched runner v${RUNNER_VERSION}..."
-  curl -fsSL -o /tmp/patched-runner.tar.gz \
-    "https://github.com/falcondev-oss/github-actions-runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
+  # curl redraws its progress meter with \r, which docker logs shows as one
+  # ever-growing line; translate to \n so each update is its own log line.
+  curl -fSL -o /tmp/patched-runner.tar.gz \
+    "https://github.com/falcondev-oss/github-actions-runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" \
+    2> >(tr '\r' '\n' >&2)
   if ! echo "${PATCHED_RUNNER_SHA256}  /tmp/patched-runner.tar.gz" | sha256sum -c -; then
     echo "ERROR: patched runner checksum mismatch for v${RUNNER_VERSION}." >&2
     echo "The base image's runner version likely changed; recompute and update PATCHED_RUNNER_SHA256." >&2
