@@ -18,8 +18,12 @@
         service: traefik
       - path: "hosts/vps/docker/gatus/"
         service: gatus
+      - path: "hosts/vps/docker/grafana/"
+        service: grafana
       - path: "hosts/vps/docker/crowdsec/"
         service: crowdsec
+      - path: "hosts/vps/docker/prometheus/"
+        service: prometheus
   environment:
     PATH: "~/.local/bin:{{ lookup('env', 'PATH') }}"
   tasks:
