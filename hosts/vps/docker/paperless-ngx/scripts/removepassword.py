@@ -44,7 +44,9 @@ def extract_pdf_attachments(file_path: str):
     with pikepdf.open(file_path) as pdf:
         ats = pdf.attachments
         for atm in ats:
-            trg_filename = ats.get(atm).filename
+            # The name comes from the PDF itself: an absolute path or ../ would make
+            # os.path.join write outside the consume directory, so keep only the basename
+            trg_filename = os.path.basename(ats.get(atm).filename)
             if is_pdf(trg_filename):
                 trg_file_path = os.path.join(consume_path, trg_filename)
                 try:
