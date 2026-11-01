@@ -245,6 +245,39 @@ services:
       traefik.http.routers.qbittorrent.tls.certresolver: "cloudflare"
       traefik.http.services.qbittorrent.loadbalancer.server.port: '8383'
 
+  # Config is managed through the Web UI and stored in /config.
+  qbit_manage:
+    image: ghcr.io/stuffanthings/qbit_manage:v4.14.0
+    container_name: qbit_manage
+    # Shares qbittorrent's network namespace so it reaches the WebUI at
+    # 127.0.0.1:8383 (qbt host in config.yml).
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - QBT_WEB_SERVER=true
+      - QBT_PORT=8181
+      - QBT_SCHEDULE=30
+      - QBT_CONFIG_DIR=/config
+    volumes:
+      - /var/lib/docker-data/qbit_manage:/config
+      # Must match qbittorrent's mapping so torrent paths line up
+      - ${MEDIA_PATH}:/data
+    restart: unless-stopped
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+      qbittorrent:
+        condition: service_started
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.qbit_manage.rule: 'Host(`qbm.home.${BASE_DOMAIN}`)'
+      traefik.http.routers.qbit_manage.tls: "true"
+      traefik.http.routers.qbit_manage.tls.certresolver: "cloudflare"
+      traefik.http.services.qbit_manage.loadbalancer.server.port: '8181'
+
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:v3.5.2
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
@@ -580,6 +613,7 @@ services:
       - /var/lib/docker-data/mealie:/var/lib/docker-data/mealie/:ro
       - /var/lib/docker-data/audiobookshelf:/var/lib/docker-data/audiobookshelf/:ro
       - /var/lib/docker-data/qbittorrent:/var/lib/docker-data/qbittorrent/:ro
+      - /var/lib/docker-data/qbit_manage:/var/lib/docker-data/qbit_manage/:ro
       - /var/lib/docker-data/navidrome:/var/lib/docker-data/navidrome/:ro
       - /var/lib/docker-data/immich/backups:/var/lib/docker-data/immich/backups:ro
       - /var/lib/docker-data/radarr/config:/var/lib/docker-data/radarr/config
