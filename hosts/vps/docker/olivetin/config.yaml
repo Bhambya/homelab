@@ -117,7 +117,7 @@ actions:
     shell: docker ps -a --format json > /config/entities/containers.json
     hidden: true
     execOnStartup: true
-    execOnCron: '*/1 * * * *'
+    execOnCron: '*/10 * * * *'
     acls:
       - scheduled
 
