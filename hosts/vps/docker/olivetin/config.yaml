@@ -66,12 +66,12 @@ actions:
           - title: Last 12 hours
             value: 12h
 
-  # Keeps the IP dropdown of "Delete CrowdSec decision" current. The ? in the jq filter
-  # turns cscli's null (no decisions) into an empty list instead of an error, and
-  # pipefail still fails the run if cscli itself fails.
+  # Keeps the IP dropdown of "Delete CrowdSec decision" current, with bans only. The ? in
+  # the jq filter turns cscli's null (no decisions) into an empty list instead of an
+  # error, and pipefail still fails the run if cscli itself fails.
   - title: Update CrowdSec decisions entity file
     icon: <iconify-icon icon="selfhst:crowdsec"></iconify-icon>
-    shell: set -o pipefail; docker exec crowdsec cscli decisions list --since 12h --output json | jq '.[]?.decisions[]?' > /config/entities/crowdsec_decisions.json
+    shell: set -o pipefail; docker exec crowdsec cscli decisions list --since 12h --output json | jq '.[]?.decisions[]? | select(.type == "ban")' > /config/entities/crowdsec_decisions.json
     execOnStartup: true
     execOnCron: '*/30 * * * *'
     acls:
