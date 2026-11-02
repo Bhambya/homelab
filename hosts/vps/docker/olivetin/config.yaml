@@ -128,10 +128,10 @@ actions:
   # docker socket (root on the VPS). whatsapp is a full Chromium browser running a third-
   # party web app with seccomp disabled, so a browser exploit there would become root on
   # the VPS. docker exec gives OliveTin nothing new (it already has the socket) and gives
-  # whatsapp no new access. exec (no shell) passes
-  # the endpoint and the argument values to the script as separate arguments, and
-  # json.dumps builds the body, so values cannot inject shell or JSON. The API handles one
-  # request at a time, so a call can wait behind Gatus' hourly dry run.
+  # whatsapp no new access. exec (no shell) passes the endpoint and the argument values
+  # to the script as separate arguments, and json.dumps builds the body, so values cannot
+  # inject shell or JSON. The API handles one request at a time, so a call can wait
+  # behind Gatus' hourly dry run.
   - title: WhatsApp login
     id: whatsapp_login
     icon: <iconify-icon icon="selfhst:whatsapp"></iconify-icon>
@@ -141,14 +141,17 @@ actions:
       - whatsapp
       - /server/.venv/bin/python3
       - -c
-      # Shared with the other WhatsApp actions. Arguments: endpoint, then JSON
-      # key/value pairs. Must not contain double curly braces (OliveTin templating).
+      # Shared with the send action. Arguments: endpoint, then JSON key/value pairs.
+      # Must not contain double curly braces (OliveTin templating).
       - &whatsapp_api_call |
         import json, sys, urllib.error, urllib.request
         endpoint, *fields = sys.argv[1:]
+        body = dict(zip(fields[::2], fields[1::2]))
+        if endpoint == "message" and not body.get("message", "").strip():
+            sys.exit("Enter a message, or check Dry run")
         request = urllib.request.Request(
             "http://localhost:5000/api/" + endpoint,
-            data=json.dumps(dict(zip(fields[::2], fields[1::2]))).encode(),
+            data=json.dumps(body).encode(),
             headers={"Content-Type": "application/json"},
         )
         try:
@@ -164,29 +167,9 @@ actions:
       - type: confirmation
         title: Open whatsapp.<domain> first to scan the QR code, then start the login
 
-  - title: WhatsApp dry run message
-    id: whatsapp_dry_run_message
-    icon: <iconify-icon icon="selfhst:whatsapp"></iconify-icon>
-    exec:
-      - docker
-      - exec
-      - whatsapp
-      - /server/.venv/bin/python3
-      - -c
-      - *whatsapp_api_call
-      - dry_run_message
-      - phone_number
-      - "{{ phone_number }}"
-    onclick: execution-dialog
-    timeout: 300
-    arguments:
-      - &whatsapp_phone_number
-        name: phone_number
-        title: Phone number
-        description: Country code and number, digits only (no spaces)
-        type: 'regex:^\+?[0-9]{7,15}$'
-        rejectNull: true
-
+  # A dry run checks that the chat opens and the message box is clickable, without
+  # sending (the dry_run_message endpoint ignores the message). The checkbox picks the
+  # endpoint: OliveTin maps the form's 1/0 to the matching choice value.
   - title: WhatsApp send message
     id: whatsapp_send_message
     icon: <iconify-icon icon="selfhst:whatsapp"></iconify-icon>
@@ -197,7 +180,7 @@ actions:
       - /server/.venv/bin/python3
       - -c
       - *whatsapp_api_call
-      - message
+      - "{{ dry_run }}"
       - phone_number
       - "{{ phone_number }}"
       - message
@@ -205,11 +188,47 @@ actions:
     onclick: execution-dialog
     timeout: 300
     arguments:
-      - *whatsapp_phone_number
+      - name: phone_number
+        title: Phone number
+        description: Country code and number, digits only (no spaces)
+        type: 'regex:^\+?[0-9]{7,15}$'
+        rejectNull: true
       - name: message
         title: Message
+        description: Not needed for a dry run
         type: raw_string_multiline
-        rejectNull: true
+      - name: dry_run
+        title: Dry run?
+        type: checkbox
+        default: "0"
+        choices:
+          - title: "1"
+            value: dry_run_message
+          - title: "0"
+            value: message
+
+  # Authelia keeps its sessions (including remember-me ones) only in redis-authelia,
+  # database 0, and that redis serves nothing else, so flushing it signs everyone out,
+  # including you (the next page load asks you to log in again). It does not touch
+  # TOTP/WebAuthn devices, and it does not end sessions that apps logged in through
+  # Authelia OIDC (Paperless, Nextcloud, ...) hold themselves, or their OIDC tokens.
+  # The password is read inside the container (REDISCLI_AUTH), so it is not in
+  # OliveTin's logs or the process list.
+  - title: Invalidate all Authelia sessions
+    id: authelia_invalidate_sessions
+    icon: <iconify-icon icon="selfhst:authelia"></iconify-icon>
+    exec:
+      - docker
+      - exec
+      - redis-authelia
+      - sh
+      - -c
+      - REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli -n 0 FLUSHDB
+    onclick: execution-dialog
+    timeout: 30
+    arguments:
+      - type: confirmation
+        title: Sign out every Authelia session, including yours?
 
 entities:
   - file: entities/containers.json
