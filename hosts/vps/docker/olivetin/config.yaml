@@ -1,13 +1,12 @@
-# Deployed to /etc/OliveTin/config.yaml by deploy-vps.yml. OliveTin runs as root on the
-# host and is served at commands.<domain> through Traefik and Authelia (two-factor, admin
-# group). It listens on all interfaces so Traefik can reach it via the olivetin docker
-# network; ufw rules in deploy-vps.yml allow port 1337 only from Traefik, and ufw's default
-# deny plus the OCI security list keep it off the internet.
+# Mounted into the olivetin container at /config/config.yaml (see compose.yml). OliveTin
+# is served at commands.<domain> through Traefik and Authelia (two-factor, admin group).
+# Its only network is olivetin-traefik, shared with Traefik alone, and it reaches docker
+# through the mounted socket.
 listenAddressSingleHTTPFrontend: 0.0.0.0:1337
 
 # Trust the user and groups Authelia's forward-auth sets (authResponseHeaders on the
 # authelia middleware in compose.yml). Traefik overwrites these headers with Authelia's
-# values, and ufw ensures only Traefik can reach OliveTin, so they cannot be forged.
+# values, and only Traefik can reach OliveTin, so they cannot be forged.
 authHttpHeaderUsername: Remote-User
 authHttpHeaderUserGroup: Remote-Groups
 authHttpHeaderUserGroupSep: ","
@@ -115,7 +114,7 @@ actions:
 
   # Keeps the container list for the dropdown above current
   - title: Update container entity file
-    shell: docker ps -a --format json > /etc/OliveTin/entities/containers.json
+    shell: docker ps -a --format json > /config/entities/containers.json
     hidden: true
     execOnStartup: true
     execOnCron: '*/1 * * * *'

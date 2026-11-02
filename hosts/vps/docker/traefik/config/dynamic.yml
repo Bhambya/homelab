@@ -105,20 +105,8 @@ http:
       loadBalancer:
         servers:
           - url: "https://home-server-containers:443" # home server Wireguard peer IP
-    olivetin:
-      loadBalancer:
-        servers:
-          - url: "http://172.31.255.1:1337" # the host, via the olivetin docker network
 
   routers:
-    # OliveTin runs commands on the host as root: Authelia two-factor, admin group only
-    commands:
-      middlewares:
-        - secured
-      rule: 'Host(`commands.{{ env "BASE_DOMAIN" }}`)'
-      service: olivetin
-      tls:
-        certResolver: cloudflare
     traefik-dashboard:
       middlewares:
         - "crowdsec-bouncer@file"

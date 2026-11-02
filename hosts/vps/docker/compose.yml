@@ -118,9 +118,7 @@ services:
       authelia:
       prometheus:
       paperless:
-      # Static IP so ufw can allow only Traefik to reach OliveTin on the host
-      olivetin:
-        ipv4_address: 172.31.255.2
+      olivetin-traefik:
     ports:
       - "80:80"
       - "443:443"
@@ -1250,6 +1248,33 @@ services:
       proxy:
     restart: "unless-stopped"
 
+  olivetin:
+    image: "ghcr.io/olivetin/olivetin:3000.21.0"
+    container_name: olivetin
+    restart: unless-stopped
+    # The docker socket needs root (or the host's docker group). Root here gives nothing
+    # beyond what the socket already grants, and privileged is not needed.
+    user: root
+    environment:
+      TZ: ${TIME_ZONE}
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      # Writable /config for the entity files; the config itself comes from the repo
+      - "/var/lib/docker-data/olivetin:/config"
+      - "./olivetin/config.yaml:/config/config.yaml:ro"
+    # Only Traefik shares this network, which is what makes trusting Authelia's
+    # Remote-User header safe (see the comments in olivetin/config.yaml)
+    networks:
+      olivetin-traefik:
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "olivetin-traefik"
+      traefik.http.routers.olivetin.rule: "Host(`commands.${BASE_DOMAIN}`)"
+      traefik.http.services.olivetin.loadbalancer.server.port: "1337"
+      traefik.http.routers.olivetin.tls: "true"
+      traefik.http.routers.olivetin.tls.certresolver: "cloudflare"
+      traefik.http.routers.olivetin.middlewares: secured@file
+
 volumes:
   crowdsec-db:
     name: crowdsec-db
@@ -1278,13 +1303,7 @@ networks:
   docmost:
   nextcloud:
   dawarich:
-  # Traefik's link to OliveTin, which runs on the host. Fixed at the end of the docker
-  # address pool (172.16.0.0/12) so it never collides with auto-assigned networks.
-  # The gateway (.1) is the host; the IPs are referenced in traefik/config/dynamic.yml
-  # and the OliveTin ufw rules in deploy-vps.yml.
-  olivetin:
-    name: "olivetin"
-    ipam:
-      config:
-        - subnet: 172.31.255.0/28
-          gateway: 172.31.255.1
+  # Only Traefik and OliveTin; internal, so OliveTin has no outbound access
+  olivetin-traefik:
+    name: "olivetin-traefik"
+    internal: true

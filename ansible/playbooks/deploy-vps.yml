@@ -24,10 +24,8 @@
         service: crowdsec
       - path: "hosts/vps/docker/prometheus/"
         service: prometheus
-    # arm64 .deb; the checksum is from the release's checksums.txt
-    olivetin_version: "3000.21.0"
-    olivetin_deb_sha256: "ccc59b39006fb177acb2d730f184a31ff28fc09099770b4b7722f9abcb58361c"
-    olivetin_deb_path: "/tmp/OliveTin_{{ olivetin_version }}_linux_arm64.deb"
+      - path: "hosts/vps/docker/olivetin/"
+        service: olivetin
   environment:
     PATH: "~/.local/bin:{{ lookup('env', 'PATH') }}"
   tasks:
@@ -93,6 +91,8 @@
         - dawarich/backups
         # photon's reverse geocoding index; not backed up, it is rebuilt from upstream
         - photon/data
+        # written by OliveTin's container list refresh action
+        - olivetin/entities
 
     # Read from the control node so the mapping always matches the vault variables
     - name: Read secret mapping
@@ -129,91 +129,6 @@
           dest: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
           notify: "Restart crowdsec-firewall-bouncer"
           mode: "0600"
-
-    # OliveTin listens on all interfaces so Traefik can reach it, but ufw allows the whole
-    # docker range (172.16.0.0/12) to reach the host, so any container could skip Authelia.
-    # Allow only Traefik's static IP (see the olivetin network in compose.yml) and block the
-    # rest of the docker range, inserted above that broad allow. These run before the config
-    # below is changed, so port 1337 is never open to other containers.
-    - name: Allow only Traefik to reach OliveTin
-      become: true
-      community.general.ufw:
-        rule: allow
-        from_ip: 172.31.255.2
-        to_port: "1337"
-        proto: tcp
-        insert: 1
-        comment: "OliveTin: Traefik only"
-
-    - name: Block OliveTin for all other containers
-      become: true
-      community.general.ufw:
-        rule: deny
-        from_ip: 172.16.0.0/12
-        to_port: "1337"
-        proto: tcp
-        insert: 2
-        comment: "OliveTin: Traefik only"
-
-    # Written before the package is installed so dpkg keeps it (force-confold) instead of
-    # the shipped demo config, which listens on 0.0.0.0 and has demo actions that run as root
-    - name: Create OliveTin config directory
-      become: true
-      ansible.builtin.file:
-        path: /etc/OliveTin
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-
-    - name: Copy OliveTin config
-      become: true
-      ansible.builtin.copy:
-        src: "{{ github_workdir }}/hosts/vps/etc/OliveTin/config.yaml"
-        dest: /etc/OliveTin/config.yaml
-        owner: root
-        group: root
-        mode: "0644"
-      notify: Restart OliveTin
-
-    - name: Gather installed packages
-      ansible.builtin.package_facts:
-        manager: apt
-
-    # The package is named "OliveTin", so look it up under either case
-    - name: Set installed OliveTin version
-      ansible.builtin.set_fact:
-        olivetin_installed_version: >-
-          {{ (ansible_facts.packages['olivetin'] | default(ansible_facts.packages['OliveTin'] | default([{}])))[0].version | default('') }}
-
-    - name: Download OliveTin package
-      ansible.builtin.get_url:
-        url: "https://github.com/OliveTin/OliveTin/releases/download/{{ olivetin_version }}/OliveTin_linux_arm64.deb"
-        dest: "{{ olivetin_deb_path }}"
-        checksum: "sha256:{{ olivetin_deb_sha256 }}"
-        mode: "0644"
-      when: olivetin_installed_version != olivetin_version
-
-    - name: Install OliveTin package
-      become: true
-      ansible.builtin.apt:
-        deb: "{{ olivetin_deb_path }}"
-        dpkg_options: "force-confdef,force-confold"
-      when: olivetin_installed_version != olivetin_version
-      notify: Restart OliveTin
-
-    - name: Remove downloaded OliveTin package
-      ansible.builtin.file:
-        path: "{{ olivetin_deb_path }}"
-        state: absent
-
-    - name: Enable and start OliveTin
-      become: true
-      ansible.builtin.systemd_service:
-        name: OliveTin
-        enabled: true
-        state: started
-        daemon_reload: true
 
     - name: Copy logrotate files
       become: true
@@ -317,11 +232,5 @@
       become: true
       ansible.builtin.systemd_service:
         name: logrotate
-        state: restarted
-
-    - name: Restart OliveTin
-      become: true
-      ansible.builtin.systemd_service:
-        name: OliveTin
         state: restarted
 
