@@ -66,27 +66,44 @@ actions:
           - title: Last 12 hours
             value: 12h
 
-  # exec (no shell) is required for regex arguments; the regex only accepts an IPv4 or
-  # IPv6 address, and the value is passed to cscli as a single argument
+  # Pick a recently blocked IP from the dropdown (the decision entity file, refreshed by
+  # the hidden action below), or type one, which takes precedence. OliveTin can only fill
+  # dropdown choices from an entity, not suggestions for a typed field, hence two fields.
+  # exec (no shell) is required for regex arguments. The script is fixed: both values
+  # reach it as positional arguments ($1, $2), never as part of the script text, and the
+  # IP is passed to cscli as a single argument. The typed IP's regex accepts an IPv4 or
+  # IPv6 address, or nothing.
   - title: Delete CrowdSec decision
     id: crowdsec_delete_decision
     icon: <iconify-icon icon="selfhst:crowdsec"></iconify-icon>
     exec:
-      - docker
-      - exec
-      - crowdsec
-      - cscli
-      - decisions
-      - delete
-      - --ip
+      - sh
+      - -c
+      - |
+        ip="${1:-$2}"
+        if [ -z "$ip" ]; then
+          echo "Pick a recently blocked IP or type one" >&2
+          exit 1
+        fi
+        exec docker exec crowdsec cscli decisions delete --ip "$ip"
+      - sh
+      - "{{ typed_ip }}"
       - "{{ ip }}"
     onclick: execution-dialog
     timeout: 30
+    triggers: ["Update CrowdSec decisions entity file"]
     arguments:
       - name: ip
-        title: IP address
-        description: Remove all CrowdSec decisions (unban) for this IP
-        type: 'regex:^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(?:\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}|[0-9a-fA-F]{0,4}(?::[0-9a-fA-F]{0,4}){2,7})$'
+        title: Recently blocked IP
+        description: From CrowdSec decisions in the last 12 hours
+        entity: decision
+        choices:
+          - value: '{{ decision.value }}'
+            title: '{{ decision.value }} ({{ decision.scenario }})'
+      - name: typed_ip
+        title: Or type an IP
+        description: Overrides the IP picked above; leave empty to use it
+        type: 'regex:^(?:(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])(?:\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])){3}|[0-9a-fA-F]{0,4}(?::[0-9a-fA-F]{0,4}){2,7}))?$'
       - type: confirmation
         title: Unban this IP?
 
@@ -111,6 +128,17 @@ actions:
         choices:
           - value: '{{ container.Names }}'
             title: '{{ container.Names }}'
+
+  # Keeps the IP dropdown of "Delete CrowdSec decision" current. The ? in the jq filter
+  # turns cscli's null (no decisions) into an empty list instead of an error, and
+  # pipefail still fails the run if cscli itself fails.
+  - title: Update CrowdSec decisions entity file
+    icon: <iconify-icon icon="selfhst:crowdsec"></iconify-icon>
+    shell: set -o pipefail; docker exec crowdsec cscli decisions list --since 12h --output json | jq '.[]?.decisions[]?' > /config/entities/crowdsec_decisions.json
+    execOnStartup: true
+    execOnCron: '*/30 * * * *'
+    acls:
+      - scheduled
 
   # Keeps the container list for the dropdown above current
   - title: Update container entity file
@@ -233,3 +261,5 @@ actions:
 entities:
   - file: entities/containers.json
     name: container
+  - file: entities/crowdsec_decisions.json
+    name: decision
