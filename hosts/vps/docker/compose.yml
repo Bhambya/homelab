@@ -18,7 +18,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   lldap:
-    image: "lldap/lldap:v0.6.3"
+    image: "lldap/lldap:v0.6.3@sha256:2a8454b668c1aba7157e832eab0e242e1e7eb5fb7591d7e7774ba05286511ca8"
     container_name: lldap
     restart: "unless-stopped"
     volumes:
@@ -43,7 +43,7 @@ services:
       traefik.http.routers.lldap.middlewares: bypass-authelia@file
 
   authelia:
-    image: "ghcr.io/authelia/authelia:4.39.28"
+    image: "ghcr.io/authelia/authelia:4.39.28@sha256:bd97cff4fcbf715b5ff1f9ae286afbe6033afce385302520b0368122d43a6f54"
     container_name: "authelia"
     restart: "unless-stopped"
     volumes:
@@ -108,7 +108,7 @@ services:
       && authelia'
 
   traefik:
-    image: "traefik:v3.7.16"
+    image: "traefik:v3.7.16@sha256:1336e85aaed293bd63d005086e0dd013b04078b26aaeb1c18b26a2f928af7e65"
     container_name: "traefik"
     restart: "unless-stopped"
     security_opt:
@@ -204,7 +204,7 @@ services:
       proxy:
 
   crowdsec:
-    image: "crowdsecurity/crowdsec:v1.8.1"
+    image: "crowdsecurity/crowdsec:v1.8.1@sha256:0f2523fa61ef507f15d953045cface490cc880670c62f2755ced17524107f71a"
     container_name: crowdsec
     environment:
       TZ: ${TIME_ZONE}
@@ -264,7 +264,7 @@ services:
 
   watchtower:
     container_name: "watchtower"
-    image: "beatkind/watchtower:2.3.2"
+    image: "beatkind/watchtower:2.3.2@sha256:933d08e37bf7a5b81bb688f02aeb908d0a410a4f2de1895b720c4060f2ceb1ab"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
@@ -357,7 +357,7 @@ services:
           memory: 1G
 
   alloy:
-    image: "grafana/alloy:v1.21.2"
+    image: "grafana/alloy:v1.21.2@sha256:89a5a320168387336b9ac3c850609c3ba7757eadd4ae5f1d819deb35e9854b18"
     container_name: alloy
     restart: unless-stopped
     networks:
@@ -433,7 +433,7 @@ services:
       traefik.http.routers.grafana.middlewares: bypass-authelia@file
 
   vaultwarden:
-    image: "ghcr.io/dani-garcia/vaultwarden:1.37.5"
+    image: "ghcr.io/dani-garcia/vaultwarden:1.37.5@sha256:4fe17f415f90087377d37c755e0ea3cf189dcc6794e49cdd2a9adbb4937d9e1f"
     container_name: vaultwarden
     networks:
       proxy:
@@ -564,7 +564,7 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
 
   paperless-ngx:
-    image: "ghcr.io/paperless-ngx/paperless-ngx:3.4"
+    image: "ghcr.io/paperless-ngx/paperless-ngx:3.4@sha256:1a08d8dfc2b51a08de09652dd86ad4d0c611c362382f944533ad38b73125fbc4"
     container_name: paperless-ngx
     restart: unless-stopped
     networks:
@@ -647,7 +647,7 @@ services:
       traefik.http.routers.paperless-admin.middlewares: secured@file
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.60.6
+    image: ghcr.io/google/cadvisor:v0.60.6@sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a
     devices:
       - /dev/kmsg
     privileged: true
@@ -1249,7 +1249,7 @@ services:
     restart: "unless-stopped"
 
   olivetin:
-    image: "ghcr.io/olivetin/olivetin:3000.21.0"
+    image: "ghcr.io/olivetin/olivetin:3000.21.0@sha256:74e9364a1915ede4547361b7571b0a83c031bd16d71ea55264e7a28db9029aec"
     container_name: olivetin
     restart: unless-stopped
     # The docker socket needs root (or the host's docker group). Root here gives nothing
