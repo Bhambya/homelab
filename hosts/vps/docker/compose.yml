@@ -758,7 +758,7 @@ services:
     networks:
       - proxy
     labels:
-      traefik.enable: "false" # enable to login with QR code
+      traefik.enable: "true"
       traefik.http.routers.chromium.rule: "Host(`whatsapp.${BASE_DOMAIN}`)"
       traefik.http.services.chromium.loadbalancer.server.port: "3000"
       traefik.http.routers.chromium.tls: "true"

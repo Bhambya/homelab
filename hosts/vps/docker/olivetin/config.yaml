@@ -121,6 +121,96 @@ actions:
     acls:
       - scheduled
 
+  # The whatsapp container's API (port 5000) is not reachable from OliveTin's network, so
+  # these call it from inside the container with its own python. Do not connect the two
+  # containers' networks instead: anything that can reach OliveTin directly can forge the
+  # Remote-User/Remote-Groups headers, skip Authelia, run actions as admin and reach the
+  # docker socket (root on the VPS). whatsapp is a full Chromium browser running a third-
+  # party web app with seccomp disabled, so a browser exploit there would become root on
+  # the VPS. docker exec gives OliveTin nothing new (it already has the socket) and gives
+  # whatsapp no new access. exec (no shell) passes
+  # the endpoint and the argument values to the script as separate arguments, and
+  # json.dumps builds the body, so values cannot inject shell or JSON. The API handles one
+  # request at a time, so a call can wait behind Gatus' hourly dry run.
+  - title: WhatsApp login
+    id: whatsapp_login
+    icon: <iconify-icon icon="selfhst:whatsapp"></iconify-icon>
+    exec:
+      - docker
+      - exec
+      - whatsapp
+      - /server/.venv/bin/python3
+      - -c
+      # Shared with the other WhatsApp actions. Arguments: endpoint, then JSON
+      # key/value pairs. Must not contain double curly braces (OliveTin templating).
+      - &whatsapp_api_call |
+        import json, sys, urllib.error, urllib.request
+        endpoint, *fields = sys.argv[1:]
+        request = urllib.request.Request(
+            "http://localhost:5000/api/" + endpoint,
+            data=json.dumps(dict(zip(fields[::2], fields[1::2]))).encode(),
+            headers={"Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=290) as response:
+                print(response.read().decode())
+        except urllib.error.HTTPError as error:
+            print(error.code, error.read().decode())
+            sys.exit(1)
+      - login
+    onclick: execution-dialog
+    timeout: 300
+    arguments:
+      - type: confirmation
+        title: Open whatsapp.<domain> first to scan the QR code, then start the login
+
+  - title: WhatsApp dry run message
+    id: whatsapp_dry_run_message
+    icon: <iconify-icon icon="selfhst:whatsapp"></iconify-icon>
+    exec:
+      - docker
+      - exec
+      - whatsapp
+      - /server/.venv/bin/python3
+      - -c
+      - *whatsapp_api_call
+      - dry_run_message
+      - phone_number
+      - "{{ phone_number }}"
+    onclick: execution-dialog
+    timeout: 300
+    arguments:
+      - &whatsapp_phone_number
+        name: phone_number
+        title: Phone number
+        description: Country code and number, digits only (no spaces)
+        type: 'regex:^\+?[0-9]{7,15}$'
+        rejectNull: true
+
+  - title: WhatsApp send message
+    id: whatsapp_send_message
+    icon: <iconify-icon icon="selfhst:whatsapp"></iconify-icon>
+    exec:
+      - docker
+      - exec
+      - whatsapp
+      - /server/.venv/bin/python3
+      - -c
+      - *whatsapp_api_call
+      - message
+      - phone_number
+      - "{{ phone_number }}"
+      - message
+      - "{{ message }}"
+    onclick: execution-dialog
+    timeout: 300
+    arguments:
+      - *whatsapp_phone_number
+      - name: message
+        title: Message
+        type: raw_string_multiline
+        rejectNull: true
+
 entities:
   - file: entities/containers.json
     name: container
