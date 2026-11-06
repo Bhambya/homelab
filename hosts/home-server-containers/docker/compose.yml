@@ -748,7 +748,7 @@ services:
       DB_DRIVER: sqlite
       DB_SQLITE_PATH: /data/cache-server.db
       CACHE_CLEANUP_OLDER_THAN_DAYS: "30"
-      CACHE_FILESYSTEM_MAX_USAGE_PERCENT: "90"
+      CACHE_FILESYSTEM_MAX_USAGE_PERCENT: "70"
     volumes:
       - '/var/lib/docker-data/gha-cache-server:/data'
 
