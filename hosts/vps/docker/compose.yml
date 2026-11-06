@@ -501,7 +501,7 @@ services:
       traefik.http.routers.backrest.middlewares: secured@file
 
   apprise:
-    image: "caronc/apprise:1.5"
+    image: "caronc/apprise:2.0"
     container_name: apprise
     networks:
       proxy:
