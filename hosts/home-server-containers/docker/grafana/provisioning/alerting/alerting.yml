@@ -54,7 +54,7 @@ groups:
                 conditions:
                     - evaluator:
                         params:
-                            - 0.7
+                            - 0.8
                         type: gt
                       operator:
                         type: and
