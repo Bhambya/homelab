@@ -247,7 +247,7 @@ services:
 
   # Config is managed through the Web UI and stored in /config.
   qbit_manage:
-    image: ghcr.io/stuffanthings/qbit_manage:v4.14.0
+    image: ghcr.io/stuffanthings/qbit_manage:v4.15.0
     container_name: qbit_manage
     # Shares qbittorrent's network namespace so it reaches the WebUI at
     # 127.0.0.1:8383 (qbt host in config.yml).
