@@ -20,3 +20,16 @@ cron_jobs:
     job: "docker exec qbittorrent sh -c \"curl -s -b 'mam_id={{ vault_mam_id }}' https://t.myanonamouse.net/json/dynamicSeedbox.php\" | jq -e '.Success == true' >/dev/null || curl -X POST -F \"body=MAM Seedbox IP update failed!\" http://127.0.0.1:8000/notify/apprise"
     minute: "15"
     user: "root"
+
+  # At 03:00, every day
+  # Sonarr only renames on import, so files keep stale names (e.g. TBA titles) after metadata refreshes
+  - name: "Sonarr rename all series"
+    job: >-
+      key=$(sed -n 's:.*<ApiKey>\(.*\)</ApiKey>.*:\1:p' /var/lib/docker-data/sonarr/config/config.xml) &&
+      ids=$(docker exec sonarr curl -sf -H "X-Api-Key: $key" http://localhost:8989/api/v3/series | jq -ce '[.[].id]') &&
+      docker exec sonarr curl -sf -X POST -H "X-Api-Key: $key" -H "Content-Type: application/json"
+      -d "{\"name\":\"RenameSeries\",\"seriesIds\":$ids}" http://localhost:8989/api/v3/command >/dev/null
+      || curl -X POST -F "body=Cron Sonarr rename failed!" http://127.0.0.1:8000/notify/apprise
+    hour: "3"
+    minute: "0"
+    user: "root"
