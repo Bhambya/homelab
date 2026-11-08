@@ -571,55 +571,6 @@ groups:
           isPaused: false
           notification_settings:
             receiver: Telegram
-        - uid: belgxrri4lfy8e
-          title: Watchtower container is down
-          condition: C
-          data:
-            - refId: A
-              relativeTimeRange:
-                from: 300
-                to: 0
-              datasourceUid: prometheus
-              model:
-                editorMode: code
-                expr: time() - (max(container_last_seen{name="watchtower"}) by(name))
-                instant: true
-                intervalMs: 1000
-                legendFormat: __auto
-                maxDataPoints: 43200
-                range: false
-                refId: A
-            - refId: C
-              datasourceUid: __expr__
-              model:
-                conditions:
-                    - evaluator:
-                        params:
-                            - 60
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                            - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                datasource:
-                    type: __expr__
-                    uid: __expr__
-                expression: A
-                intervalMs: 1000
-                maxDataPoints: 43200
-                refId: C
-                type: threshold
-          noDataState: Alerting
-          execErrState: Error
-          for: 5m
-          isPaused: false
-          notification_settings:
-            receiver: Telegram
         - uid: belh13d2qetq8b
           title: bouncer-traefik container is down
           condition: C
@@ -878,3 +829,8 @@ groups:
           isPaused: false
           notification_settings:
             receiver: Telegram
+
+# List of alert rule UIDs that should be deleted
+deleteRules:
+  - orgId: 1
+    uid: belgxrri4lfy8e

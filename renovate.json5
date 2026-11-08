@@ -203,7 +203,6 @@
       "description": "Backup and maintenance tools",
       "matchPackageNames": [
         "garethgeorge/backrest",
-        "beatkind/watchtower",
         "caronc/apprise"
       ],
       "labels": [

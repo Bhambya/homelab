@@ -518,56 +518,6 @@ groups:
           isPaused: false
           notification_settings:
             receiver: Telegram
-        - uid: watchtower_container
-          title: Watchtower container is down
-          condition: C
-          data:
-            - refId: A
-              relativeTimeRange:
-                from: 300
-                to: 0
-              datasourceUid: prometheus
-              model:
-                editorMode: code
-                expr: time() - (max(container_last_seen{name="watchtower"}) by(name))
-                instant: true
-                intervalMs: 1000
-                legendFormat: __auto
-                maxDataPoints: 43200
-                range: false
-                refId: A
-            - refId: C
-              datasourceUid: __expr__
-              model:
-                conditions:
-                    - evaluator:
-                        params:
-                            - 60
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                            - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                datasource:
-                    type: __expr__
-                    uid: __expr__
-                expression: A
-                intervalMs: 1000
-                maxDataPoints: 43200
-                refId: C
-                type: threshold
-          noDataState: Alerting
-          execErrState: Error
-          for: 5m
-          keepFiringFor: 5m
-          isPaused: false
-          notification_settings:
-            receiver: Telegram
         - uid: immich_machine_learning_container
           title: immich_machine_learning container is down
           condition: C
@@ -618,3 +568,8 @@ groups:
           isPaused: false
           notification_settings:
             receiver: Telegram
+
+# List of alert rule UIDs that should be deleted
+deleteRules:
+  - orgId: 1
+    uid: watchtower_container

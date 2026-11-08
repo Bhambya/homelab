@@ -464,38 +464,6 @@ services:
       traefik.http.routers.jellyfin.tls: "true"
       traefik.http.routers.jellyfin.tls.certresolver: "cloudflare"
 
-  watchtower:
-    image: "beatkind/watchtower:2.3.2@sha256:933d08e37bf7a5b81bb688f02aeb908d0a410a4f2de1895b720c4060f2ceb1ab"
-    container_name: "watchtower"
-    restart: "unless-stopped"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    environment:
-      TZ: ${TZ}
-      WATCHTOWER_SCHEDULE: "0 0 4 * * 0" # every Sunday 4 AM
-      WATCHTOWER_INCLUDE_RESTARTING: true
-      WATCHTOWER_INCLUDE_STOPPED: true
-      WATCHTOWER_MONITOR_ONLY: true
-      WATCHTOWER_NOTIFICATION_REPORT: true
-      WATCHTOWER_NOTIFICATION_URL: "telegram://${ALERTING_TELEGRAM_BOT_TOKEN}@telegram/?chats=${ALERTING_TELEGRAM_CHAT_ID}"
-      WATCHTOWER_NOTIFICATION_TEMPLATE: |2
-        {{- if .Report -}}
-          {{- with .Report -}}
-            {{- if ( or .Stale .Failed ) -}}
-        Home server:{{"\n"}}
-        {{len .Scanned}} Scanned, {{len .Stale}} Stale, {{len .Failed}} Failed
-              {{- range .Stale}}
-        - {{.Name}} ({{.ImageName}}): {{.CurrentImageID.ShortID}} updated to {{.LatestImageID.ShortID}}
-              {{- end -}}
-              {{- range .Failed}}
-        - {{.Name}} ({{.ImageName}}): {{.State}}: {{.Error}}
-              {{- end -}}
-            {{- end -}}
-          {{- end -}}
-        {{- else -}}
-          {{range .Entries -}}{{.Message}}{{"\n"}}{{- end -}}
-        {{- end -}}
-
   gatus:
     image: ghcr.io/twin/gatus:v5.38.0
     container_name: gatus
