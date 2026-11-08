@@ -829,8 +829,3 @@ groups:
           isPaused: false
           notification_settings:
             receiver: Telegram
-
-# List of alert rule UIDs that should be deleted
-deleteRules:
-  - orgId: 1
-    uid: belgxrri4lfy8e
