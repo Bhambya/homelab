@@ -1079,7 +1079,7 @@ services:
       timeout: 10s
 
   dawarich:
-    image: "freikin/dawarich:1.20.1"
+    image: "freikin/dawarich:1.21.0"
     container_name: dawarich
     restart: unless-stopped
     stdin_open: true
@@ -1145,7 +1145,7 @@ services:
       traefik.http.routers.dawarich.middlewares: bypass-authelia@file
 
   dawarich-sidekiq:
-    image: "freikin/dawarich:1.20.1"
+    image: "freikin/dawarich:1.21.0"
     container_name: dawarich-sidekiq
     restart: unless-stopped
     stdin_open: true
