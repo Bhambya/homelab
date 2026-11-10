@@ -47,8 +47,52 @@
       // for some reason timestamp cannot be determined for terraform providers
       "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
+    // GHCR doesn't expose a release timestamp, so look these images up via their GitHub releases instead.
+    // Only for images whose tags match the release tags and that aren't digest-pinned (github-releases can't
+    // resolve image digests). Overriding changes packageName and datasource, so later rules targeting these
+    // images must use matchDepNames / matchManagers instead of matchPackageNames / matchDatasources.
     {
-      "description": "GHCR images don't expose a release timestamp",
+      "description": "Use GitHub releases for GHCR images whose tags match the release tag",
+      "matchDatasources": ["docker"],
+      "matchDepNames": [
+        "ghcr.io/flaresolverr/flaresolverr",
+        "ghcr.io/iamspido/github-release-monitor",
+        "ghcr.io/kieraneglin/pinchflat",
+        "ghcr.io/librespeed/speedtest-rust",
+        "ghcr.io/linkwarden/linkwarden",
+        "ghcr.io/mealie-recipes/mealie",
+        "ghcr.io/stuffanthings/qbit_manage",
+        "ghcr.io/triliumnext/trilium",
+        "ghcr.io/twin/gatus"
+      ],
+      "overrideDatasource": "github-releases",
+      "overridePackageName": "{{replace 'ghcr.io/' '' depName}}"
+    },
+    {
+      "description": "Use GitHub releases for GHCR images tagged without the release's v prefix",
+      "matchDatasources": ["docker"],
+      "matchDepNames": [
+        "ghcr.io/advplyr/audiobookshelf",
+        "ghcr.io/atuinsh/atuin",
+        "ghcr.io/falcondev-oss/github-actions-cache-server"
+      ],
+      "overrideDatasource": "github-releases",
+      "overridePackageName": "{{replace 'ghcr.io/' '' depName}}",
+      "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
+    },
+    {
+      "description": "Use GitHub releases for Immich images",
+      "matchDatasources": ["docker"],
+      "matchDepNames": [
+        "ghcr.io/immich-app/immich-server",
+        "ghcr.io/immich-app/immich-machine-learning"
+      ],
+      "overrideDatasource": "github-releases",
+      "overridePackageName": "immich-app/immich"
+    },
+    {
+      // digest-pinned images, linuxserver (tags differ from releases) and immich postgres
+      "description": "Remaining GHCR images don't expose a release timestamp",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/**"],
       "minimumReleaseAgeBehaviour": "timestamp-optional"
@@ -67,9 +111,7 @@
     },
     {
       "description": "Group all Docker updates together",
-      "matchDatasources": [
-        "docker"
-      ],
+      "matchManagers": ["docker-compose"],
       "groupName": "Docker images"
     },
     {
@@ -84,9 +126,7 @@
     },
     {
       "description": "Separate security updates for faster processing",
-      "matchDatasources": [
-        "docker"
-      ],
+      "matchManagers": ["docker-compose"],
       "matchUpdateTypes": [
         "patch"
       ],
@@ -99,9 +139,7 @@
     },
     {
       "description": "Handle major version updates separately",
-      "matchDatasources": [
-        "docker"
-      ],
+      "matchManagers": ["docker-compose"],
       "matchUpdateTypes": [
         "major"
       ],
@@ -133,7 +171,7 @@
     },
     {
       "description": "Auto-update monitoring and utility tools",
-      "matchPackageNames": [
+      "matchDepNames": [
         "prom/prometheus",
         "grafana/grafana",
         "quay.io/prometheus/node-exporter",
@@ -147,7 +185,7 @@
     },
     {
       "description": "Immich",
-      "matchPackageNames": [
+      "matchDepNames": [
         "ghcr.io/immich-app/immich-server",
         "ghcr.io/immich-app/immich-machine-learning",
         "docker.io/redis",
@@ -160,7 +198,7 @@
     },
     {
       "description": "Media management tools",
-      "matchPackageNames": [
+      "matchDepNames": [
         "ghcr.io/kieraneglin/pinchflat",
         "ghcr.io/advplyr/audiobookshelf",
         "ghcr.io/linuxserver/jellyfin",
