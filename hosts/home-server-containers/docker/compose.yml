@@ -620,7 +620,7 @@ services:
       traefik.http.routers.excalidraw.tls.certresolver: "cloudflare"
 
   pinchflat:
-    image: ghcr.io/kieraneglin/pinchflat:v2025.6.6
+    image: ghcr.io/kieraneglin/pinchflat:v2025.9.26
     container_name: pinchflat
     restart: unless-stopped
     environment:
