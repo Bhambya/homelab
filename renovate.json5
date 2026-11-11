@@ -57,7 +57,6 @@
       "matchDepNames": [
         "ghcr.io/flaresolverr/flaresolverr",
         "ghcr.io/iamspido/github-release-monitor",
-        "ghcr.io/kieraneglin/pinchflat",
         "ghcr.io/librespeed/speedtest-rust",
         "ghcr.io/linkwarden/linkwarden",
         "ghcr.io/mealie-recipes/mealie",
