@@ -798,10 +798,10 @@ services:
     volumes:
       - ./glance/config:/app/config
       - ./glance/assets:/app/assets
-      - /etc/localtime:/etc/localtime:ro
     environment:
       BASE_DOMAIN: ${BASE_DOMAIN}
       IMMICH_API_KEY: ${IMMICH_API_KEY}
+      TZ: ${TIME_ZONE}
     networks:
       - proxy
     labels:
@@ -863,12 +863,11 @@ services:
     restart: unless-stopped
     environment:
       - TRILIUM_DATA_DIR=/home/node/trilium-data
+      - TZ=${TIME_ZONE}
     networks:
       - proxy
     volumes:
       - /var/lib/docker-data/trilium:/home/node/trilium-data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     labels:
       traefik.enable: "true"
       traefik.http.routers.trilium.rule: "Host(`notes.${BASE_DOMAIN}`)"
