@@ -62,7 +62,8 @@
         "ghcr.io/mealie-recipes/mealie",
         "ghcr.io/stuffanthings/qbit_manage",
         "ghcr.io/triliumnext/trilium",
-        "ghcr.io/twin/gatus"
+        "ghcr.io/twin/gatus",
+        "ghcr.io/thebadfella/pinchflat-ngx"
       ],
       "overrideDatasource": "github-releases",
       "overridePackageName": "{{replace 'ghcr.io/' '' depName}}"
@@ -198,7 +199,7 @@
     {
       "description": "Media management tools",
       "matchDepNames": [
-        "ghcr.io/kieraneglin/pinchflat",
+        "ghcr.io/thebadfella/pinchflat-ngx",
         "ghcr.io/advplyr/audiobookshelf",
         "ghcr.io/linuxserver/jellyfin",
         "gtstef/filebrowser"
