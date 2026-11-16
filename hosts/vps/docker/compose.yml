@@ -672,7 +672,7 @@ services:
       timeout: 10s
 
   linkwarden:
-    image: ghcr.io/linkwarden/linkwarden:v2.16.3
+    image: ghcr.io/linkwarden/linkwarden:v2.17.0
     container_name: linkwarden
     environment:
       DATABASE_URL: postgresql://postgres:password@postgres:5432/linkwarden
