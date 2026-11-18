@@ -878,7 +878,7 @@ services:
   atuin:
     container_name: atuin
     restart: unless-stopped
-    image: ghcr.io/atuinsh/atuin:18.24.6
+    image: ghcr.io/atuinsh/atuin:18.24.8
     command: start
     networks:
       - proxy
