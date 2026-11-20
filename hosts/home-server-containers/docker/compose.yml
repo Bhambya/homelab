@@ -548,7 +548,7 @@ services:
       - '--path.rootfs=/rootfs'
 
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.61.0@sha256:448ca9b1ce0d3f2eb7563938030908a4b81ddfe959a3fe5e62f691fd4b2cb417
+    image: ghcr.io/google/cadvisor:v0.61.1@sha256:4929b70e82079d001d0028b85d6a4dd25ad4666b719455c9542b983489963916
     restart: unless-stopped
     devices:
       - /dev/kmsg
@@ -703,7 +703,7 @@ services:
   # data on local disk so workflows cache dependencies without touching GitHub.
   # See https://gha-cache-server.falcondev.io
   gha-cache-server:
-    image: ghcr.io/falcondev-oss/github-actions-cache-server:10.0.0
+    image: ghcr.io/falcondev-oss/github-actions-cache-server:10.0.1
     container_name: gha-cache-server
     restart: unless-stopped
     networks:
