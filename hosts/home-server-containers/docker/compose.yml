@@ -218,7 +218,7 @@ services:
       - BORINGPOLL_GLUETUNCOM=on
 
   qbittorrent:
-    image: ghcr.io/linuxserver/qbittorrent:5.2.4
+    image: linuxserver/qbittorrent:5.2.4@sha256:1ea873647c43d566f251a7122aee330b184509c57ee3257ed19f62dac0f8f24b
     container_name: qbittorrent
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -293,7 +293,7 @@ services:
     restart: unless-stopped
 
   prowlarr:
-    image: ghcr.io/linuxserver/prowlarr:3.0.2
+    image: linuxserver/prowlarr:3.0.2@sha256:45117ba8439e2337a92ffe38a451a4dafc0be771754d05d88cdf102419d09646
     container_name: prowlarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -315,7 +315,7 @@ services:
       traefik.http.services.prowlarr.loadbalancer.server.port: '9696'
 
   sonarr:
-    image: ghcr.io/linuxserver/sonarr:4.0.20
+    image: linuxserver/sonarr:4.0.20@sha256:339814bbf50599ac3b59077c252f29833d0138b59a062d0e82ce37bdc7f04f86
     container_name: sonarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -338,7 +338,7 @@ services:
       traefik.http.services.sonarr.loadbalancer.server.port: '8989'
 
   radarr:
-    image: ghcr.io/linuxserver/radarr:7.0.3
+    image: linuxserver/radarr:7.0.3@sha256:044788f5508b7f67a3e0368cdd142c77c4d4cd5aec2efaba53e1a68b6b6231e7
     container_name: radarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -361,7 +361,7 @@ services:
       traefik.http.services.radarr.loadbalancer.server.port: '7878'
 
   lidarr:
-    image: ghcr.io/linuxserver/lidarr:3.1.6
+    image: linuxserver/lidarr:3.1.6@sha256:8fb40ada166dd1880cb1b166df5bcbb081107523f20ab60df05c313e2052a467
     container_name: lidarr
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
@@ -433,7 +433,7 @@ services:
       traefik.http.routers.filebrowser.tls.certresolver: "cloudflare"
 
   jellyfin:
-    image: "ghcr.io/linuxserver/jellyfin:10.11.11"
+    image: "linuxserver/jellyfin:10.11.11@sha256:438e44330078e6b1a810fdec9dc0f4773e6595edb137c5eb4417a516da4c7f0e"
     container_name: jellyfin
     environment:
       - "PUID=1000"
