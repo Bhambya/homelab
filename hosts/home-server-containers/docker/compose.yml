@@ -218,7 +218,7 @@ services:
       - BORINGPOLL_GLUETUNCOM=on
 
   qbittorrent:
-    image: linuxserver/qbittorrent:5.2.4@sha256:1ea873647c43d566f251a7122aee330b184509c57ee3257ed19f62dac0f8f24b
+    image: linuxserver/qbittorrent:20.04.1@sha256:fc98c8af048936d0070dc5e5992feab08664f8a61a860d91be02f782f8721485
     container_name: qbittorrent
     network_mode: "service:gluetun" # Routes all traffic through Gluetun
     environment:
