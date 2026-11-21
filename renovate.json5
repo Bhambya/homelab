@@ -201,7 +201,7 @@
       "matchDepNames": [
         "ghcr.io/thebadfella/pinchflat-ngx",
         "ghcr.io/advplyr/audiobookshelf",
-        "ghcr.io/linuxserver/jellyfin",
+        "linuxserver/jellyfin",
         "gtstef/filebrowser"
       ],
       "labels": [
@@ -251,14 +251,14 @@
     {
       "description": "Ignore old jellyfin year based versions",
       "matchPackageNames": [
-        "ghcr.io/linuxserver/jellyfin"
+        "linuxserver/jellyfin"
       ],
       "allowedVersions": "!/^20\\d\\d\\./"
     },
     {
       "description": "Ignore old qbittorrent version which is higher in value!!",
       "matchPackageNames": [
-        "ghcr.io/linuxserver/qbittorrent"
+        "linuxserver/qbittorrent"
       ],
       // ignore versions like 20.04.1 or 14.3.9
       "allowedVersions": "!/^(20|14)\\./",
@@ -269,7 +269,7 @@
     {
       "description": "Ignore stray old lidarr tag which is higher in value!!",
       "matchPackageNames": [
-        "ghcr.io/linuxserver/lidarr"
+        "linuxserver/lidarr"
       ],
       // 8.1.2135 is actually 0.8.1.2135 tagged without the leading 0
       "allowedVersions": "!/^8\\.1\\.2135$/"
